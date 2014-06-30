@@ -12,25 +12,24 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+/*
+ * This is a first & sample cmdlet which writes some basic Azure account & Subscription information.
+ */ 
+
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Management.Automation;
 
     [Cmdlet(VerbsCommon.Get, "AzureInfo"), OutputType(typeof(string))]
-    public class GetAzureInfo : CmdletWithSubscriptionBase
+    public class GetAzureInfo : RecoveryServicesCmdletBase
     {
-        /*[Parameter(Position = 0, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string Name { get; set; }*/
-
         public override void ExecuteCmdlet()
         {
             IEnumerable<WindowsAzureSubscription> subscriptions = Profile.Subscriptions.Where(s => s.ActiveDirectoryUserId != null);
-
             var sortedSubscriptions = from s in subscriptions
                                       orderby s.ActiveDirectoryUserId ascending
                                       group s by s.ActiveDirectoryUserId into g
@@ -39,11 +38,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                                           AzureAccountName = g.Key,
                                       };
 
-            WriteObject(sortedSubscriptions);
+            WriteObject(sortedSubscriptions.First());
             WriteObject("Subscription Name: " + CurrentSubscription.SubscriptionName);
             WriteObject("Subscription ID: " + CurrentSubscription.SubscriptionId);
             // WriteObject("Storage Account Name: " + CurrentSubscription.CurrentStorageAccountName);
             WriteObject("Service End point: " + CurrentSubscription.ServiceEndpoint);
+            WriteObject("Gallery End point: " + CurrentSubscription.GalleryEndpoint);
+            WriteObject("Resource Manager End point: " + CurrentSubscription.ResourceManagerEndpoint);
         }
     }
 }
