@@ -18,11 +18,13 @@
 
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
+    #region Using directives
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
+    #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureInfo"), OutputType(typeof(string))]
     public class GetAzureInfo : RecoveryServicesCmdletBase

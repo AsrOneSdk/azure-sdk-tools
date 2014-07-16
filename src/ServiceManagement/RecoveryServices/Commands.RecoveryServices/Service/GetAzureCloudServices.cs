@@ -15,27 +15,20 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure.Commands.Utilities.Common;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Management.Automation;
     #endregion
 
-    /// <summary>
-    /// The base class for all Windows Azure Recovery Service Cmdlets
-    /// </summary>
-    /// 
-    /// abstract ?
-    public abstract class RecoveryServicesCmdletBase : CmdletWithSubscriptionBase
+    [Cmdlet(VerbsCommon.Get, "AzureCloudServices"), OutputType(typeof(string))]
+    public class GetAzureCloudServices : RecoveryServicesCmdletBase
     {
-        private PSRecoveryServiceClient recoveryServicesClient;
-        internal PSRecoveryServiceClient RecoveryServicesClient
+        public override void ExecuteCmdlet()
         {
-            get
-            {
-                if (recoveryServicesClient == null)
-                {
-                    recoveryServicesClient = new PSRecoveryServiceClient(CurrentSubscription);
-                }
-                return recoveryServicesClient;
-            }
+            CloudServiceListResponse services = RecoveryServicesClient.GetAzureCloudServicesSyncInt();
+            WriteObject(services.CloudServices.ToList());
         }
     }
 }

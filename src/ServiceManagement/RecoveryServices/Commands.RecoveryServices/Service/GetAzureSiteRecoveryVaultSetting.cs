@@ -15,27 +15,32 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using System.Management.Automation;
+    using System.Collections.Generic;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
+    using System.Linq;
+    // using Microsoft.WindowsAzure.Commands.Utilities.Profile;
     #endregion
 
     /// <summary>
-    /// The base class for all Windows Azure Recovery Service Cmdlets
+    ///
     /// </summary>
-    /// 
-    /// abstract ?
-    public abstract class RecoveryServicesCmdletBase : CmdletWithSubscriptionBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVaultSetting")]
+    [OutputType(typeof(IEnumerable<WindowsAzureSubscription>))]
+    public class GetAzureSiteRecoveryVaultSetting : RecoveryServicesCmdletBase
     {
-        private PSRecoveryServiceClient recoveryServicesClient;
-        internal PSRecoveryServiceClient RecoveryServicesClient
+        public override void ExecuteCmdlet()
         {
-            get
-            {
-                if (recoveryServicesClient == null)
-                {
-                    recoveryServicesClient = new PSRecoveryServiceClient(CurrentSubscription);
-                }
-                return recoveryServicesClient;
-            }
+            WriteObject("GetAzureSiteRecoveryVaultSetting");
+            WindowsAzureSubscription subscription= this.GetAzureSiteRecoveryVaultSettings();
+            WriteObject("ResourceName: " + CurrentSubscription.AzureSiteRecoveryResourceName);
+            WriteObject("CloudServiceName: " + CurrentSubscription.AzureSiteRecoveryCloudServiceName);
+        }
+
+        public WindowsAzureSubscription GetAzureSiteRecoveryVaultSettings()
+        {
+            return Profile.Subscriptions.FirstOrDefault(s => s.IsDefault);
         }
     }
 }

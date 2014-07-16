@@ -14,23 +14,108 @@
 
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
+    #region Using directives
     using Microsoft.Azure.Management.SiteRecovery;
     using Microsoft.Azure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
+    using System;
+    using System.Security.Cryptography.X509Certificates;
+    #endregion
 
     class PSRecoveryServiceClient
     {
-        private SiteRecoveryManagementClient client;
+        private RecoveryServicesManagementClient recoveryServicesClient;
+        private string subscriptionId;
+        private X509Certificate2 certificate;
+        private Uri serviceEndPoint;
+        private string resourceName;
+        private string cloudServiceName;
+
         public PSRecoveryServiceClient(WindowsAzureSubscription currentSubscription)
         {
-            client = currentSubscription.CreateClient<SiteRecoveryManagementClient>();
+            recoveryServicesClient = 
+                currentSubscription.CreateClient<RecoveryServicesManagementClient>();
+            subscriptionId = currentSubscription.SubscriptionId;
+            certificate = currentSubscription.Certificate;
+            serviceEndPoint = currentSubscription.ServiceEndpoint;
+            resourceName = currentSubscription.AzureSiteRecoveryResourceName;
+            cloudServiceName = currentSubscription.AzureSiteRecoveryCloudServiceName;
         }
         public PSRecoveryServiceClient() { }
 
         public CloudServiceListResponse GetAzureCloudServicesSyncInt()
         {
-            return client.CloudServices.List();
+            return recoveryServicesClient.CloudServices.List();
+        }
+
+        public ServerListResponse GetAzureSiteRecoveryServer()
+        {
+            SiteRecoveryManagementClient siteRecoveryClient = 
+                GetSiteRecoveryClient();
+
+            if (siteRecoveryClient == null)
+            {
+                return null;
+            }
+
+            var serverList = new ServerListResponse();
+            try
+            {
+                serverList = siteRecoveryClient.Servers.List();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return serverList;
+        }
+
+        private SiteRecoveryManagementClient GetSiteRecoveryClient()
+        {
+            CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
+            string stampId = string.Empty;
+
+            CloudService selectedCloudService = new CloudService();
+            Vault selectedResource = null;
+
+            foreach (CloudService cloudService in services)
+            {
+                if (cloudService.Name == cloudServiceName)
+                {
+                    selectedCloudService = cloudService;
+                }
+            }
+            foreach (Vault vault in selectedCloudService.Resources)
+            {
+                if (vault.Name == resourceName)
+                {
+                    selectedResource = vault;
+                }
+            }
+            foreach (OutputItem item in selectedResource.OutputItems)
+            {
+                if (item.Key.Equals("BackendStampId"))
+                {
+                    stampId = item.Value;
+                }
+            }
+            if (string.IsNullOrEmpty(selectedCloudService.Name) || selectedResource == null || string.IsNullOrEmpty(stampId))
+            {
+                return null;
+            }
+
+            SiteRecoveryManagementClient siteRecoveryClient = 
+                new SiteRecoveryManagementClient(
+                    cloudServiceName, 
+                    resourceName, 
+                    stampId, 
+                    new CertificateCloudCredentials(
+                        subscriptionId, 
+                        certificate), 
+                    serviceEndPoint);
+
+            return siteRecoveryClient;
         }
     }
 }
