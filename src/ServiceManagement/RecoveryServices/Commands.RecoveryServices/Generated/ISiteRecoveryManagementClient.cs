@@ -96,6 +96,15 @@ namespace Microsoft.Azure.Management.SiteRecovery
         }
         
         /// <summary>
+        /// Definition of recoveryplan operations for the Site Recovery
+        /// extension.
+        /// </summary>
+        IRecoveryPlanOperations RecoveryPlan
+        {
+            get; 
+        }
+        
+        /// <summary>
         /// Definition of servers for the Site Recovery extension.  (see
         /// http://msdn.microsoft.com/en-us/library/windowsazure/XXXX.aspx for
         /// more information)

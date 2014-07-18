@@ -20,6 +20,7 @@
 // code is regenerated.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.Management.SiteRecovery.Models;
 using Microsoft.WindowsAzure;
@@ -27,26 +28,44 @@ using Microsoft.WindowsAzure;
 namespace Microsoft.Azure.Management.SiteRecovery.Models
 {
     /// <summary>
-    /// The response model for the Aync calls.
+    /// The response model for the list recoveryplans operation.
     /// </summary>
-    public partial class JobResponse : OperationResponse
+    public partial class RecoveryPlanListResponse : OperationResponse, IEnumerable<RecoveryPlan>
     {
-        private Job _job;
+        private IList<RecoveryPlan> _recoveryPlans;
         
         /// <summary>
-        /// Optional. The Job.
+        /// Optional. The list of recoveryplans for the given cloud service and
+        /// resource.
         /// </summary>
-        public Job Job
+        public IList<RecoveryPlan> RecoveryPlans
         {
-            get { return this._job; }
-            set { this._job = value; }
+            get { return this._recoveryPlans; }
+            set { this._recoveryPlans = value; }
         }
         
         /// <summary>
-        /// Initializes a new instance of the JobResponse class.
+        /// Initializes a new instance of the RecoveryPlanListResponse class.
         /// </summary>
-        public JobResponse()
+        public RecoveryPlanListResponse()
         {
+            this.RecoveryPlans = new List<RecoveryPlan>();
+        }
+        
+        /// <summary>
+        /// Gets the sequence of RecoveryPlans.
+        /// </summary>
+        public IEnumerator<RecoveryPlan> GetEnumerator()
+        {
+            return this.RecoveryPlans.GetEnumerator();
+        }
+        
+        /// <summary>
+        /// Gets the sequence of RecoveryPlans.
+        /// </summary>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

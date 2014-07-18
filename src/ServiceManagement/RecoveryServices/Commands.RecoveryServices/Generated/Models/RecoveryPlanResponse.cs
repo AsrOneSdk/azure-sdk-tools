@@ -27,25 +27,25 @@ using Microsoft.WindowsAzure;
 namespace Microsoft.Azure.Management.SiteRecovery.Models
 {
     /// <summary>
-    /// The response model for the Aync calls.
+    /// The response model for the recoveryplan object.
     /// </summary>
-    public partial class JobResponse : OperationResponse
+    public partial class RecoveryPlanResponse : OperationResponse
     {
-        private Job _job;
+        private RecoveryPlan _recoveryPlan;
         
         /// <summary>
-        /// Optional. The Job.
+        /// Optional. The recoveryplan object for the given recoveryplan ID.
         /// </summary>
-        public Job Job
+        public RecoveryPlan RecoveryPlan
         {
-            get { return this._job; }
-            set { this._job = value; }
+            get { return this._recoveryPlan; }
+            set { this._recoveryPlan = value; }
         }
         
         /// <summary>
-        /// Initializes a new instance of the JobResponse class.
+        /// Initializes a new instance of the RecoveryPlanResponse class.
         /// </summary>
-        public JobResponse()
+        public RecoveryPlanResponse()
         {
         }
     }

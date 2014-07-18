@@ -36,19 +36,17 @@ using Microsoft.WindowsAzure.Common.Internals;
 namespace Microsoft.Azure.Management.SiteRecovery
 {
     /// <summary>
-    /// Definition of virtual machines for the Site Recovery extension.  (see
-    /// http://msdn.microsoft.com/en-us/library/windowsazure/XXXX.aspx for
-    /// more information)
+    /// Definition of recoveryplan operations for the Site Recovery extension.
     /// </summary>
-    internal partial class VirtualMachineOperations : IServiceOperations<SiteRecoveryManagementClient>, Microsoft.Azure.Management.SiteRecovery.IVirtualMachineOperations
+    internal partial class RecoveryPlanOperations : IServiceOperations<SiteRecoveryManagementClient>, Microsoft.Azure.Management.SiteRecovery.IRecoveryPlanOperations
     {
         /// <summary>
-        /// Initializes a new instance of the VirtualMachineOperations class.
+        /// Initializes a new instance of the RecoveryPlanOperations class.
         /// </summary>
         /// <param name='client'>
         /// Reference to the service client.
         /// </param>
-        internal VirtualMachineOperations(SiteRecoveryManagementClient client)
+        internal RecoveryPlanOperations(SiteRecoveryManagementClient client)
         {
             this._client = client;
         }
@@ -65,18 +63,10 @@ namespace Microsoft.Azure.Management.SiteRecovery
         }
         
         /// <summary>
-        /// Get the list of all Vms under the cloud.  (see
-        /// http://msdn.microsoft.com/en-us/library/windowsazure/XXXXX.aspx
-        /// for more information)
+        /// Commit the recovery plan.
         /// </summary>
-        /// <param name='serverId'>
-        /// Required. Server ID.
-        /// </param>
-        /// <param name='protectedContainerId'>
-        /// Required. Protected Container ID.
-        /// </param>
-        /// <param name='virtualMachineId'>
-        /// Required. VM ID.
+        /// <param name='recoveryPlanId'>
+        /// Required. RecoveryPlan ID.
         /// </param>
         /// <param name='cancellationToken'>
         /// Cancellation token.
@@ -84,20 +74,12 @@ namespace Microsoft.Azure.Management.SiteRecovery
         /// <returns>
         /// The response model for the Aync calls.
         /// </returns>
-        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.JobResponse> DisableProtectionAsync(string serverId, string protectedContainerId, string virtualMachineId, CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.JobResponse> CommitAsync(string recoveryPlanId, CancellationToken cancellationToken)
         {
             // Validate
-            if (serverId == null)
+            if (recoveryPlanId == null)
             {
-                throw new ArgumentNullException("serverId");
-            }
-            if (protectedContainerId == null)
-            {
-                throw new ArgumentNullException("protectedContainerId");
-            }
-            if (virtualMachineId == null)
-            {
-                throw new ArgumentNullException("virtualMachineId");
+                throw new ArgumentNullException("recoveryPlanId");
             }
             
             // Tracing
@@ -107,14 +89,12 @@ namespace Microsoft.Azure.Management.SiteRecovery
             {
                 invocationId = Tracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("serverId", serverId);
-                tracingParameters.Add("protectedContainerId", protectedContainerId);
-                tracingParameters.Add("virtualMachineId", virtualMachineId);
-                Tracing.Enter(invocationId, this, "DisableProtectionAsync", tracingParameters);
+                tracingParameters.Add("recoveryPlanId", recoveryPlanId);
+                Tracing.Enter(invocationId, this, "CommitAsync", tracingParameters);
             }
             
             // Construct URL
-            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/Servers/" + serverId.Trim() + "/ProtectedContainers/" + protectedContainerId.Trim() + "/VirtualMachines/" + virtualMachineId.Trim() + "/DisableProtection?";
+            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/RecoveryPlans/" + recoveryPlanId.Trim() + "/Commit?";
             url = url + "api-version=2014-07-01";
             string baseUrl = this.Client.BaseUri.AbsoluteUri;
             // Trim '/' character from the end of baseUrl and beginning of url.
@@ -231,39 +211,23 @@ namespace Microsoft.Azure.Management.SiteRecovery
         }
         
         /// <summary>
-        /// Get the list of all Vms under the cloud.  (see
-        /// http://msdn.microsoft.com/en-us/library/windowsazure/XXXXX.aspx
-        /// for more information)
+        /// Get the list of all recoveryplans under the resource.
         /// </summary>
-        /// <param name='serverId'>
-        /// Required. Server ID.
-        /// </param>
-        /// <param name='protectedContainerId'>
-        /// Required. Protected Container ID.
-        /// </param>
-        /// <param name='virtualMachineId'>
-        /// Required. VM ID.
+        /// <param name='recoveryPlanId'>
+        /// Required. RecoveryPlan ID.
         /// </param>
         /// <param name='cancellationToken'>
         /// Cancellation token.
         /// </param>
         /// <returns>
-        /// The response model for the Aync calls.
+        /// The response model for the recoveryplan object.
         /// </returns>
-        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.JobResponse> EnableProtectionAsync(string serverId, string protectedContainerId, string virtualMachineId, CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.RecoveryPlanResponse> GetAsync(string recoveryPlanId, CancellationToken cancellationToken)
         {
             // Validate
-            if (serverId == null)
+            if (recoveryPlanId == null)
             {
-                throw new ArgumentNullException("serverId");
-            }
-            if (protectedContainerId == null)
-            {
-                throw new ArgumentNullException("protectedContainerId");
-            }
-            if (virtualMachineId == null)
-            {
-                throw new ArgumentNullException("virtualMachineId");
+                throw new ArgumentNullException("recoveryPlanId");
             }
             
             // Tracing
@@ -273,180 +237,12 @@ namespace Microsoft.Azure.Management.SiteRecovery
             {
                 invocationId = Tracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("serverId", serverId);
-                tracingParameters.Add("protectedContainerId", protectedContainerId);
-                tracingParameters.Add("virtualMachineId", virtualMachineId);
-                Tracing.Enter(invocationId, this, "EnableProtectionAsync", tracingParameters);
-            }
-            
-            // Construct URL
-            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/Servers/" + serverId.Trim() + "/ProtectedContainers/" + protectedContainerId.Trim() + "/VirtualMachines/" + virtualMachineId.Trim() + "/EnableProtection?";
-            url = url + "api-version=2014-07-01";
-            string baseUrl = this.Client.BaseUri.AbsoluteUri;
-            // Trim '/' character from the end of baseUrl and beginning of url.
-            if (baseUrl[baseUrl.Length - 1] == '/')
-            {
-                baseUrl = baseUrl.Substring(0, baseUrl.Length - 1);
-            }
-            if (url[0] == '/')
-            {
-                url = url.Substring(1);
-            }
-            url = baseUrl + "/" + url;
-            url = url.Replace(" ", "%20");
-            
-            // Create HTTP transport objects
-            HttpRequestMessage httpRequest = null;
-            try
-            {
-                httpRequest = new HttpRequestMessage();
-                httpRequest.Method = HttpMethod.Post;
-                httpRequest.RequestUri = new Uri(url);
-                
-                // Set Headers
-                httpRequest.Headers.Add("Accept", "application/xml");
-                httpRequest.Headers.Add("ApiVersion", "1.0");
-                httpRequest.Headers.Add("x-ms-version", "2013-03-01");
-                
-                // Set Credentials
-                cancellationToken.ThrowIfCancellationRequested();
-                await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
-                
-                // Send Request
-                HttpResponseMessage httpResponse = null;
-                try
-                {
-                    if (shouldTrace)
-                    {
-                        Tracing.SendRequest(invocationId, httpRequest);
-                    }
-                    cancellationToken.ThrowIfCancellationRequested();
-                    httpResponse = await this.Client.HttpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
-                    if (shouldTrace)
-                    {
-                        Tracing.ReceiveResponse(invocationId, httpResponse);
-                    }
-                    HttpStatusCode statusCode = httpResponse.StatusCode;
-                    if (statusCode != HttpStatusCode.OK)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        CloudException ex = CloudException.Create(httpRequest, null, httpResponse, await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false));
-                        if (shouldTrace)
-                        {
-                            Tracing.Error(invocationId, ex);
-                        }
-                        throw ex;
-                    }
-                    
-                    // Create Result
-                    JobResponse result = null;
-                    // Deserialize Response
-                    cancellationToken.ThrowIfCancellationRequested();
-                    string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    result = new JobResponse();
-                    XDocument responseDoc = XDocument.Parse(responseContent);
-                    
-                    XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure"));
-                    if (serviceResourceElement != null)
-                    {
-                        Job serviceResourceInstance = new Job();
-                        result.Job = serviceResourceInstance;
-                        
-                        XElement idElement = serviceResourceElement.Element(XName.Get("ID", "http://schemas.microsoft.com/windowsazure"));
-                        if (idElement != null)
-                        {
-                            string idInstance = idElement.Value;
-                            serviceResourceInstance.ID = idInstance;
-                        }
-                        
-                        XElement stateElement = serviceResourceElement.Element(XName.Get("State", "http://schemas.microsoft.com/windowsazure"));
-                        if (stateElement != null)
-                        {
-                            string stateInstance = stateElement.Value;
-                            serviceResourceInstance.State = stateInstance;
-                        }
-                    }
-                    
-                    result.StatusCode = statusCode;
-                    if (httpResponse.Headers.Contains("x-ms-request-id"))
-                    {
-                        result.RequestId = httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                    }
-                    
-                    if (shouldTrace)
-                    {
-                        Tracing.Exit(invocationId, result);
-                    }
-                    return result;
-                }
-                finally
-                {
-                    if (httpResponse != null)
-                    {
-                        httpResponse.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (httpRequest != null)
-                {
-                    httpRequest.Dispose();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Get the list of all Vms under the cloud.  (see
-        /// http://msdn.microsoft.com/en-us/library/windowsazure/XXXXX.aspx
-        /// for more information)
-        /// </summary>
-        /// <param name='serverId'>
-        /// Required. Server ID.
-        /// </param>
-        /// <param name='protectedContainerId'>
-        /// Required. Protected Container ID.
-        /// </param>
-        /// <param name='virtualMachineId'>
-        /// Required. VM ID.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// Cancellation token.
-        /// </param>
-        /// <returns>
-        /// The response model for the Vm object.
-        /// </returns>
-        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.VirtualMachineResponse> GetAsync(string serverId, string protectedContainerId, string virtualMachineId, CancellationToken cancellationToken)
-        {
-            // Validate
-            if (serverId == null)
-            {
-                throw new ArgumentNullException("serverId");
-            }
-            if (protectedContainerId == null)
-            {
-                throw new ArgumentNullException("protectedContainerId");
-            }
-            if (virtualMachineId == null)
-            {
-                throw new ArgumentNullException("virtualMachineId");
-            }
-            
-            // Tracing
-            bool shouldTrace = CloudContext.Configuration.Tracing.IsEnabled;
-            string invocationId = null;
-            if (shouldTrace)
-            {
-                invocationId = Tracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("serverId", serverId);
-                tracingParameters.Add("protectedContainerId", protectedContainerId);
-                tracingParameters.Add("virtualMachineId", virtualMachineId);
+                tracingParameters.Add("recoveryPlanId", recoveryPlanId);
                 Tracing.Enter(invocationId, this, "GetAsync", tracingParameters);
             }
             
             // Construct URL
-            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/Servers/" + serverId.Trim() + "/ProtectedContainers/" + protectedContainerId.Trim() + "/VirtualMachines/" + virtualMachineId.Trim() + "?";
+            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/RecoveryPlans/" + recoveryPlanId.Trim() + "?";
             url = url + "api-version=2014-07-01";
             string baseUrl = this.Client.BaseUri.AbsoluteUri;
             // Trim '/' character from the end of baseUrl and beginning of url.
@@ -505,25 +301,18 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     }
                     
                     // Create Result
-                    VirtualMachineResponse result = null;
+                    RecoveryPlanResponse result = null;
                     // Deserialize Response
                     cancellationToken.ThrowIfCancellationRequested();
                     string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    result = new VirtualMachineResponse();
+                    result = new RecoveryPlanResponse();
                     XDocument responseDoc = XDocument.Parse(responseContent);
                     
                     XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure"));
                     if (serviceResourceElement != null)
                     {
-                        VirtualMachine serviceResourceInstance = new VirtualMachine();
-                        result.Vm = serviceResourceInstance;
-                        
-                        XElement serverNameElement = serviceResourceElement.Element(XName.Get("ServerName", "http://schemas.microsoft.com/windowsazure"));
-                        if (serverNameElement != null)
-                        {
-                            string serverNameInstance = serverNameElement.Value;
-                            serviceResourceInstance.ServerName = serverNameInstance;
-                        }
+                        RecoveryPlan serviceResourceInstance = new RecoveryPlan();
+                        result.RecoveryPlan = serviceResourceInstance;
                         
                         XElement serverIdElement = serviceResourceElement.Element(XName.Get("ServerId", "http://schemas.microsoft.com/windowsazure"));
                         if (serverIdElement != null)
@@ -532,32 +321,11 @@ namespace Microsoft.Azure.Management.SiteRecovery
                             serviceResourceInstance.ServerId = serverIdInstance;
                         }
                         
-                        XElement protectedContainerIdElement = serviceResourceElement.Element(XName.Get("ProtectedContainerId", "http://schemas.microsoft.com/windowsazure"));
-                        if (protectedContainerIdElement != null)
+                        XElement targetServerIdElement = serviceResourceElement.Element(XName.Get("TargetServerId", "http://schemas.microsoft.com/windowsazure"));
+                        if (targetServerIdElement != null)
                         {
-                            string protectedContainerIdInstance = protectedContainerIdElement.Value;
-                            serviceResourceInstance.ProtectedContainerId = protectedContainerIdInstance;
-                        }
-                        
-                        XElement protectedElement = serviceResourceElement.Element(XName.Get("Protected", "http://schemas.microsoft.com/windowsazure"));
-                        if (protectedElement != null)
-                        {
-                            bool protectedInstance = bool.Parse(protectedElement.Value);
-                            serviceResourceInstance.Protected = protectedInstance;
-                        }
-                        
-                        XElement replicationProviderElement = serviceResourceElement.Element(XName.Get("ReplicationProvider", "http://schemas.microsoft.com/windowsazure"));
-                        if (replicationProviderElement != null)
-                        {
-                            string replicationProviderInstance = replicationProviderElement.Value;
-                            serviceResourceInstance.ReplicationProvider = replicationProviderInstance;
-                        }
-                        
-                        XElement replicationProviderSettingsElement = serviceResourceElement.Element(XName.Get("ReplicationProviderSettings", "http://schemas.microsoft.com/windowsazure"));
-                        if (replicationProviderSettingsElement != null)
-                        {
-                            string replicationProviderSettingsInstance = replicationProviderSettingsElement.Value;
-                            serviceResourceInstance.ReplicationProviderSettings = replicationProviderSettingsInstance;
+                            string targetServerIdInstance = targetServerIdElement.Value;
+                            serviceResourceInstance.TargetServerId = targetServerIdInstance;
                         }
                         
                         XElement nameElement = serviceResourceElement.Element(XName.Get("Name", "http://schemas.microsoft.com/windowsazure"));
@@ -612,33 +380,17 @@ namespace Microsoft.Azure.Management.SiteRecovery
         }
         
         /// <summary>
-        /// Get the list of all Vms under the cloud.  (see
-        /// http://msdn.microsoft.com/en-us/library/windowsazure/XXXXX.aspx
-        /// for more information)
+        /// Get the list of all recoveryplans under the resource.
         /// </summary>
-        /// <param name='serverId'>
-        /// Required. Server ID.
-        /// </param>
-        /// <param name='protectedContainerId'>
-        /// Required. Protected Container ID.
-        /// </param>
         /// <param name='cancellationToken'>
         /// Cancellation token.
         /// </param>
         /// <returns>
-        /// The response model for the list Vm operation.
+        /// The response model for the list recoveryplans operation.
         /// </returns>
-        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.VirtualMachineListResponse> ListAsync(string serverId, string protectedContainerId, CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.RecoveryPlanListResponse> ListAsync(CancellationToken cancellationToken)
         {
             // Validate
-            if (serverId == null)
-            {
-                throw new ArgumentNullException("serverId");
-            }
-            if (protectedContainerId == null)
-            {
-                throw new ArgumentNullException("protectedContainerId");
-            }
             
             // Tracing
             bool shouldTrace = CloudContext.Configuration.Tracing.IsEnabled;
@@ -647,13 +399,11 @@ namespace Microsoft.Azure.Management.SiteRecovery
             {
                 invocationId = Tracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("serverId", serverId);
-                tracingParameters.Add("protectedContainerId", protectedContainerId);
                 Tracing.Enter(invocationId, this, "ListAsync", tracingParameters);
             }
             
             // Construct URL
-            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/Servers/" + serverId.Trim() + "/ProtectedContainers/" + protectedContainerId.Trim() + "/VirtualMachines?";
+            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/RecoveryPlans?";
             url = url + "api-version=2014-07-01";
             string baseUrl = this.Client.BaseUri.AbsoluteUri;
             // Trim '/' character from the end of baseUrl and beginning of url.
@@ -712,11 +462,11 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     }
                     
                     // Create Result
-                    VirtualMachineListResponse result = null;
+                    RecoveryPlanListResponse result = null;
                     // Deserialize Response
                     cancellationToken.ThrowIfCancellationRequested();
                     string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    result = new VirtualMachineListResponse();
+                    result = new RecoveryPlanListResponse();
                     XDocument responseDoc = XDocument.Parse(responseContent);
                     
                     XElement arrayOfServiceResourceSequenceElement = responseDoc.Element(XName.Get("ArrayOfServiceResource", "http://schemas.microsoft.com/windowsazure"));
@@ -724,15 +474,8 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     {
                         foreach (XElement arrayOfServiceResourceElement in arrayOfServiceResourceSequenceElement.Elements(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure")))
                         {
-                            VirtualMachine serviceResourceInstance = new VirtualMachine();
-                            result.Vms.Add(serviceResourceInstance);
-                            
-                            XElement serverNameElement = arrayOfServiceResourceElement.Element(XName.Get("ServerName", "http://schemas.microsoft.com/windowsazure"));
-                            if (serverNameElement != null)
-                            {
-                                string serverNameInstance = serverNameElement.Value;
-                                serviceResourceInstance.ServerName = serverNameInstance;
-                            }
+                            RecoveryPlan serviceResourceInstance = new RecoveryPlan();
+                            result.RecoveryPlans.Add(serviceResourceInstance);
                             
                             XElement serverIdElement = arrayOfServiceResourceElement.Element(XName.Get("ServerId", "http://schemas.microsoft.com/windowsazure"));
                             if (serverIdElement != null)
@@ -741,32 +484,11 @@ namespace Microsoft.Azure.Management.SiteRecovery
                                 serviceResourceInstance.ServerId = serverIdInstance;
                             }
                             
-                            XElement protectedContainerIdElement = arrayOfServiceResourceElement.Element(XName.Get("ProtectedContainerId", "http://schemas.microsoft.com/windowsazure"));
-                            if (protectedContainerIdElement != null)
+                            XElement targetServerIdElement = arrayOfServiceResourceElement.Element(XName.Get("TargetServerId", "http://schemas.microsoft.com/windowsazure"));
+                            if (targetServerIdElement != null)
                             {
-                                string protectedContainerIdInstance = protectedContainerIdElement.Value;
-                                serviceResourceInstance.ProtectedContainerId = protectedContainerIdInstance;
-                            }
-                            
-                            XElement protectedElement = arrayOfServiceResourceElement.Element(XName.Get("Protected", "http://schemas.microsoft.com/windowsazure"));
-                            if (protectedElement != null)
-                            {
-                                bool protectedInstance = bool.Parse(protectedElement.Value);
-                                serviceResourceInstance.Protected = protectedInstance;
-                            }
-                            
-                            XElement replicationProviderElement = arrayOfServiceResourceElement.Element(XName.Get("ReplicationProvider", "http://schemas.microsoft.com/windowsazure"));
-                            if (replicationProviderElement != null)
-                            {
-                                string replicationProviderInstance = replicationProviderElement.Value;
-                                serviceResourceInstance.ReplicationProvider = replicationProviderInstance;
-                            }
-                            
-                            XElement replicationProviderSettingsElement = arrayOfServiceResourceElement.Element(XName.Get("ReplicationProviderSettings", "http://schemas.microsoft.com/windowsazure"));
-                            if (replicationProviderSettingsElement != null)
-                            {
-                                string replicationProviderSettingsInstance = replicationProviderSettingsElement.Value;
-                                serviceResourceInstance.ReplicationProviderSettings = replicationProviderSettingsInstance;
+                                string targetServerIdInstance = targetServerIdElement.Value;
+                                serviceResourceInstance.TargetServerId = targetServerIdInstance;
                             }
                             
                             XElement nameElement = arrayOfServiceResourceElement.Element(XName.Get("Name", "http://schemas.microsoft.com/windowsazure"));
@@ -789,6 +511,154 @@ namespace Microsoft.Azure.Management.SiteRecovery
                                 string typeInstance = typeElement.Value;
                                 serviceResourceInstance.Type = typeInstance;
                             }
+                        }
+                    }
+                    
+                    result.StatusCode = statusCode;
+                    if (httpResponse.Headers.Contains("x-ms-request-id"))
+                    {
+                        result.RequestId = httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+                    }
+                    
+                    if (shouldTrace)
+                    {
+                        Tracing.Exit(invocationId, result);
+                    }
+                    return result;
+                }
+                finally
+                {
+                    if (httpResponse != null)
+                    {
+                        httpResponse.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (httpRequest != null)
+                {
+                    httpRequest.Dispose();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Reprotect the recovery plan.
+        /// </summary>
+        /// <param name='recoveryPlanId'>
+        /// Required. RecoveryPlan ID.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// Cancellation token.
+        /// </param>
+        /// <returns>
+        /// The response model for the Aync calls.
+        /// </returns>
+        public async System.Threading.Tasks.Task<Microsoft.Azure.Management.SiteRecovery.Models.JobResponse> ReprotectAsync(string recoveryPlanId, CancellationToken cancellationToken)
+        {
+            // Validate
+            if (recoveryPlanId == null)
+            {
+                throw new ArgumentNullException("recoveryPlanId");
+            }
+            
+            // Tracing
+            bool shouldTrace = CloudContext.Configuration.Tracing.IsEnabled;
+            string invocationId = null;
+            if (shouldTrace)
+            {
+                invocationId = Tracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("recoveryPlanId", recoveryPlanId);
+                Tracing.Enter(invocationId, this, "ReprotectAsync", tracingParameters);
+            }
+            
+            // Construct URL
+            string url = (this.Client.Credentials.SubscriptionId != null ? this.Client.Credentials.SubscriptionId.Trim() : "") + "/cloudservices/" + this.Client.CloudServiceName.Trim() + "/resources/WAHyperVRecoveryManager/~/HyperVRecoveryManagerVault/" + this.Client.ResourceName.Trim() + "/stamps/" + this.Client.SrsStampId.Trim() + "/RecoveryPlans/" + recoveryPlanId.Trim() + "/Reprotect?";
+            url = url + "api-version=2014-07-01";
+            string baseUrl = this.Client.BaseUri.AbsoluteUri;
+            // Trim '/' character from the end of baseUrl and beginning of url.
+            if (baseUrl[baseUrl.Length - 1] == '/')
+            {
+                baseUrl = baseUrl.Substring(0, baseUrl.Length - 1);
+            }
+            if (url[0] == '/')
+            {
+                url = url.Substring(1);
+            }
+            url = baseUrl + "/" + url;
+            url = url.Replace(" ", "%20");
+            
+            // Create HTTP transport objects
+            HttpRequestMessage httpRequest = null;
+            try
+            {
+                httpRequest = new HttpRequestMessage();
+                httpRequest.Method = HttpMethod.Post;
+                httpRequest.RequestUri = new Uri(url);
+                
+                // Set Headers
+                httpRequest.Headers.Add("Accept", "application/xml");
+                httpRequest.Headers.Add("ApiVersion", "1.0");
+                httpRequest.Headers.Add("x-ms-version", "2013-03-01");
+                
+                // Set Credentials
+                cancellationToken.ThrowIfCancellationRequested();
+                await this.Client.Credentials.ProcessHttpRequestAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                
+                // Send Request
+                HttpResponseMessage httpResponse = null;
+                try
+                {
+                    if (shouldTrace)
+                    {
+                        Tracing.SendRequest(invocationId, httpRequest);
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                    httpResponse = await this.Client.HttpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                    if (shouldTrace)
+                    {
+                        Tracing.ReceiveResponse(invocationId, httpResponse);
+                    }
+                    HttpStatusCode statusCode = httpResponse.StatusCode;
+                    if (statusCode != HttpStatusCode.OK)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        CloudException ex = CloudException.Create(httpRequest, null, httpResponse, await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false));
+                        if (shouldTrace)
+                        {
+                            Tracing.Error(invocationId, ex);
+                        }
+                        throw ex;
+                    }
+                    
+                    // Create Result
+                    JobResponse result = null;
+                    // Deserialize Response
+                    cancellationToken.ThrowIfCancellationRequested();
+                    string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    result = new JobResponse();
+                    XDocument responseDoc = XDocument.Parse(responseContent);
+                    
+                    XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure"));
+                    if (serviceResourceElement != null)
+                    {
+                        Job serviceResourceInstance = new Job();
+                        result.Job = serviceResourceInstance;
+                        
+                        XElement idElement = serviceResourceElement.Element(XName.Get("ID", "http://schemas.microsoft.com/windowsazure"));
+                        if (idElement != null)
+                        {
+                            string idInstance = idElement.Value;
+                            serviceResourceInstance.ID = idInstance;
+                        }
+                        
+                        XElement stateElement = serviceResourceElement.Element(XName.Get("State", "http://schemas.microsoft.com/windowsazure"));
+                        if (stateElement != null)
+                        {
+                            string stateInstance = stateElement.Value;
+                            serviceResourceInstance.State = stateInstance;
                         }
                     }
                     

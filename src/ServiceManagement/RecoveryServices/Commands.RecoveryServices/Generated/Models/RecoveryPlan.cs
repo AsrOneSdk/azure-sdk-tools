@@ -22,30 +22,40 @@
 using System;
 using System.Linq;
 using Microsoft.Azure.Management.SiteRecovery.Models;
-using Microsoft.WindowsAzure;
 
 namespace Microsoft.Azure.Management.SiteRecovery.Models
 {
     /// <summary>
-    /// The response model for the Aync calls.
+    /// The definition of a Recovery Plan object.
     /// </summary>
-    public partial class JobResponse : OperationResponse
+    public partial class RecoveryPlan : ServiceResourceBase
     {
-        private Job _job;
+        private string _serverId;
         
         /// <summary>
-        /// Optional. The Job.
+        /// Required. The ID of the source Server.
         /// </summary>
-        public Job Job
+        public string ServerId
         {
-            get { return this._job; }
-            set { this._job = value; }
+            get { return this._serverId; }
+            set { this._serverId = value; }
+        }
+        
+        private string _targetServerId;
+        
+        /// <summary>
+        /// Required. The ID of the target Server.
+        /// </summary>
+        public string TargetServerId
+        {
+            get { return this._targetServerId; }
+            set { this._targetServerId = value; }
         }
         
         /// <summary>
-        /// Initializes a new instance of the JobResponse class.
+        /// Initializes a new instance of the RecoveryPlan class.
         /// </summary>
-        public JobResponse()
+        public RecoveryPlan()
         {
         }
     }
