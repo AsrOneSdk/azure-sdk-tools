@@ -33,8 +33,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         private const string CertSubjectName = "RdfeTestClientCert1";
         // private const string BaseUrl = "https://localhost:8443/RdfeProxy.svc/";
-        private const string BaseUrl = "https://umapi.rdfetest.dnsdemo4.com:8443";
-        private const string SubscriptionId = "62633f66-ce59-4114-b65d-a50beb5bd8d8"; // auxportal one
+        private const string BaseUrl = "https://rajesh6:8443/RdfeProxy.svc";
+        private const string SubscriptionId = "c7ae6b4b-c02f-4055-9341-4b7f50aebe2c"; // auxportal one
 
         public override void ExecuteCmdlet()
         {
@@ -65,7 +65,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 ServiceEndpoint = new Uri(baseUrl)
             };
 
+       
+            ServicePointManager.ServerCertificateValidationCallback =
+               delegate
+               {
+                   return true;
+               };
+
             var client = CurrentSubscription.CreateClient<RecoveryServicesManagementClient>();
+
+            //var client = new RecoveryServicesManagementClient(
+            //    new CertificateCloudCredentials(subscriptionId, _x509Certificate),
+            //    new System.Uri(baseUrl));
 
             /* var client = new SiteRecoveryManagementClient(
                 new CertificateCloudCredentials(subscriptionId, _x509Certificate),

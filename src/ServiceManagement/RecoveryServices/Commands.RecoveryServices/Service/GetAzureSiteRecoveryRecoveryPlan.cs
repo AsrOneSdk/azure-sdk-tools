@@ -17,6 +17,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #region Using directives
     using System;
     using System.Management.Automation;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #region Parameters
         /// <summary>
-        /// GUID of the Virtual Machine.
+        /// GUID of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -69,21 +70,43 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
-            if (server != Guid.Empty)
-            {
-                WriteObject("Server value present: " + server);
-            }
-            switch(ParameterSetName)
+            switch (ParameterSetName)
             {
                 case ByName:
-                    WriteObject("ByName: " + name);
+                    GetByName();
                     break;
                 case ById:
-                    WriteObject("ById: " + id);
+                    GetById();
                     break;
                 case None:
-                    WriteObject("none");
+                    GetByDefault();
                     break;
+            }
+        }
+
+        private void GetByName()
+        {
+            WriteObject("No API Yet.");
+        }
+
+        private void GetById()
+        {
+        }
+
+        private void GetByDefault()
+        {
+            RecoveryPlanListResponse recoveryPlanList =
+                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan();
+            if (recoveryPlanList == null)
+            {
+                WriteObject("Error");
+            }
+            else
+            {
+                foreach (RecoveryPlan recoveryPlan in recoveryPlanList.RecoveryPlans)
+                {
+                    WriteObject(recoveryPlan);
+                }
             }
         }
     }

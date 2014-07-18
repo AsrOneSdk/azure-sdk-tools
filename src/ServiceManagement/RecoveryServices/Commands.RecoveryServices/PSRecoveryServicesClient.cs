@@ -21,6 +21,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
     using System.Security.Cryptography.X509Certificates;
+    using System.Net;
     #endregion
 
     class PSRecoveryServiceClient
@@ -34,6 +35,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public PSRecoveryServiceClient(WindowsAzureSubscription currentSubscription)
         {
+            // Hack to work with dev one box RDFE service.
+            ServicePointManager.ServerCertificateValidationCallback =
+              delegate
+              {
+                  return true;
+              };
+
             recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             subscriptionId = currentSubscription.SubscriptionId;
@@ -69,6 +77,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 Console.WriteLine(e.Message);
             }
             return serverList;
+        }
+
+        public RecoveryPlanListResponse GetAzureSiteRecoveryRecoveryPlan()
+        {
+            SiteRecoveryManagementClient siteRecoveryClient =
+                GetSiteRecoveryClient();
+
+            if (siteRecoveryClient == null)
+            {
+                return null;
+            }
+
+            var recoveryPlanList = new RecoveryPlanListResponse();
+            try
+            {
+                recoveryPlanList = siteRecoveryClient.RecoveryPlan.List();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return recoveryPlanList;
         }
 
         private SiteRecoveryManagementClient GetSiteRecoveryClient()
