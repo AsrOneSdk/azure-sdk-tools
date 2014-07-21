@@ -180,28 +180,24 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     result = new JobResponse();
                     XDocument responseDoc = XDocument.Parse(responseContent);
                     
-                    XElement jobResponseElement = responseDoc.Element(XName.Get("JobResponse", ""));
-                    if (jobResponseElement != null)
+                    XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure"));
+                    if (serviceResourceElement != null)
                     {
-                        XElement jobElement = jobResponseElement.Element(XName.Get("Job", ""));
-                        if (jobElement != null)
+                        Job serviceResourceInstance = new Job();
+                        result.Job = serviceResourceInstance;
+                        
+                        XElement idElement = serviceResourceElement.Element(XName.Get("ID", "http://schemas.microsoft.com/windowsazure"));
+                        if (idElement != null)
                         {
-                            Job jobInstance = new Job();
-                            result.Job = jobInstance;
-                            
-                            XElement idElement = jobElement.Element(XName.Get("ID", ""));
-                            if (idElement != null)
-                            {
-                                string idInstance = idElement.Value;
-                                jobInstance.ID = idInstance;
-                            }
-                            
-                            XElement stateElement = jobElement.Element(XName.Get("State", ""));
-                            if (stateElement != null)
-                            {
-                                string stateInstance = stateElement.Value;
-                                jobInstance.State = stateInstance;
-                            }
+                            string idInstance = idElement.Value;
+                            serviceResourceInstance.ID = idInstance;
+                        }
+                        
+                        XElement stateElement = serviceResourceElement.Element(XName.Get("State", "http://schemas.microsoft.com/windowsazure"));
+                        if (stateElement != null)
+                        {
+                            string stateInstance = stateElement.Value;
+                            serviceResourceInstance.State = stateInstance;
                         }
                     }
                     
@@ -350,28 +346,24 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     result = new JobResponse();
                     XDocument responseDoc = XDocument.Parse(responseContent);
                     
-                    XElement jobResponseElement = responseDoc.Element(XName.Get("JobResponse", ""));
-                    if (jobResponseElement != null)
+                    XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure"));
+                    if (serviceResourceElement != null)
                     {
-                        XElement jobElement = jobResponseElement.Element(XName.Get("Job", ""));
-                        if (jobElement != null)
+                        Job serviceResourceInstance = new Job();
+                        result.Job = serviceResourceInstance;
+                        
+                        XElement idElement = serviceResourceElement.Element(XName.Get("ID", "http://schemas.microsoft.com/windowsazure"));
+                        if (idElement != null)
                         {
-                            Job jobInstance = new Job();
-                            result.Job = jobInstance;
-                            
-                            XElement idElement = jobElement.Element(XName.Get("ID", ""));
-                            if (idElement != null)
-                            {
-                                string idInstance = idElement.Value;
-                                jobInstance.ID = idInstance;
-                            }
-                            
-                            XElement stateElement = jobElement.Element(XName.Get("State", ""));
-                            if (stateElement != null)
-                            {
-                                string stateInstance = stateElement.Value;
-                                jobInstance.State = stateInstance;
-                            }
+                            string idInstance = idElement.Value;
+                            serviceResourceInstance.ID = idInstance;
+                        }
+                        
+                        XElement stateElement = serviceResourceElement.Element(XName.Get("State", "http://schemas.microsoft.com/windowsazure"));
+                        if (stateElement != null)
+                        {
+                            string stateInstance = stateElement.Value;
+                            serviceResourceInstance.State = stateInstance;
                         }
                     }
                     
@@ -520,69 +512,69 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     result = new VirtualMachineResponse();
                     XDocument responseDoc = XDocument.Parse(responseContent);
                     
-                    XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", ""));
+                    XElement serviceResourceElement = responseDoc.Element(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure"));
                     if (serviceResourceElement != null)
                     {
                         VirtualMachine serviceResourceInstance = new VirtualMachine();
                         result.Vm = serviceResourceInstance;
                         
-                        XElement serverNameElement = serviceResourceElement.Element(XName.Get("ServerName", ""));
+                        XElement serverNameElement = serviceResourceElement.Element(XName.Get("ServerName", "http://schemas.microsoft.com/windowsazure"));
                         if (serverNameElement != null)
                         {
                             string serverNameInstance = serverNameElement.Value;
                             serviceResourceInstance.ServerName = serverNameInstance;
                         }
                         
-                        XElement serverIdElement = serviceResourceElement.Element(XName.Get("ServerId", ""));
+                        XElement serverIdElement = serviceResourceElement.Element(XName.Get("ServerId", "http://schemas.microsoft.com/windowsazure"));
                         if (serverIdElement != null)
                         {
                             string serverIdInstance = serverIdElement.Value;
                             serviceResourceInstance.ServerId = serverIdInstance;
                         }
                         
-                        XElement protectedContainerIdElement = serviceResourceElement.Element(XName.Get("ProtectedContainerId", ""));
+                        XElement protectedContainerIdElement = serviceResourceElement.Element(XName.Get("ProtectedContainerId", "http://schemas.microsoft.com/windowsazure"));
                         if (protectedContainerIdElement != null)
                         {
                             string protectedContainerIdInstance = protectedContainerIdElement.Value;
                             serviceResourceInstance.ProtectedContainerId = protectedContainerIdInstance;
                         }
                         
-                        XElement protectedElement = serviceResourceElement.Element(XName.Get("Protected", ""));
+                        XElement protectedElement = serviceResourceElement.Element(XName.Get("Protected", "http://schemas.microsoft.com/windowsazure"));
                         if (protectedElement != null)
                         {
                             bool protectedInstance = bool.Parse(protectedElement.Value);
                             serviceResourceInstance.Protected = protectedInstance;
                         }
                         
-                        XElement replicationProviderElement = serviceResourceElement.Element(XName.Get("ReplicationProvider", ""));
+                        XElement replicationProviderElement = serviceResourceElement.Element(XName.Get("ReplicationProvider", "http://schemas.microsoft.com/windowsazure"));
                         if (replicationProviderElement != null)
                         {
                             string replicationProviderInstance = replicationProviderElement.Value;
                             serviceResourceInstance.ReplicationProvider = replicationProviderInstance;
                         }
                         
-                        XElement replicationProviderSettingsElement = serviceResourceElement.Element(XName.Get("ReplicationProviderSettings", ""));
+                        XElement replicationProviderSettingsElement = serviceResourceElement.Element(XName.Get("ReplicationProviderSettings", "http://schemas.microsoft.com/windowsazure"));
                         if (replicationProviderSettingsElement != null)
                         {
                             string replicationProviderSettingsInstance = replicationProviderSettingsElement.Value;
                             serviceResourceInstance.ReplicationProviderSettings = replicationProviderSettingsInstance;
                         }
                         
-                        XElement nameElement = serviceResourceElement.Element(XName.Get("Name", ""));
+                        XElement nameElement = serviceResourceElement.Element(XName.Get("Name", "http://schemas.microsoft.com/windowsazure"));
                         if (nameElement != null)
                         {
                             string nameInstance = nameElement.Value;
                             serviceResourceInstance.Name = nameInstance;
                         }
                         
-                        XElement idElement = serviceResourceElement.Element(XName.Get("ID", ""));
+                        XElement idElement = serviceResourceElement.Element(XName.Get("ID", "http://schemas.microsoft.com/windowsazure"));
                         if (idElement != null)
                         {
                             string idInstance = idElement.Value;
                             serviceResourceInstance.Id = idInstance;
                         }
                         
-                        XElement typeElement = serviceResourceElement.Element(XName.Get("Type", ""));
+                        XElement typeElement = serviceResourceElement.Element(XName.Get("Type", "http://schemas.microsoft.com/windowsazure"));
                         if (typeElement != null)
                         {
                             string typeInstance = typeElement.Value;
@@ -727,71 +719,71 @@ namespace Microsoft.Azure.Management.SiteRecovery
                     result = new VirtualMachineListResponse();
                     XDocument responseDoc = XDocument.Parse(responseContent);
                     
-                    XElement arrayOfServiceResourceSequenceElement = responseDoc.Element(XName.Get("ArrayOfServiceResource", ""));
+                    XElement arrayOfServiceResourceSequenceElement = responseDoc.Element(XName.Get("ArrayOfServiceResource", "http://schemas.microsoft.com/windowsazure"));
                     if (arrayOfServiceResourceSequenceElement != null)
                     {
-                        foreach (XElement arrayOfServiceResourceElement in arrayOfServiceResourceSequenceElement.Elements(XName.Get("ServiceResource", "")))
+                        foreach (XElement arrayOfServiceResourceElement in arrayOfServiceResourceSequenceElement.Elements(XName.Get("ServiceResource", "http://schemas.microsoft.com/windowsazure")))
                         {
                             VirtualMachine serviceResourceInstance = new VirtualMachine();
                             result.Vms.Add(serviceResourceInstance);
                             
-                            XElement serverNameElement = arrayOfServiceResourceElement.Element(XName.Get("ServerName", ""));
+                            XElement serverNameElement = arrayOfServiceResourceElement.Element(XName.Get("ServerName", "http://schemas.microsoft.com/windowsazure"));
                             if (serverNameElement != null)
                             {
                                 string serverNameInstance = serverNameElement.Value;
                                 serviceResourceInstance.ServerName = serverNameInstance;
                             }
                             
-                            XElement serverIdElement = arrayOfServiceResourceElement.Element(XName.Get("ServerId", ""));
+                            XElement serverIdElement = arrayOfServiceResourceElement.Element(XName.Get("ServerId", "http://schemas.microsoft.com/windowsazure"));
                             if (serverIdElement != null)
                             {
                                 string serverIdInstance = serverIdElement.Value;
                                 serviceResourceInstance.ServerId = serverIdInstance;
                             }
                             
-                            XElement protectedContainerIdElement = arrayOfServiceResourceElement.Element(XName.Get("ProtectedContainerId", ""));
+                            XElement protectedContainerIdElement = arrayOfServiceResourceElement.Element(XName.Get("ProtectedContainerId", "http://schemas.microsoft.com/windowsazure"));
                             if (protectedContainerIdElement != null)
                             {
                                 string protectedContainerIdInstance = protectedContainerIdElement.Value;
                                 serviceResourceInstance.ProtectedContainerId = protectedContainerIdInstance;
                             }
                             
-                            XElement protectedElement = arrayOfServiceResourceElement.Element(XName.Get("Protected", ""));
+                            XElement protectedElement = arrayOfServiceResourceElement.Element(XName.Get("Protected", "http://schemas.microsoft.com/windowsazure"));
                             if (protectedElement != null)
                             {
                                 bool protectedInstance = bool.Parse(protectedElement.Value);
                                 serviceResourceInstance.Protected = protectedInstance;
                             }
                             
-                            XElement replicationProviderElement = arrayOfServiceResourceElement.Element(XName.Get("ReplicationProvider", ""));
+                            XElement replicationProviderElement = arrayOfServiceResourceElement.Element(XName.Get("ReplicationProvider", "http://schemas.microsoft.com/windowsazure"));
                             if (replicationProviderElement != null)
                             {
                                 string replicationProviderInstance = replicationProviderElement.Value;
                                 serviceResourceInstance.ReplicationProvider = replicationProviderInstance;
                             }
                             
-                            XElement replicationProviderSettingsElement = arrayOfServiceResourceElement.Element(XName.Get("ReplicationProviderSettings", ""));
+                            XElement replicationProviderSettingsElement = arrayOfServiceResourceElement.Element(XName.Get("ReplicationProviderSettings", "http://schemas.microsoft.com/windowsazure"));
                             if (replicationProviderSettingsElement != null)
                             {
                                 string replicationProviderSettingsInstance = replicationProviderSettingsElement.Value;
                                 serviceResourceInstance.ReplicationProviderSettings = replicationProviderSettingsInstance;
                             }
                             
-                            XElement nameElement = arrayOfServiceResourceElement.Element(XName.Get("Name", ""));
+                            XElement nameElement = arrayOfServiceResourceElement.Element(XName.Get("Name", "http://schemas.microsoft.com/windowsazure"));
                             if (nameElement != null)
                             {
                                 string nameInstance = nameElement.Value;
                                 serviceResourceInstance.Name = nameInstance;
                             }
                             
-                            XElement idElement = arrayOfServiceResourceElement.Element(XName.Get("ID", ""));
+                            XElement idElement = arrayOfServiceResourceElement.Element(XName.Get("ID", "http://schemas.microsoft.com/windowsazure"));
                             if (idElement != null)
                             {
                                 string idInstance = idElement.Value;
                                 serviceResourceInstance.Id = idInstance;
                             }
                             
-                            XElement typeElement = arrayOfServiceResourceElement.Element(XName.Get("Type", ""));
+                            XElement typeElement = arrayOfServiceResourceElement.Element(XName.Get("Type", "http://schemas.microsoft.com/windowsazure"));
                             if (typeElement != null)
                             {
                                 string typeInstance = typeElement.Value;

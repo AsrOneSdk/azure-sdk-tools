@@ -15,17 +15,16 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.WindowsAzure;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = None)]
     [OutputType(typeof(IEnumerable<Server>))]
+    [OutputType(typeof(Server))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
         protected const string None = "None";
@@ -60,44 +59,68 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
-            switch(ParameterSetName)
+            try
             {
-                case ByName:
-                    GetByName();
-                    break;
-                case ById:
-                    GetById();
-                    break;
-                case None:
-                    GetByNoInput();
-                    break;
+                switch (ParameterSetName)
+                {
+                    case ByName:
+                        GetByName();
+                        break;
+                    case ById:
+                        GetById();
+                        break;
+                    case None:
+                        GetByDefault();
+                        break;
+                }
+            }
+            catch (CloudException cloudException)
+            {
+                // Log errors from SRS (good to deserialize the Error Message & print as object)
+                WriteObject("ErrorCode: " + cloudException.ErrorCode);
+                WriteObject("ErrorMessage: " + cloudException.ErrorMessage);
             }
         }
 
         private void GetByName()
         {
-            WriteObject("No API Yet.");
+            ServerListResponse serverListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryServer();
+
+            bool found = false;
+            foreach (Server server in serverListResponse.Servers)
+            {
+                if(0 == string.Compare(name, server.Name, true))
+                {
+                    WriteObject(server);
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                    Properties.Resources.ServerNotFound,
+                    name,
+                    CurrentSubscription.AzureSiteRecoveryResourceName));
+            }
         }
 
         private void GetById()
         {
+            ServerResponse serverResponse = 
+                RecoveryServicesClient.GetAzureSiteRecoveryServer(id.ToString());
+
+            WriteObject(serverResponse.Server);
         }
 
-        private void GetByNoInput()
+        private void GetByDefault()
         {
-            ServerListResponse serverList = 
+            ServerListResponse serverListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryServer();
-            if (serverList == null)
-            {
-                WriteObject("Error");
-            }
-            else
-            {
-                foreach (Server server in serverList.Servers)
-                {
-                    WriteObject(server);
-                }
-            }
+
+            WriteObject(serverListResponse.Servers, true);
         }
     }
 }

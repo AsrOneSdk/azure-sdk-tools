@@ -20,6 +20,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
+    using System.IO;
     using System.Security.Cryptography.X509Certificates;
     #endregion
 
@@ -54,21 +55,82 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             SiteRecoveryManagementClient siteRecoveryClient = 
                 GetSiteRecoveryClient();
 
-            if (siteRecoveryClient == null)
+            if (null == siteRecoveryClient)
             {
-                return null;
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
             }
 
-            var serverList = new ServerListResponse();
-            try
+            return siteRecoveryClient.Servers.List();
+        }
+
+        public ServerResponse GetAzureSiteRecoveryServer(string serverId)
+        {
+            SiteRecoveryManagementClient siteRecoveryClient =
+                GetSiteRecoveryClient();
+
+            if (null == siteRecoveryClient)
             {
-                serverList = siteRecoveryClient.Servers.List();
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
             }
-            catch (Exception e)
+
+            return siteRecoveryClient.Servers.Get(serverId);
+        }
+
+        public CloudListResponse GetAzureSiteRecoveryCloud(string serverId)
+        {
+            SiteRecoveryManagementClient siteRecoveryClient =
+                GetSiteRecoveryClient();
+
+            if (siteRecoveryClient == null)
             {
-                Console.WriteLine(e.Message);
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
             }
-            return serverList;
+
+            return siteRecoveryClient.Clouds.List(serverId);
+        }
+
+        public CloudResponse GetAzureSiteRecoveryCloud(string serverId, string protectedContainerId)
+        {
+            SiteRecoveryManagementClient siteRecoveryClient =
+                GetSiteRecoveryClient();
+
+            if (siteRecoveryClient == null)
+            {
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
+            }
+
+            return siteRecoveryClient.Clouds.Get(serverId, protectedContainerId);
+        }
+
+        public VirtualMachineListResponse GetAzureSiteRecoveryVirtualMachine(
+            string serverId, 
+            string containerId)
+        {
+            SiteRecoveryManagementClient siteRecoveryClient =
+                GetSiteRecoveryClient();
+
+            if (siteRecoveryClient == null)
+            {
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
+            }
+
+            return siteRecoveryClient.Vm.List(serverId, containerId);
+        }
+
+        public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
+            string serverId,
+            string containerId,
+            string virtualMachineId)
+        {
+            SiteRecoveryManagementClient siteRecoveryClient =
+                GetSiteRecoveryClient();
+
+            if (siteRecoveryClient == null)
+            {
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
+            }
+
+            return siteRecoveryClient.Vm.Get(serverId, containerId, virtualMachineId);
         }
 
         private SiteRecoveryManagementClient GetSiteRecoveryClient()
@@ -76,7 +138,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
             string stampId = string.Empty;
 
-            CloudService selectedCloudService = new CloudService();
+            CloudService selectedCloudService = null;
             Vault selectedResource = null;
 
             foreach (CloudService cloudService in services)
@@ -86,6 +148,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     selectedCloudService = cloudService;
                 }
             }
+
+            if (null == selectedCloudService)
+            {
+                throw new ArgumentException(Properties.Resources.InvalidCloudService);
+            }
+
             foreach (Vault vault in selectedCloudService.Resources)
             {
                 if (vault.Name == resourceName)
@@ -93,6 +161,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     selectedResource = vault;
                 }
             }
+
+            if (null == selectedResource)
+            {
+                throw new ArgumentException(Properties.Resources.InvalidResource);
+            }
+
             foreach (OutputItem item in selectedResource.OutputItems)
             {
                 if (item.Key.Equals("BackendStampId"))
@@ -100,9 +174,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     stampId = item.Value;
                 }
             }
-            if (string.IsNullOrEmpty(selectedCloudService.Name) || selectedResource == null || string.IsNullOrEmpty(stampId))
+
+            if (string.IsNullOrEmpty(stampId))
             {
-                return null;
+                throw new InvalidDataException(Properties.Resources.MissingBackendStampId);
             }
 
             SiteRecoveryManagementClient siteRecoveryClient = 
@@ -116,6 +191,43 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     serviceEndPoint);
 
             return siteRecoveryClient;
+        }
+
+        public bool ValidateVaultSettings(string resourceName, string cloudServiceName)
+        {
+            CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
+            string stampId = string.Empty;
+
+            CloudService selectedCloudService = null;
+            Vault selectedResource = null;
+
+            foreach (CloudService cloudService in services)
+            {
+                if (cloudService.Name == cloudServiceName)
+                {
+                    selectedCloudService = cloudService;
+                }
+            }
+
+            if (null == selectedCloudService)
+            {
+                throw new ArgumentException(Properties.Resources.InvalidCloudService);
+            }
+
+            foreach (Vault vault in selectedCloudService.Resources)
+            {
+                if (vault.Name == resourceName)
+                {
+                    selectedResource = vault;
+                }
+            }
+
+            if (null == selectedResource)
+            {
+                throw new ArgumentException(Properties.Resources.InvalidResource);
+            }
+
+            return true;
         }
     }
 }

@@ -15,29 +15,31 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using System;
-    using System.Management.Automation;
-    using System.Collections.Generic;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
-    using System.Linq;
+    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
+    using System.Management.Automation;
     using System.Runtime.Serialization;
     using System.Xml;
-    // using Microsoft.WindowsAzure.Commands.Utilities.Profile;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
-    [Cmdlet(VerbsData.Import, "AzureSiteRecoveryVaultSetting")]
-    public class ImportAzureSiteRecoveryVaultSetting : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsData.Import, "AzureSiteRecoveryVaultSettingsFile")]
+    [OutputType(typeof(VaultSettings))]
+    public class ImportAzureSiteRecoveryVaultSettingsFile : RecoveryServicesCmdletBase
     {
         #region Parameters
         /// <summary>
         /// Path to the Azure site Recovery Vault Settings file. This file can be downloaded from 
         /// Azure site recovery Vault portal and stored locally.
         /// </summary>
-        [Parameter(Position = 0, Mandatory = true, HelpMessage = "AzureSiteRecovery vault settings file path", ValueFromPipelineByPropertyName = true)]
+        [Parameter(
+            Position = 0, 
+            Mandatory = true, 
+            HelpMessage = "AzureSiteRecovery vault settings file path", 
+            ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         public string AzureSiteRecoveryVaultSettingsFile
         {
@@ -49,7 +51,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
-            WriteObject("Vault settings path file: " + azureSiteRecoveryVaultSettingsFile);
+            WriteVerbose("File path: " + azureSiteRecoveryVaultSettingsFile);
 
             ResourceCredentials resourceCredentials = null;
             if (File.Exists(azureSiteRecoveryVaultSettingsFile))
@@ -65,36 +67,58 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 }
                 catch (XmlException xmlException)
                 {
-                    // WriteObject("XML is malformed or file is empty. Treat as no profile.");
-                    WriteError(new ErrorRecord(xmlException, "XML is malformed or file is empty.", ErrorCategory.InvalidData, null));
+                    throw new XmlException(
+                        string.Format(Properties.Resources.InvalidXml, xmlException));
+                }
+                catch (SerializationException ex)
+                {
+                    throw new SerializationException(
+                        string.Format(Properties.Resources.InvalidXml, ex));
                 }
             }
             else
             {
-                WriteObject("File doesn't exist");
-                return;
+                throw new FileNotFoundException(
+                    Properties.Resources.VaultSettingFileNotFound, 
+                    azureSiteRecoveryVaultSettingsFile);
             }
 
+            // Validate required parameters taken from the Vault settings file.
             if (string.IsNullOrEmpty(resourceCredentials.resourceName))
             {
-                WriteObject("Resource Name is either null or empty");
-                return;
+                throw new ArgumentException(
+                    Properties.Resources.ResourceNameNullOrEmpty, 
+                    resourceCredentials.resourceName);
             }
 
             if (string.IsNullOrEmpty(resourceCredentials.cloudServiceName))
             {
-                WriteObject("Cloud Service Name is either null or empty");
-                return;
+                throw new ArgumentException(
+                    Properties.Resources.CloudServiceNameNullOrEmpty,
+                    resourceCredentials.cloudServiceName);
             }
+            try
+            {
+                RecoveryServicesClient.ValidateVaultSettings(
+                    resourceCredentials.resourceName, 
+                    resourceCredentials.cloudServiceName);
 
-            WriteObject("Resource Name: " + resourceCredentials.resourceName);
-            WriteObject("Cloud Service Name: " + resourceCredentials.cloudServiceName);
-            this.ImportAzureSiteRecoveryVaultSettings(resourceCredentials);
+                this.ImportAzureSiteRecoveryVaultSettings(resourceCredentials);
+                WriteObject(new VaultSettings(
+                    resourceCredentials.resourceName, 
+                    resourceCredentials.cloudServiceName));
+
+            }
+            catch (CloudException cloudException)
+            {
+                throw cloudException;
+            }
         }
 
         public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
         {
-            WindowsAzureSubscription subscription = Profile.Subscriptions.FirstOrDefault(s => s.IsDefault);
+            WindowsAzureSubscription subscription = 
+                Profile.Subscriptions.FirstOrDefault(s => s.IsDefault);
 
             subscription.AzureSiteRecoveryResourceName = resourceCredentials.resourceName;
             subscription.AzureSiteRecoveryCloudServiceName = resourceCredentials.cloudServiceName;

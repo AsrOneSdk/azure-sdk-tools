@@ -34,7 +34,7 @@ namespace Microsoft.Azure.Management.SiteRecovery.Models
         private Job _job;
         
         /// <summary>
-        /// Optional. The AsrJob.
+        /// Optional. The Job.
         /// </summary>
         public Job Job
         {

@@ -15,6 +15,8 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.WindowsAzure;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
     using System.Management.Automation;
     #endregion
@@ -31,7 +33,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #region Parameters
         /// <summary>
-        /// GUID of the Virtual Machine.
+        /// GUID of the Protected Container.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -43,7 +45,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private System.Guid id;
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// Name of the Protected Container.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -55,10 +57,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string name;
 
         /// <summary>
-        /// GUID of the Server managing the Virtual Machine.
+        /// GUID of the Protected Container management server.
         /// </summary>
-        [Parameter(ParameterSetName = ById)]
-        [Parameter(ParameterSetName = ByName)]
+        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [Parameter(ParameterSetName = None, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public System.Guid Server
@@ -71,22 +73,68 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
-            if (server != Guid.Empty)
+            try
             {
-                WriteObject("Server value present: " + server);
+                switch (ParameterSetName)
+                {
+                    case ByName:
+                        GetByName();
+                        break;
+                    case ById:
+                        GetById();
+                        break;
+                    case None:
+                        GetByDefault();
+                        break;
+                }
             }
-            switch(ParameterSetName)
+            catch (CloudException cloudException)
             {
-                case ByName:
-                    WriteObject("ByName: " + name);
-                    break;
-                case ById:
-                    WriteObject("ById: " + id);
-                    break;
-                case None:
-                    WriteObject("none");
-                    break;
+                // Log errors from SRS (good to deserialize the Error Message & print as object)
+                WriteObject("ErrorCode: " + cloudException.ErrorCode);
+                WriteObject("ErrorMessage: " + cloudException.ErrorMessage);
             }
+        }
+
+        private void GetByName()
+        {
+            CloudListResponse cloudListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryCloud(Server.ToString());
+
+            bool found = false;
+            foreach (Cloud cloud in cloudListResponse.Clouds)
+            {
+                if (0 == string.Compare(name, cloud.Name, true))
+                {
+                    WriteObject(cloud);
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                    Properties.Resources.ProtectedContainerNotFound,
+                    name,
+                    server));
+            }
+        }
+
+        private void GetById()
+        {
+            CloudResponse cloudResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryCloud(server.ToString(), id.ToString());
+
+            WriteObject(cloudResponse.Cloud);
+        }
+
+        private void GetByDefault()
+        {
+            CloudListResponse cloudListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryCloud(Server.ToString());
+
+            WriteObject(cloudListResponse.Clouds, true);
         }
     }
 }

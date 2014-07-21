@@ -15,15 +15,14 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using System;
-    using System.Management.Automation;
-    using System.Collections.Generic;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
-    using System.Linq;
+    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
+    using System.Management.Automation;
     using System.Runtime.Serialization;
     using System.Xml;
-    // using Microsoft.WindowsAzure.Commands.Utilities.Profile;
     #endregion
 
     class FilePath
@@ -36,17 +35,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
     }
 
-    /// <summary>
-    ///
-    /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVaultSettingFile")]
+    [Cmdlet(VerbsCommunications.Write, "AzureSiteRecoveryVaultSettingFile")]
     [OutputType(typeof(FilePath))]
-    public class GetAzureSiteRecoveryVaultSettingFile : RecoveryServicesCmdletBase
+    public class WriteAzureSiteRecoveryVaultSettingsFile : RecoveryServicesCmdletBase
     {
         #region Parameters
-        /// <summary>
 
-        private string azureSiteRecoveryVaultSettingsFile = "C:\\vaultSettings.vaultsettings";
+        private string azureSiteRecoveryVaultSettingsFile = 
+            Directory.GetCurrentDirectory() + "\\RecoveryServicesVaultSettings.vaultsettings";
 
         [Parameter (Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -69,12 +65,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
+            FileStream stream = new FileStream(azureSiteRecoveryVaultSettingsFile, FileMode.Create);
+            stream.Close();
+
             ResourceCredentials resourceCredentials = new ResourceCredentials();
             resourceCredentials.resourceName = resourceName;
             resourceCredentials.cloudServiceName = cloudSeriveName;
 
             string tempFilePath;
-
             var settings = new XmlWriterSettings { Indent = true, CloseOutput = true };
 
             using (var w = XmlWriter.Create(CreateTempFile(out tempFilePath), settings))
@@ -84,8 +82,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
 
             File.Replace(tempFilePath, azureSiteRecoveryVaultSettingsFile, null);
-            // WriteObject(new string(azureSiteRecoveryVaultSettingsFile));
-            // WriteObject(azureSiteRecoveryVaultSettingsFile);
 
             FilePath fp = new FilePath(azureSiteRecoveryVaultSettingsFile);
             WriteObject(fp);
@@ -97,7 +93,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 try
                 {
-                    string fileName = azureSiteRecoveryVaultSettingsFile + "." + Guid.NewGuid().ToString();
+                    string fileName = 
+                        azureSiteRecoveryVaultSettingsFile + "." + Guid.NewGuid().ToString();
                     var stream = new FileStream(fileName, FileMode.CreateNew, FileAccess.Write);
                     finalFileName = fileName;
                     return stream;
