@@ -145,7 +145,6 @@
     <Compile Include="Service\GetAzureSiteRecoveryVirtualMachine.cs" />
     <Compile Include="Service\GetAzureCloudServices.cs" />
     <Compile Include="Service\ImportAzureSiteRecoveryVaultSettings.cs" />
-    <Compile Include="Service\TestGetAzureCloudServices.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
