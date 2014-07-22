@@ -26,7 +26,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Xml;
     #endregion
 
-    class PSRecoveryServiceClient
+    public partial class PSRecoveryServiceClient
     {
         private RecoveryServicesManagementClient recoveryServicesClient;
         private string subscriptionId;
@@ -48,89 +48,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public CloudServiceListResponse GetAzureCloudServicesSyncInt()
         {
             return recoveryServicesClient.CloudServices.List();
-        }
-
-        public ServerListResponse GetAzureSiteRecoveryServer()
-        {
-            SiteRecoveryManagementClient siteRecoveryClient = 
-                GetSiteRecoveryClient();
-
-            if (null == siteRecoveryClient)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Servers.List();
-        }
-
-        public ServerResponse GetAzureSiteRecoveryServer(string serverId)
-        {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (null == siteRecoveryClient)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Servers.Get(serverId);
-        }
-
-        public CloudListResponse GetAzureSiteRecoveryCloud(string serverId)
-        {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Clouds.List(serverId);
-        }
-
-        public CloudResponse GetAzureSiteRecoveryCloud(string serverId, string protectedContainerId)
-        {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Clouds.Get(serverId, protectedContainerId);
-        }
-
-        public VirtualMachineListResponse GetAzureSiteRecoveryVirtualMachine(
-            string serverId, 
-            string containerId)
-        {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Vm.List(serverId, containerId);
-        }
-
-        public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
-            string serverId,
-            string containerId,
-            string virtualMachineId)
-        {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Vm.Get(serverId, containerId, virtualMachineId);
         }
 
         private SiteRecoveryManagementClient GetSiteRecoveryClient()

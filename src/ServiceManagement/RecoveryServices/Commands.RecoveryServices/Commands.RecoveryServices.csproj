@@ -133,7 +133,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="PSRecoveryServicesClient.cs" />
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesClient.cs" />
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesProtectedContainerClient.cs" />
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesServerClient.cs" />
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMClient.cs" />
     <Compile Include="RecoveryServicesCmdletBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\SetAzureSiteRecoveryProtection.cs" />

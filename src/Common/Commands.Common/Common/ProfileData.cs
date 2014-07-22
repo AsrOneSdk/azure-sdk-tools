@@ -200,12 +200,6 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
         public string SubscriptionId { get; set; }
 
         [DataMember]
-        public string AzureSiteRecoveryResourceName { get; set; }
-
-        [DataMember]
-        public string AzureSiteRecoveryCloudServiceName { get; set; }
-        
-        [DataMember]
         public string ManagementEndpoint { get; set; }
 
         [DataMember]
