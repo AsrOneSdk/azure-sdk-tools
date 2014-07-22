@@ -23,8 +23,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = Default)]
-    [OutputType(typeof(IEnumerable<Server>))]
-    [OutputType(typeof(Server))]
+    [OutputType(typeof(IEnumerable<PSServer>))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
@@ -90,7 +89,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 if(0 == string.Compare(name, server.Name, true))
                 {
-                    WriteObject(server);
+                    WriteServer(server);
                     found = true;
                 }
             }
@@ -110,7 +109,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             ServerResponse serverResponse = 
                 RecoveryServicesClient.GetAzureSiteRecoveryServer(id);
 
-            WriteObject(serverResponse.Server);
+            WriteServer(serverResponse.Server);
         }
 
         private void GetByDefault()
@@ -118,7 +117,27 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             ServerListResponse serverListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryServer();
 
-            WriteObject(serverListResponse.Servers, true);
+            WriteServers(serverListResponse.Servers);
+        }
+
+        private void WriteServers(IList<Server> servers)
+        {
+            foreach (Server server in servers)
+            {
+                WriteServer(server);
+            }
+        }
+
+        private void WriteServer(Server server)
+        {
+            WriteObject(
+                new PSServer(
+                    server.Id,
+                    server.Name,
+                    server.Type,
+                    server.LastHeartbeat,
+                    server.ProviderVersion,
+                    server.ServerVersion));
         }
     }
 }

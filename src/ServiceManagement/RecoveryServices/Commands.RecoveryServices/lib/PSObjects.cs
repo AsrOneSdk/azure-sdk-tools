@@ -37,14 +37,97 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class PSServer
     {
         #region Properties
-        public string Id;
-        public string Name;
-        public string Type;
-        public DateTime LastHeartbeat;
-        public string ProviderVersion;
-        public string ServerVersion;
+        public string ServerId { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public DateTime LastHeartbeat { get; set; }
+        public string ProviderVersion { get; set; }
+        public string ServerVersion { get; set; }
         #endregion
 
         public PSServer() { }
+        public PSServer(
+            string serverId,
+            string name,
+            string type,
+            DateTime lastHeartbeat,
+            string providerVersion,
+            string serverVersion)
+        {
+            this.ServerId = serverId;
+            this.Name = name;
+            this.Type = type;
+            this.LastHeartbeat = lastHeartbeat;
+            this.ProviderVersion = providerVersion;
+            this.ServerVersion = serverVersion;
+        }
+    }
+
+    public class PSCloud
+    {
+        #region Properties
+        public string ProtectedContainerId { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public bool Configured { get; set; }
+        public string ReplicationProvider { get; set; }
+        public string ReplicationProviderSettings { get; set; }
+        public string ServerId { get; set; }
+        #endregion
+
+        public PSCloud() { }
+        public PSCloud(
+            string protectedContainerId,
+            string name,
+            string type,
+            bool configured,
+            string replicationProvider,
+            string replicationProviderSettings,
+            string serverId)
+        {
+            this.ProtectedContainerId = protectedContainerId;
+            this.Name = name;
+            this.Type = type;
+            this.Configured = configured;
+            this.ReplicationProvider = replicationProvider;
+            this.ReplicationProviderSettings = replicationProviderSettings;
+            this.ServerId = serverId;
+        }
+    }
+
+    public class PSVirtualMachine
+    {
+        public string VirtualMachineId { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public bool Protected { get; set; }
+        public string ProtectedContainerId { get; set; }
+        public string ReplicationProvider { get; set; }
+        public string ReplicationProviderSettings { get; set; }
+        public string ServerId { get; set; }
+        public string ServerName { get; set; }
+
+        public PSVirtualMachine() { }
+        public PSVirtualMachine(
+            string virtualMachineId,
+            string name,
+            string type,
+            bool protectedOrNot,
+            string protectedContainerId,
+            string replicationProvider,
+            string replicationProviderSettings,
+            string serverId,
+            string serverName)
+        {
+            this.VirtualMachineId = virtualMachineId;
+            this.Name = name;
+            this.Type = type;
+            this.Protected = protectedOrNot;
+            this.ProtectedContainerId = protectedContainerId;
+            this.ReplicationProvider = replicationProvider;
+            this.ReplicationProviderSettings = replicationProviderSettings;
+            this.ServerId = serverId;
+            this.ServerName = serverName;
+        }
     }
 }

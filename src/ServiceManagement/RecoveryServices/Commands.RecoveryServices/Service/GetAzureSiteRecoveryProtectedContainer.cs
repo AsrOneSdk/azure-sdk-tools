@@ -19,9 +19,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
     using System.Management.Automation;
+    using System.Collections.Generic;
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = Default)]
+    [OutputType (typeof(PSCloud))]
     public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
@@ -56,9 +58,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the Protected Container management server.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
-        [Parameter(ParameterSetName = Default, Mandatory = true)]
+        [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         public string ServerId
         {
@@ -101,7 +103,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 if (0 == string.Compare(name, cloud.Name, true))
                 {
-                    WriteObject(cloud);
+                    WriteCloud(cloud);
                     found = true;
                 }
             }
@@ -121,7 +123,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             CloudResponse cloudResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId, id);
 
-            WriteObject(cloudResponse.Cloud);
+            WriteCloud(cloudResponse.Cloud);
         }
 
         private void GetByDefault()
@@ -129,7 +131,28 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             CloudListResponse cloudListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId);
 
-            WriteObject(cloudListResponse.Clouds, true);
+            WriteClouds(cloudListResponse.Clouds);
+        }
+
+        private void WriteClouds(IList<Cloud> clouds)
+        {
+            foreach (Cloud cloud in clouds)
+            {
+                WriteCloud(cloud);
+            }
+        }
+
+        private void WriteCloud(Cloud cloud)
+        {
+            WriteObject(
+                new PSCloud(
+                    cloud.Id,
+                    cloud.Name,
+                    cloud.Type,
+                    cloud.Configured,
+                    cloud.ReplicationProvider,
+                    cloud.ReplicationProviderSettings,
+                    cloud.ServerId));
         }
     }
 }

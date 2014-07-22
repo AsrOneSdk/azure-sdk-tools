@@ -18,6 +18,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.Azure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
+    using System.Collections.Generic;
     using System.Management.Automation;
     #endregion
 
@@ -56,11 +57,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the ProtectedContainer containing the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
-        [Parameter(ParameterSetName = Default, Mandatory = true)]
+        [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string ProtectedContianerId
+        public string ProtectedContainerId
         {
             get { return this.protectedContainerId; }
             set { this.protectedContainerId = value; }
@@ -70,9 +71,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// GUID of the Server managing the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
-        [Parameter(ParameterSetName = Default, Mandatory = true)]
+        [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         public string ServerId
         {
@@ -151,6 +152,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 protectedContainerId);
 
             WriteObject(vmListResponse.Vms, true);
+        }
+
+        private void WriteVirtualMachines(IList<VirtualMachine> vms)
+        {
+            foreach (VirtualMachine vm in vms)
+            {
+                WriteVirtualMachine(vm);
+            }
+        }
+
+        private void WriteVirtualMachine(VirtualMachine vm)
+        {
+            WriteObject(
+                new PSVirtualMachine(
+                    vm.Id,
+                    vm.Name,
+                    vm.Type,
+                    vm.Protected,
+                    vm.ProtectedContainerId,
+                    vm.ReplicationProvider,
+                    vm.ReplicationProviderSettings,
+                    vm.ServerId,
+                    vm.Name));
         }
     }
 }
