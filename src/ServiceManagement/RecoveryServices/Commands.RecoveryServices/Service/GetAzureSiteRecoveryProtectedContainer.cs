@@ -87,9 +87,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
             catch (CloudException cloudException)
             {
-                // Log errors from SRS (good to deserialize the Error Message & print as object)
-                WriteObject("ErrorCode: " + cloudException.ErrorCode);
-                WriteObject("ErrorMessage: " + cloudException.ErrorMessage);
+                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
             }
         }
 

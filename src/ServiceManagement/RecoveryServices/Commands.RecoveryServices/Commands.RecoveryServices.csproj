@@ -126,7 +126,7 @@
     <Compile Include="Generated\SiteRecoveryManagementClientExtensions.cs" />
     <Compile Include="Generated\VirtualMachineOperations.cs" />
     <Compile Include="Generated\VirtualMachineOperationsExtensions.cs" />
-    <Compile Include="lib\ResourceCredentials.cs" />
+    <Compile Include="lib\PSContracts.cs" />
     <Compile Include="lib\PSObjects.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

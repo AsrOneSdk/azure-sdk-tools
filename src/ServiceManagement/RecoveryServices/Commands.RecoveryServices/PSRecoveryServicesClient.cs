@@ -21,7 +21,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
     using System.IO;
+    using System.Runtime.Serialization;
     using System.Security.Cryptography.X509Certificates;
+    using System.Xml;
     #endregion
 
     class PSRecoveryServiceClient
@@ -228,6 +230,44 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
 
             return true;
+        }
+
+        public void ThrowCloudExceptionDetails(CloudException cloudException)
+        {
+            Error psError = null;
+            try
+            {
+                using (Stream stream = new MemoryStream())
+                {
+                    byte[] data = System.Text.Encoding.UTF8.GetBytes(cloudException.ErrorMessage);
+                    stream.Write(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    var deserializer = new DataContractSerializer(typeof(Error));
+                    psError = (Error)deserializer.ReadObject(stream);
+                }
+            }
+            catch (XmlException)
+            {
+                throw new XmlException(
+                    string.Format(
+                    Properties.Resources.InvalidCloudExceptionErrorMessage,
+                    cloudException.ErrorMessage));
+            }
+            catch (SerializationException)
+            {
+                throw new SerializationException(
+                    string.Format(
+                    Properties.Resources.InvalidCloudExceptionErrorMessage,
+                    cloudException.ErrorMessage));
+            }
+
+            throw new InvalidOperationException(
+                string.Format(
+                Properties.Resources.CloudExceptionDetails, "\n",
+                psError.Message, "\n",
+                psError.PossibleCauses, "\n",
+                psError.RecommendedAction));
         }
     }
 }

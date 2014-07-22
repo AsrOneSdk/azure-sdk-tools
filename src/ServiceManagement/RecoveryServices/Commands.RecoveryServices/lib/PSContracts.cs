@@ -16,13 +16,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using System;
+    using System.Runtime.Serialization;
     using System.Security.Cryptography.X509Certificates;
     #endregion
 
     public class ResourceCredentials
     {
-        #region Properties
-
         /// <summary>
         /// Gets or sets the version of the security configuration version.
         /// </summary>
@@ -62,7 +61,71 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets the value for expiry date of the credential file.
         /// </summary>
         public DateTime notAfter { get; set; }
+    }
 
-        #endregion Properties
+    /// <summary>
+    /// Error contract returned when some excption occurs in AsrRestApi.
+    /// </summary>
+    [DataContract(Namespace = "http://schemas.microsoft.com/windowsazure")]
+    public class Error
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Error" /> class.
+        /// </summary>
+        public Error()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Error" /> class.
+        /// </summary>
+        /// <param name="errorCode">Service generated error code.</param>
+        /// <param name="message">Error message.</param>
+        /// <param name="possibleCauses">Possible causes of the error.</param>
+        /// <param name="recommendedAction">Reccomended action to resolve the error.</param>
+        /// <param name="activityId">ActivityId in which error occured.</param>
+        public Error(
+            string errorCode,
+            string message,
+            string possibleCauses,
+            string recommendedAction,
+            string activityId)
+        {
+            this.Code = errorCode;
+            this.Message = message;
+            this.PossibleCauses = possibleCauses;
+            this.RecommendedAction = recommendedAction;
+            this.ActivityId = activityId;
+        }
+
+        /// <summary>
+        /// Gets or sets error code.
+        /// </summary>
+        [DataMember]
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Gets or sets error message.
+        /// </summary>
+        [DataMember]
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Gets or sets possible causes of error.
+        /// </summary>
+        [DataMember]
+        public string PossibleCauses { get; set; }
+
+        /// <summary>
+        /// Gets or sets recommended action to resolve error.
+        /// </summary>
+        [DataMember]
+        public string RecommendedAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets activity Id.
+        /// </summary>
+        [DataMember]
+        public string ActivityId { get; set; }
     }
 }

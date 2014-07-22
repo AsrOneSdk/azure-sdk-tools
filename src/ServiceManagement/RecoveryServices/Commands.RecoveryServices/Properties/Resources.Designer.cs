@@ -61,11 +61,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operation Failed.{0}Message: {1}{2}Possible Causes: {3}{4}Recommended Action: {5}.
+        /// </summary>
+        internal static string CloudExceptionDetails {
+            get {
+                return ResourceManager.GetString("CloudExceptionDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cloud Service name mentioned is either null or empty.
         /// </summary>
         internal static string CloudServiceNameNullOrEmpty {
             get {
                 return ResourceManager.GetString("CloudServiceNameNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Message sent from service is not in the correct format, dumping service error message: {0}.
+        /// </summary>
+        internal static string InvalidCloudExceptionErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidCloudExceptionErrorMessage", resourceCulture);
             }
         }
         
@@ -88,7 +106,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XML is malformed or file is empty.
+        ///   Looks up a localized string similar to XML is malformed or file is empty, exception details: {0}.
         /// </summary>
         internal static string InvalidXml {
             get {

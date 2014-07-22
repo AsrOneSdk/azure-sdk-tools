@@ -70,10 +70,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     throw new XmlException(
                         string.Format(Properties.Resources.InvalidXml, xmlException));
                 }
-                catch (SerializationException ex)
+                catch (SerializationException serializationException)
                 {
                     throw new SerializationException(
-                        string.Format(Properties.Resources.InvalidXml, ex));
+                        string.Format(Properties.Resources.InvalidXml, serializationException));
                 }
             }
             else

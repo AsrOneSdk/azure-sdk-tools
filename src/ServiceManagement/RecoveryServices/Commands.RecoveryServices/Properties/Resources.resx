@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CloudExceptionDetails" xml:space="preserve">
+    <value>Operation Failed.{0}Message: {1}{2}Possible Causes: {3}{4}Recommended Action: {5}</value>
+  </data>
   <data name="CloudServiceNameNullOrEmpty" xml:space="preserve">
     <value>Cloud Service name mentioned is either null or empty</value>
+  </data>
+  <data name="InvalidCloudExceptionErrorMessage" xml:space="preserve">
+    <value>Error Message sent from service is not in the correct format, dumping service error message: {0}</value>
   </data>
   <data name="InvalidCloudService" xml:space="preserve">
     <value>Cloud Service is not associated the selected Subscription</value>
@@ -127,7 +133,7 @@
     <value>Resource is not associted with the selected Cloud Service</value>
   </data>
   <data name="InvalidXml" xml:space="preserve">
-    <value>XML is malformed or file is empty</value>
+    <value>XML is malformed or file is empty, exception details: {0}</value>
   </data>
   <data name="MissingBackendStampId" xml:space="preserve">
     <value>Backend Stamp Id is missing in the Resource</value>
