@@ -21,28 +21,25 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = None)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = Default)]
     public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
     {
-        protected const string None = "None";
+        protected const string Default = "Default";
         protected const string ByName = "ByName";
         protected const string ById = "ById";
 
         #region Parameters
         /// <summary>
-        /// GUID of the Protected Container.
+        /// ID of the Protected Container.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public System.Guid Id
+        public string Id
         {
             get { return this.id; }
             set { this.id = value; }
         }
-        private System.Guid id;
+        private string id;
 
         /// <summary>
         /// Name of the Protected Container.
@@ -57,18 +54,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string name;
 
         /// <summary>
-        /// GUID of the Protected Container management server.
+        /// ID of the Protected Container management server.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
-        [Parameter(ParameterSetName = None, Mandatory = true)]
+        [Parameter(ParameterSetName = Default, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public System.Guid Server
+        public string ServerId
         {
-            get { return this.server; }
-            set { this.server = value; }
+            get { return this.serverId; }
+            set { this.serverId = value; }
         }
-        private System.Guid server;
+        private string serverId;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -83,7 +80,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ById:
                         GetById();
                         break;
-                    case None:
+                    case Default:
                         GetByDefault();
                         break;
                 }
@@ -99,7 +96,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void GetByName()
         {
             CloudListResponse cloudListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryCloud(Server.ToString());
+                RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId);
 
             bool found = false;
             foreach (Cloud cloud in cloudListResponse.Clouds)
@@ -117,14 +114,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     string.Format(
                     Properties.Resources.ProtectedContainerNotFound,
                     name,
-                    server));
+                    serverId));
             }
         }
 
         private void GetById()
         {
             CloudResponse cloudResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryCloud(server.ToString(), id.ToString());
+                RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId, id);
 
             WriteObject(cloudResponse.Cloud);
         }
@@ -132,7 +129,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void GetByDefault()
         {
             CloudListResponse cloudListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryCloud(Server.ToString());
+                RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId);
 
             WriteObject(cloudListResponse.Clouds, true);
         }

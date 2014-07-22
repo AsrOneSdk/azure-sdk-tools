@@ -127,7 +127,7 @@
     <Compile Include="Generated\VirtualMachineOperations.cs" />
     <Compile Include="Generated\VirtualMachineOperationsExtensions.cs" />
     <Compile Include="lib\ResourceCredentials.cs" />
-    <Compile Include="lib\VaultSettings.cs" />
+    <Compile Include="lib\PSObjects.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -136,6 +136,7 @@
     <Compile Include="PSRecoveryServicesClient.cs" />
     <Compile Include="RecoveryServicesCmdletBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\SetAzureSiteRecoveryProtection.cs" />
     <Compile Include="Service\WriteAzureSiteRecoveryVaultSettingsFile.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectedContainer.cs" />

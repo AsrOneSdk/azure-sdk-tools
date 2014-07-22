@@ -15,6 +15,8 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure;
     using System;
     using System.Management.Automation;
     #endregion
@@ -22,42 +24,39 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     ///
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = Default)]
-    public class GetAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtection")]
+    public class SetAzureSiteRecoveryProtection : RecoveryServicesCmdletBase
     {
-        protected const string Default = "Default";
-        protected const string ByName = "ByName";
-        protected const string ById = "ById";
 
         #region Parameters
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string Id
+        public string VM
         {
-            get { return this.id; }
-            set { this.id = value; }
+            get { return this.vm; }
+            set { this.vm = value; }
         }
-        private string id;
+        private string vm;
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// ID of the ProtectedContainer containing the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string Name
+        public string ProtectedContianerId
         {
-            get { return this.name; }
-            set { this.name = value; }
+            get { return this.protectedContainerId; }
+            set { this.protectedContainerId = value; }
         }
-        private string name;
+        private string protectedContainerId;
 
         /// <summary>
         /// ID of the Server managing the Virtual Machine.
         /// </summary>
-        [Parameter]
+        [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ServerId
         {
@@ -65,21 +64,31 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.serverId = value; }
         }
         private string serverId;
+
+        /// <summary>
+        /// Bool value to either to say either enable or disable protection.
+        /// </summary>
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public bool Protection
+        {
+            get { return this.protection; }
+            set { this.protection = value; }
+        }
+        private bool protection;
+
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
-            switch(ParameterSetName)
+            try
             {
-                case ByName:
-                    WriteObject("ByName: " + name);
-                    break;
-                case ById:
-                    WriteObject("ById: " + id);
-                    break;
-                case Default:
-                    WriteObject("none");
-                    break;
+            }
+            catch (CloudException cloudException)
+            {
+                // Log errors from SRS (good to deserialize the Error Message & print as object)
+                WriteObject("ErrorCode: " + cloudException.ErrorCode);
+                WriteObject("ErrorMessage: " + cloudException.ErrorMessage);
             }
         }
     }

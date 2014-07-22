@@ -21,28 +21,25 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = None)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = Default)]
     public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
-        protected const string None = "None";
+        protected const string Default = "Default";
         protected const string ByName = "ByName";
         protected const string ById = "ById";
 
         #region Parameters
         /// <summary>
-        /// GUID of the Virtual Machine.
+        /// ID of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public System.Guid Id
+        public string Id
         {
             get { return this.id; }
             set { this.id = value; }
         }
-        private System.Guid id;
+        private string id;
 
         /// <summary>
         /// Name of the Virtual Machine.
@@ -57,32 +54,32 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string name;
 
         /// <summary>
-        /// GUID of the ProtectedContainer containing the Virtual Machine.
+        /// ID of the ProtectedContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
-        [Parameter(ParameterSetName = None, Mandatory = true)]
+        [Parameter(ParameterSetName = Default, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public System.Guid ProtectedContianer
+        public string ProtectedContianerId
         {
-            get { return this.protectedContainer; }
-            set { this.protectedContainer = value; }
+            get { return this.protectedContainerId; }
+            set { this.protectedContainerId = value; }
         }
-        private System.Guid protectedContainer;
+        private string protectedContainerId;
 
         /// <summary>
         /// GUID of the Server managing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
-        [Parameter(ParameterSetName = None, Mandatory = true)]
+        [Parameter(ParameterSetName = Default, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public System.Guid Server
+        public string ServerId
         {
-            get { return this.server; }
-            set { this.server = value; }
+            get { return this.serverId; }
+            set { this.serverId = value; }
         }
-        private System.Guid server;
+        private string serverId;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -97,7 +94,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ById:
                         GetById();
                         break;
-                    case None:
+                    case Default:
                         GetByDefault();
                         break;
                 }
@@ -114,8 +111,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             VirtualMachineListResponse vmListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
-                server.ToString(),
-                protectedContainer.ToString());
+                serverId,
+                protectedContainerId);
 
             bool found = false;
             foreach (VirtualMachine vm in vmListResponse.Vms)
@@ -133,7 +130,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     string.Format(
                     Properties.Resources.VirtualMachineNotFound,
                     name,
-                    protectedContainer));
+                    protectedContainerId));
             }
         }
 
@@ -141,9 +138,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             VirtualMachineResponse vmResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
-                server.ToString(), 
-                protectedContainer.ToString(), 
-                id.ToString());
+                serverId, 
+                protectedContainerId, 
+                id);
 
             WriteObject(vmResponse.Vm);
         }
@@ -152,8 +149,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             VirtualMachineListResponse vmListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
-                server.ToString(),
-                protectedContainer.ToString());
+                serverId,
+                protectedContainerId);
 
             WriteObject(vmListResponse.Vms, true);
         }

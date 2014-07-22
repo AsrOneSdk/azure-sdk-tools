@@ -23,14 +23,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVaultSettings")]
-    [OutputType(typeof(VaultSettings))]
+    [OutputType(typeof(PSVaultSettings))]
     public class GetAzureSiteRecoveryVaultSettings : RecoveryServicesCmdletBase
     {
         public override void ExecuteCmdlet()
         {
             WindowsAzureSubscription subscription =
                 Profile.Subscriptions.FirstOrDefault(s => s.IsDefault);
-            WriteObject(new VaultSettings(
+            WriteObject(new PSVaultSettings(
                 CurrentSubscription.AzureSiteRecoveryResourceName, 
                 CurrentSubscription.AzureSiteRecoveryCloudServiceName));
         }

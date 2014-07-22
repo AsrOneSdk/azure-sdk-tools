@@ -19,9 +19,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryJob")]
     public class GetAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
@@ -33,12 +30,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         [Parameter]
         [ValidateNotNullOrEmpty]
-        public System.Guid Id
+        public string Id
         {
             get { return this.id; }
             set { this.id = value; }
         }
-        private System.Guid id;
+        private string id;
 
         /// <summary>
         /// Allows to filter the list of jobs started after the given starttime.

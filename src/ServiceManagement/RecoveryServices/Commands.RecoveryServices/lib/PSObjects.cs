@@ -18,7 +18,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System;
     #endregion
 
-    public class VaultSettings
+    public class PSVaultSettings
     {
         #region Properties
 
@@ -34,11 +34,51 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #endregion Properties
 
-        public VaultSettings() { }
-        public VaultSettings(string resourceName, string cloudServiceName)
+        public PSVaultSettings() { }
+        public PSVaultSettings(string resourceName, string cloudServiceName)
         {
             ResourceName = resourceName;
             CloudServiceName = cloudServiceName;
         }
+    }
+
+    public class PSServer
+    {
+        public string Id;
+        public string Name;
+        public string Type;
+        public DateTime LastHeartbeat;
+        public string ProviderVersion;
+        public string ServerVersion;
+
+        public PSServer() { }
+    }
+
+    /// <summary>
+    /// Error contract returned when some excption occurs in AsrRestApi.
+    /// </summary>
+    public class PSError
+    {
+        public PSError() {}
+
+        public PSError(
+            string code,
+            string message,
+            string possibleCauses,
+            string recommendedAction,
+            string activityId)
+        {
+            this.Code = code;
+            this.Message = message;
+            this.PossibleCauses = possibleCauses;
+            this.RecommendedAction = recommendedAction;
+            this.ActivityId = activityId;
+        }
+
+        public string Code { get; set; }
+        public string Message { get; set; }
+        public string PossibleCauses { get; set; }
+        public string RecommendedAction { get; set; }
+        public string ActivityId { get; set; }
     }
 }

@@ -22,27 +22,27 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = None)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = Default)]
     [OutputType(typeof(IEnumerable<Server>))]
     [OutputType(typeof(Server))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
-        protected const string None = "None";
+        protected const string Default = "Default";
         protected const string ByName = "ByName";
         protected const string ById = "ById";
 
         #region Parameters
         /// <summary>
-        /// GUID of the Server.
+        /// ID of the Server.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public System.Guid Id
+        public string Id
         {
             get { return this.id; }
             set { this.id = value; }
         }
-        private System.Guid id;
+        private string id;
 
         /// <summary>
         /// Name of the Server.
@@ -69,7 +69,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ById:
                         GetById();
                         break;
-                    case None:
+                    case Default:
                         GetByDefault();
                         break;
                 }
@@ -79,6 +79,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 // Log errors from SRS (good to deserialize the Error Message & print as object)
                 WriteObject("ErrorCode: " + cloudException.ErrorCode);
                 WriteObject("ErrorMessage: " + cloudException.ErrorMessage);
+
+                /*
+                    error.Message = DataContractUtils.Serialize<Error>(error);
+                    RecoveryServicesClient.ThrowCloudException(cloudException);
+                */
             }
         }
 
@@ -110,7 +115,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void GetById()
         {
             ServerResponse serverResponse = 
-                RecoveryServicesClient.GetAzureSiteRecoveryServer(id.ToString());
+                RecoveryServicesClient.GetAzureSiteRecoveryServer(id);
 
             WriteObject(serverResponse.Server);
         }
