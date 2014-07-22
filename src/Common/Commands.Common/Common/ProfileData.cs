@@ -149,8 +149,6 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
         {
             Name = inMemorySubscription.SubscriptionName;
             SubscriptionId = inMemorySubscription.SubscriptionId;
-            AzureSiteRecoveryResourceName = inMemorySubscription.AzureSiteRecoveryResourceName;
-            AzureSiteRecoveryCloudServiceName = inMemorySubscription.AzureSiteRecoveryCloudServiceName;
             ManagementEndpoint = inMemorySubscription.ServiceEndpoint != null ? inMemorySubscription.ServiceEndpoint.ToString() : null;
             ResourceManagerEndpoint = inMemorySubscription.ResourceManagerEndpoint != null ? inMemorySubscription.ResourceManagerEndpoint.ToString() : null;
             ActiveDirectoryEndpoint = inMemorySubscription.ActiveDirectoryEndpoint;
@@ -175,8 +173,6 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
             {
                 SubscriptionName = this.Name,
                 SubscriptionId = this.SubscriptionId,
-                AzureSiteRecoveryResourceName = this.AzureSiteRecoveryResourceName,
-                AzureSiteRecoveryCloudServiceName = this.AzureSiteRecoveryCloudServiceName,
                 ServiceEndpoint = !string.IsNullOrEmpty(ManagementEndpoint) ? new Uri(ManagementEndpoint) : null,
                 ResourceManagerEndpoint = !string.IsNullOrEmpty(ResourceManagerEndpoint) ? new Uri(ResourceManagerEndpoint) : null,
                 ActiveDirectoryEndpoint = ActiveDirectoryEndpoint,

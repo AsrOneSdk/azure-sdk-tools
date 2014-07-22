@@ -50,10 +50,6 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
         
         public string SubscriptionId { get; set; }
 
-        public string AzureSiteRecoveryResourceName { get; set; }
-
-        public string AzureSiteRecoveryCloudServiceName { get; set; }
-        
         public Uri ServiceEndpoint { get; set; }
         
         public Uri ResourceManagerEndpoint { get; set; }

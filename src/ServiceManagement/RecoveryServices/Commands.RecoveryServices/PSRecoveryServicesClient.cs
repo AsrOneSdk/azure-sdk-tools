@@ -32,8 +32,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string subscriptionId;
         private X509Certificate2 certificate;
         private Uri serviceEndPoint;
-        private string resourceName;
-        private string cloudServiceName;
+
+        public static ResourceCredentials resourceCredentials = new ResourceCredentials();
 
         public PSRecoveryServiceClient(WindowsAzureSubscription currentSubscription)
         {
@@ -42,8 +42,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             subscriptionId = currentSubscription.SubscriptionId;
             certificate = currentSubscription.Certificate;
             serviceEndPoint = currentSubscription.ServiceEndpoint;
-            resourceName = currentSubscription.AzureSiteRecoveryResourceName;
-            cloudServiceName = currentSubscription.AzureSiteRecoveryCloudServiceName;
         }
         public PSRecoveryServiceClient() { }
 
@@ -138,14 +136,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private SiteRecoveryManagementClient GetSiteRecoveryClient()
         {
             CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
-            string stampId = string.Empty;
+            this.ValidateVaultSettings(
+                resourceCredentials.resourceName,
+                resourceCredentials.cloudServiceName,
+                services);
 
+            string stampId = string.Empty;
             CloudService selectedCloudService = null;
             Vault selectedResource = null;
 
             foreach (CloudService cloudService in services)
             {
-                if (cloudService.Name == cloudServiceName)
+                if (cloudService.Name == resourceCredentials.cloudServiceName)
                 {
                     selectedCloudService = cloudService;
                 }
@@ -158,7 +160,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             foreach (Vault vault in selectedCloudService.Resources)
             {
-                if (vault.Name == resourceName)
+                if (vault.Name == resourceCredentials.resourceName)
                 {
                     selectedResource = vault;
                 }
@@ -184,8 +186,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             SiteRecoveryManagementClient siteRecoveryClient = 
                 new SiteRecoveryManagementClient(
-                    cloudServiceName, 
-                    resourceName, 
+                    resourceCredentials.cloudServiceName,
+                    resourceCredentials.resourceName,
                     stampId, 
                     new CertificateCloudCredentials(
                         subscriptionId, 
@@ -195,9 +197,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return siteRecoveryClient;
         }
 
-        public bool ValidateVaultSettings(string resourceName, string cloudServiceName)
+        public bool ValidateVaultSettings(string resourceName, string cloudServiceName, CloudServiceListResponse services = null)
         {
-            CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
+
+            if (string.IsNullOrEmpty(resourceName) || string.IsNullOrEmpty(cloudServiceName))
+            {
+                throw new InvalidOperationException(Properties.Resources.MissingVaultSettings);
+            }
+
+            if (null == services)
+            {
+                services = recoveryServicesClient.CloudServices.List();
+            }
+
             string stampId = string.Empty;
 
             CloudService selectedCloudService = null;

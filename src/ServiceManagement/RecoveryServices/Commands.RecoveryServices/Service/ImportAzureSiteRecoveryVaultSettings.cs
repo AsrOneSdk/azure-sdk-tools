@@ -107,22 +107,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 WriteObject(new PSVaultSettings(
                     resourceCredentials.resourceName, 
                     resourceCredentials.cloudServiceName));
-
             }
             catch (CloudException cloudException)
             {
-                throw cloudException;
+                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
             }
         }
 
         public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
         {
-            WindowsAzureSubscription subscription = 
-                Profile.Subscriptions.FirstOrDefault(s => s.IsDefault);
-
-            subscription.AzureSiteRecoveryResourceName = resourceCredentials.resourceName;
-            subscription.AzureSiteRecoveryCloudServiceName = resourceCredentials.cloudServiceName;
-            Profile.UpdateSubscription(subscription);
+            PSRecoveryServiceClient.resourceCredentials.resourceName = 
+                resourceCredentials.resourceName;
+            PSRecoveryServiceClient.resourceCredentials.cloudServiceName = 
+                resourceCredentials.cloudServiceName;
         }
     }
 }

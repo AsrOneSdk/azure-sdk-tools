@@ -124,6 +124,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vault Settings are missing. Please import Vault Settings and verify the same.
+        /// </summary>
+        internal static string MissingVaultSettings {
+            get {
+                return ResourceManager.GetString("MissingVaultSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RecoveryServices client is null, please check Resource, Cloud Service information in Vault Settings.
         /// </summary>
         internal static string NullRecoveryServicesClient {

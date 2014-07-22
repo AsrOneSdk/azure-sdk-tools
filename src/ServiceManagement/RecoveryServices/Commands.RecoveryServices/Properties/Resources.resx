@@ -138,6 +138,9 @@
   <data name="MissingBackendStampId" xml:space="preserve">
     <value>Backend Stamp Id is missing in the Resource</value>
   </data>
+  <data name="MissingVaultSettings" xml:space="preserve">
+    <value>Vault Settings are missing. Please import Vault Settings and verify the same</value>
+  </data>
   <data name="NullRecoveryServicesClient" xml:space="preserve">
     <value>RecoveryServices client is null, please check Resource, Cloud Service information in Vault Settings</value>
   </data>

@@ -28,11 +28,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public override void ExecuteCmdlet()
         {
-            WindowsAzureSubscription subscription =
-                Profile.Subscriptions.FirstOrDefault(s => s.IsDefault);
             WriteObject(new PSVaultSettings(
-                CurrentSubscription.AzureSiteRecoveryResourceName, 
-                CurrentSubscription.AzureSiteRecoveryCloudServiceName));
+                PSRecoveryServiceClient.resourceCredentials.resourceName,
+                PSRecoveryServiceClient.resourceCredentials.cloudServiceName));
         }
     }
 }
