@@ -49,7 +49,7 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
         public string SubscriptionName { get; set; }
         
         public string SubscriptionId { get; set; }
-
+        
         public Uri ServiceEndpoint { get; set; }
         
         public Uri ResourceManagerEndpoint { get; set; }
