@@ -166,7 +166,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             WriteObject(
                 new PSVirtualMachine(
-                    vm.Id,
+                    vm.ID,
                     vm.Name,
                     vm.Type,
                     vm.Protected,

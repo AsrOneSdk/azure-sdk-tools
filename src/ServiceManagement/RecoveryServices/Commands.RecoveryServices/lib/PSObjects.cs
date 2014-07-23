@@ -63,7 +63,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
     }
 
-    public class PSCloud
+    public class PSProtectedContainer
     {
         #region Properties
         public string ProtectedContainerId { get; set; }
@@ -75,8 +75,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string ServerId { get; set; }
         #endregion
 
-        public PSCloud() { }
-        public PSCloud(
+        public PSProtectedContainer() { }
+        public PSProtectedContainer(
             string protectedContainerId,
             string name,
             string type,

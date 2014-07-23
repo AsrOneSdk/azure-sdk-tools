@@ -16,14 +16,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.WindowsAzure;
+    using System;
     using Microsoft.Azure.Management.SiteRecovery;
     using Microsoft.Azure.Management.SiteRecovery.Models;
-    using System;
     #endregion
 
     public partial class PSRecoveryServiceClient
     {
-        public CloudListResponse GetAzureSiteRecoveryCloud(string serverId)
+        public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(string serverId)
         {
             SiteRecoveryManagementClient siteRecoveryClient =
                 GetSiteRecoveryClient();
@@ -33,10 +33,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
             }
 
-            return siteRecoveryClient.Clouds.List(serverId);
+            return siteRecoveryClient.ProtectedContainers.List(serverId);
         }
 
-        public CloudResponse GetAzureSiteRecoveryCloud(string serverId, string protectedContainerId)
+        public ProtectedContainerResponse GetAzureSiteRecoveryProtectedContainer(string serverId, string protectedContainerId)
         {
             SiteRecoveryManagementClient siteRecoveryClient =
                 GetSiteRecoveryClient();
@@ -46,7 +46,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
             }
 
-            return siteRecoveryClient.Clouds.Get(serverId, protectedContainerId);
+            return siteRecoveryClient.ProtectedContainers.Get(serverId, protectedContainerId);
         }
     }
 }

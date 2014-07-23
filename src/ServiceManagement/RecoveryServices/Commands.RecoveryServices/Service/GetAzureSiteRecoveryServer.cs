@@ -132,7 +132,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             WriteObject(
                 new PSServer(
-                    server.Id,
+                    server.ID,
                     server.Name,
                     server.Type,
                     server.LastHeartbeat,

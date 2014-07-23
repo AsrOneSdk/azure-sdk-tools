@@ -16,14 +16,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.WindowsAzure;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
     using System.Management.Automation;
     using System.Collections.Generic;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = Default)]
-    [OutputType (typeof(PSCloud))]
+    [OutputType (typeof(PSProtectedContainer))]
     public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
@@ -95,15 +95,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetByName()
         {
-            CloudListResponse cloudListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId);
+            ProtectedContainerListResponse protectedContainerListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectedContainer(serverId);
 
             bool found = false;
-            foreach (Cloud cloud in cloudListResponse.Clouds)
+            foreach (
+                ProtectedContainer protectedContainer in 
+                protectedContainerListResponse.ProtectedContainers)
             {
-                if (0 == string.Compare(name, cloud.Name, true))
+                if (0 == string.Compare(name, protectedContainer.Name, true))
                 {
-                    WriteCloud(cloud);
+                    WriteProtectedContainer(protectedContainer);
                     found = true;
                 }
             }
@@ -120,39 +122,39 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetById()
         {
-            CloudResponse cloudResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId, id);
+            ProtectedContainerResponse protectedContainerResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectedContainer(serverId, id);
 
-            WriteCloud(cloudResponse.Cloud);
+            WriteProtectedContainer(protectedContainerResponse.ProtectedContainer);
         }
 
         private void GetByDefault()
         {
-            CloudListResponse cloudListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryCloud(serverId);
+            ProtectedContainerListResponse protectedContainerListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectedContainer(serverId);
 
-            WriteClouds(cloudListResponse.Clouds);
+            WriteProtectedContainers(protectedContainerListResponse.ProtectedContainers);
         }
 
-        private void WriteClouds(IList<Cloud> clouds)
+        private void WriteProtectedContainers (IList<ProtectedContainer> protectedContainers)
         {
-            foreach (Cloud cloud in clouds)
+            foreach (ProtectedContainer protectedContainer in protectedContainers)
             {
-                WriteCloud(cloud);
+                WriteProtectedContainer(protectedContainer);
             }
         }
 
-        private void WriteCloud(Cloud cloud)
+        private void WriteProtectedContainer (ProtectedContainer protectedContainer)
         {
             WriteObject(
-                new PSCloud(
-                    cloud.Id,
-                    cloud.Name,
-                    cloud.Type,
-                    cloud.Configured,
-                    cloud.ReplicationProvider,
-                    cloud.ReplicationProviderSettings,
-                    cloud.ServerId));
+                new PSProtectedContainer(
+                    protectedContainer.ID,
+                    protectedContainer.Name,
+                    protectedContainer.Type,
+                    protectedContainer.Configured,
+                    protectedContainer.ReplicationProvider,
+                    protectedContainer.ReplicationProviderSettings,
+                    protectedContainer.ServerId));
         }
     }
 }
