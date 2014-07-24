@@ -141,7 +141,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 protectedContainerId, 
                 id);
 
-            WriteVirtualMachine(vmResponse.vm);
+            WriteVirtualMachine(vmResponse.Vm);
         }
 
         private void GetByDefault()
