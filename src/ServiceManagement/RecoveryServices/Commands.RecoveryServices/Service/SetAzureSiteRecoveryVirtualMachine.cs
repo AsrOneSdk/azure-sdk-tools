@@ -24,8 +24,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     ///
     /// </summary>
-    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtection")]
-    public class SetAzureSiteRecoveryProtection : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryVirtualMachine")]
+    public class SetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
 
         #region Parameters
@@ -34,12 +34,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string VM
+        public string VMId
         {
-            get { return this.vm; }
-            set { this.vm = value; }
+            get { return this.vmId; }
+            set { this.vmId = value; }
         }
-        private string vm;
+        private string vmId;
 
         /// <summary>
         /// ID of the ProtectedContainer containing the Virtual Machine.
@@ -83,6 +83,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             try
             {
+                RecoveryServicesClient.SetProtectionOnVirtualMachine(
+                    serverId,
+                    protectedContainerId,
+                    vmId,
+                    protection);
             }
             catch (CloudException cloudException)
             {

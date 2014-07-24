@@ -25,28 +25,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public ServerListResponse GetAzureSiteRecoveryServer()
         {
-            SiteRecoveryManagementClient siteRecoveryClient = 
-                GetSiteRecoveryClient();
-
-            if (null == siteRecoveryClient)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Servers.List();
+            return GetSiteRecoveryClient().Servers.List();
         }
 
         public ServerResponse GetAzureSiteRecoveryServer(string serverId)
         {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (null == siteRecoveryClient)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Servers.Get(serverId);
+            return GetSiteRecoveryClient().Servers.Get(serverId);
         }
     }
 }

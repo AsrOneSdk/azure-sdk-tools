@@ -154,7 +154,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     protectedContainer.Configured,
                     protectedContainer.ReplicationProvider,
                     protectedContainer.ReplicationProviderSettings,
-                    protectedContainer.ServerId));
+                    protectedContainer.ServerId),
+                true);
         }
     }
 }

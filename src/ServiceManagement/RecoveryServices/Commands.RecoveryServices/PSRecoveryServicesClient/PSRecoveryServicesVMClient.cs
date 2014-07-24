@@ -25,33 +25,39 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public VirtualMachineListResponse GetAzureSiteRecoveryVirtualMachine(
             string serverId, 
-            string containerId)
+            string protectedContainerId)
         {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.Vm.List(serverId, containerId);
+            return GetSiteRecoveryClient().Vm.List(serverId, protectedContainerId);
         }
 
         public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
             string serverId,
-            string containerId,
+            string protectedContainerId,
             string virtualMachineId)
         {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
+            return GetSiteRecoveryClient().Vm.Get(serverId, protectedContainerId, virtualMachineId);
+        }
 
-            if (siteRecoveryClient == null)
+        public JobResponse SetProtectionOnVirtualMachine(
+            string serverId,
+            string protectedContainerId,
+            string virtualMachineId,
+            bool protection)
+        {
+            if(protection)
             {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
+                return GetSiteRecoveryClient().Vm.EnableProtection(
+                    serverId,
+                    protectedContainerId,
+                    virtualMachineId);
             }
-
-            return siteRecoveryClient.Vm.Get(serverId, containerId, virtualMachineId);
+            else
+            {
+                return GetSiteRecoveryClient().Vm.DisableProtection(
+                    serverId,
+                    protectedContainerId,
+                    virtualMachineId);
+            }
         }
     }
 }

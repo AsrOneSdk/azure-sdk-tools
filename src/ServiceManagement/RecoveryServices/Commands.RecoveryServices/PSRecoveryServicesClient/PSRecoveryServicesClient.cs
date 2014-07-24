@@ -111,6 +111,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         certificate), 
                     serviceEndPoint);
 
+            if (null == siteRecoveryClient)
+            {
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
+            }
+
             return siteRecoveryClient;
         }
 

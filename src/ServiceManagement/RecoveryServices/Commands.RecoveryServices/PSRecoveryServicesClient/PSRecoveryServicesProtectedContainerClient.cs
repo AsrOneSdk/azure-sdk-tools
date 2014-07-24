@@ -23,30 +23,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
     public partial class PSRecoveryServiceClient
     {
-        public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(string serverId)
+        public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(
+            string serverId)
         {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.ProtectedContainers.List(serverId);
+            return GetSiteRecoveryClient().ProtectedContainers.List(serverId);
         }
 
-        public ProtectedContainerResponse GetAzureSiteRecoveryProtectedContainer(string serverId, string protectedContainerId)
+        public ProtectedContainerResponse GetAzureSiteRecoveryProtectedContainer(
+            string serverId,
+            string protectedContainerId)
         {
-            SiteRecoveryManagementClient siteRecoveryClient =
-                GetSiteRecoveryClient();
-
-            if (siteRecoveryClient == null)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient.ProtectedContainers.Get(serverId, protectedContainerId);
+            return GetSiteRecoveryClient().ProtectedContainers.Get(serverId, protectedContainerId);
         }
     }
 }

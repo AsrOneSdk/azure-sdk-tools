@@ -118,7 +118,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 if (0 == string.Compare(name, vm.Name, true))
                 {
-                    WriteObject(vm);
+                    WriteVirtualMachine(vm);
                     found = true;
                 }
             }
@@ -141,7 +141,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 protectedContainerId, 
                 id);
 
-            WriteObject(vmResponse.Vm);
+            WriteVirtualMachine(vmResponse.vm);
         }
 
         private void GetByDefault()
@@ -151,7 +151,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 serverId,
                 protectedContainerId);
 
-            WriteObject(vmListResponse.Vms, true);
+            WriteVirtualMachines(vmListResponse.Vms);
         }
 
         private void WriteVirtualMachines(IList<VirtualMachine> vms)
@@ -174,7 +174,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vm.ReplicationProvider,
                     vm.ReplicationProviderSettings,
                     vm.ServerId,
-                    vm.Name));
+                    vm.Name),
+                true);
         }
     }
 }

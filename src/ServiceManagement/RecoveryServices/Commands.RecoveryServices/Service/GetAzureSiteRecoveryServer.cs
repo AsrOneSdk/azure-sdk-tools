@@ -137,7 +137,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     server.Type,
                     server.LastHeartbeat,
                     server.ProviderVersion,
-                    server.ServerVersion));
+                    server.ServerVersion),
+                true);
         }
     }
 }
