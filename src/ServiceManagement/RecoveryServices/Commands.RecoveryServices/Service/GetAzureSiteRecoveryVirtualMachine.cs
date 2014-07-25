@@ -24,6 +24,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = Default)]
+    [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
     public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";

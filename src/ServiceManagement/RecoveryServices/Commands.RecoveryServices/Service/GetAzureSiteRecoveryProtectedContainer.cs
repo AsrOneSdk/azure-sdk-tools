@@ -24,7 +24,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = Default)]
-    [OutputType (typeof(ASRProtectedContainer))]
+    [OutputType(typeof(IEnumerable<ASRProtectedContainer>))]
     public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
