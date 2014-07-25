@@ -107,6 +107,8 @@
     <Compile Include="Service\StartAzureSiteRecoveryCommitFailover.cs" />
     <Compile Include="Service\SetAzureSiteRecoveryVirtualMachine.cs" />
     <Compile Include="Service\StartAzureSiteRecoveryPlannedFailover.cs" />
+    <Compile Include="Service\StartAzureSiteRecoveryTestFailover.cs" />
+    <Compile Include="Service\StartAzureSiteRecoveryUnPlannedFailover.cs" />
     <Compile Include="Service\UpdateAzureSiteRecoveryProtection.cs" />
     <Compile Include="Service\WriteAzureSiteRecoveryVaultSettingsFile.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryJob.cs" />
