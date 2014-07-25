@@ -130,4 +130,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.ServerName = serverName;
         }
     }
+
+    public class PSJob
+    {
+        public string ID { get; set; }
+        public string State { get; set; }
+        public string Type { get; set; }
+        public bool Completed { get; set; }
+
+        public PSJob() {}
+        public PSJob(string id, string state, string type, bool completed)
+        {
+            this.ID = id;
+            this.State = state;
+            this.Type = type;
+            this.Completed = completed;
+        }
+    }
 }
