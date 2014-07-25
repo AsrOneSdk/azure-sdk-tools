@@ -34,6 +34,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private Uri serviceEndPoint;
 
         public static ResourceCredentials resourceCredentials = new ResourceCredentials();
+        public const string EnableProtection = "Enable";
+        public const string DisableProtection = "Disable";
+        public const int TimeToSleepBeforeFetchingJobDetailsAgain = 5000;
 
         public PSRecoveryServiceClient(WindowsAzureSubscription currentSubscription)
         {

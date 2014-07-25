@@ -97,6 +97,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesClient.cs" />
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesJobsClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesProtectedContainerClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesRecoveryPlanClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesServerClient.cs" />
