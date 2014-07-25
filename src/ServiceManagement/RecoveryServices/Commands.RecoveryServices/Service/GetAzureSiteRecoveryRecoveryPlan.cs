@@ -15,14 +15,15 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.WindowsAzure;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
+    using System.Collections.Generic;
     using System.Management.Automation;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = Default)]
+    [OutputType(typeof(IEnumerable<ASRRecoveryPlan>))]
     public class GetAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
@@ -31,7 +32,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #region Parameters
         /// <summary>
-        /// ID of the Virtual Machine.
+        /// ID of the Server.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -43,7 +44,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// Name of the Server.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -53,34 +54,90 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.name = value; }
         }
         private string name;
-
-        /// <summary>
-        /// ID of the Server managing the Virtual Machine.
-        /// </summary>
-        [Parameter]
-        [ValidateNotNullOrEmpty]
-        public string ServerId
-        {
-            get { return this.serverId; }
-            set { this.serverId = value; }
-        }
-        private string serverId;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
-            switch(ParameterSetName)
+            try
             {
-                case ByName:
-                    WriteObject("ByName: " + name);
-                    break;
-                case ById:
-                    WriteObject("ById: " + id);
-                    break;
-                case Default:
-                    WriteObject("none");
-                    break;
+                switch (ParameterSetName)
+                {
+                    case ByName:
+                        GetByName();
+                        break;
+                    case ById:
+                        GetById();
+                        break;
+                    case Default:
+                        GetByDefault();
+                        break;
+                }
             }
+            catch (CloudException cloudException)
+            {
+                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
+            }
+        }
+
+        private void GetByName()
+        {
+            RecoveryPlanListResponse recoveryPlanListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan();
+
+            bool found = false;
+            foreach (RecoveryPlan recoveryPlan in recoveryPlanListResponse.RecoveryPlans)
+            {
+                if(0 == string.Compare(name, recoveryPlan.Name, true))
+                {
+                    WriteRecoveryPlan(recoveryPlan);
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                    Properties.Resources.RecoveryPlanNotFound,
+                    name,
+                    PSRecoveryServiceClient.resourceCredentials.resourceName));
+            }
+        }
+
+        private void GetById()
+        {
+            RecoveryPlanResponse recoveryPlanResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan(id);
+
+            WriteRecoveryPlan(recoveryPlanResponse.RecoveryPlan);
+        }
+
+        private void GetByDefault()
+        {
+            RecoveryPlanListResponse recoveryPlanListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan();
+
+            WriteRecoveryPlans(recoveryPlanListResponse.RecoveryPlans);
+        }
+
+        private void WriteRecoveryPlans(IList<RecoveryPlan> recoveryPlans)
+        {
+            foreach (RecoveryPlan recoveryPlan in recoveryPlans)
+            {
+                WriteRecoveryPlan(recoveryPlan);
+            }
+        }
+
+        private void WriteRecoveryPlan(RecoveryPlan recoveryPlan)
+        {
+            WriteObject(
+                new ASRRecoveryPlan(
+                    recoveryPlan.ID,
+                    recoveryPlan.Name,
+                    recoveryPlan.Type,
+                    recoveryPlan.ServerId,
+                    recoveryPlan.TargetServerId),
+                true);
         }
     }
 }

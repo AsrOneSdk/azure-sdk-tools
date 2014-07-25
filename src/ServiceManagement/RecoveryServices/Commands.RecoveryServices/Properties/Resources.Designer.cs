@@ -151,6 +151,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RecoveryPlan  {0} is not associated with the Vault {1}.
+        /// </summary>
+        internal static string RecoveryPlanNotFound {
+            get {
+                return ResourceManager.GetString("RecoveryPlanNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resource name mentioned is either null or empty.
         /// </summary>
         internal static string ResourceNameNullOrEmpty {
