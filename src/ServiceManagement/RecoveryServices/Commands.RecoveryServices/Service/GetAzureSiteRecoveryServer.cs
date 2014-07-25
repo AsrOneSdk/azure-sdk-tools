@@ -15,15 +15,16 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = Default)]
-    [OutputType(typeof(IEnumerable<PSServer>))]
+    [OutputType(typeof(IEnumerable<ASRServer>))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
@@ -131,7 +132,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void WriteServer(Server server)
         {
             WriteObject(
-                new PSServer(
+                new ASRServer(
                     server.ID,
                     server.Name,
                     server.Type,

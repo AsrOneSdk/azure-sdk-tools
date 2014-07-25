@@ -15,15 +15,16 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
-    using System.Management.Automation;
     using System.Collections.Generic;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using System.Management.Automation;
     #endregion
 
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = Default)]
-    [OutputType (typeof(PSProtectedContainer))]
+    [OutputType (typeof(ASRProtectedContainer))]
     public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
@@ -147,7 +148,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void WriteProtectedContainer (ProtectedContainer protectedContainer)
         {
             WriteObject(
-                new PSProtectedContainer(
+                new ASRProtectedContainer(
                     protectedContainer.ID,
                     protectedContainer.Name,
                     protectedContainer.Type,

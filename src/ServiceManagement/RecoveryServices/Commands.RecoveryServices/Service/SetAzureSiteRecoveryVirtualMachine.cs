@@ -15,6 +15,7 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.Azure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
@@ -139,7 +140,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void writeJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new PSJob(job.ID, job.State, job.Type, job.Completed));
+            WriteObject(new ASRJob(job.ID, job.State, job.Type, job.Completed));
         }
     }
 }

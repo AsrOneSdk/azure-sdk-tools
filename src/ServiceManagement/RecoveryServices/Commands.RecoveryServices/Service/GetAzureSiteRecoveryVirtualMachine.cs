@@ -15,6 +15,7 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.Azure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
@@ -165,7 +166,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void WriteVirtualMachine(VirtualMachine vm)
         {
             WriteObject(
-                new PSVirtualMachine(
+                new ASRVirtualMachine(
                     vm.ID,
                     vm.Name,
                     vm.Type,

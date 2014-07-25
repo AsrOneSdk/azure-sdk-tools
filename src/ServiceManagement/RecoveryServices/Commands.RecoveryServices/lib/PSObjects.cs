@@ -12,29 +12,29 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-namespace Microsoft.Azure.Commands.RecoveryServices
+namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 {
     #region Using directives
     using System;
     using System.Runtime.Serialization;
     #endregion
 
-    public class PSVaultSettings
+    public class ASRVaultSettings
     {
         #region Properties
         public string ResourceName { get; set; }
         public string CloudServiceName { get; set; }
         #endregion Properties
 
-        public PSVaultSettings() { }
-        public PSVaultSettings(string resourceName, string cloudServiceName)
+        public ASRVaultSettings() { }
+        public ASRVaultSettings(string resourceName, string cloudServiceName)
         {
             ResourceName = resourceName;
             CloudServiceName = cloudServiceName;
         }
     }
 
-    public class PSServer
+    public class ASRServer
     {
         #region Properties
         public string ServerId { get; set; }
@@ -45,8 +45,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string ServerVersion { get; set; }
         #endregion
 
-        public PSServer() { }
-        public PSServer(
+        public ASRServer() { }
+        public ASRServer(
             string serverId,
             string name,
             string type,
@@ -63,7 +63,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
     }
 
-    public class PSProtectedContainer
+    public class ASRProtectedContainer
     {
         #region Properties
         public string ProtectedContainerId { get; set; }
@@ -75,8 +75,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string ServerId { get; set; }
         #endregion
 
-        public PSProtectedContainer() { }
-        public PSProtectedContainer(
+        public ASRProtectedContainer() { }
+        public ASRProtectedContainer(
             string protectedContainerId,
             string name,
             string type,
@@ -95,7 +95,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
     }
 
-    public class PSVirtualMachine
+    public class ASRVirtualMachine
     {
         public string VirtualMachineId { get; set; }
         public string Name { get; set; }
@@ -107,8 +107,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string ServerId { get; set; }
         public string ServerName { get; set; }
 
-        public PSVirtualMachine() { }
-        public PSVirtualMachine(
+        public ASRVirtualMachine() { }
+        public ASRVirtualMachine(
             string virtualMachineId,
             string name,
             string type,
@@ -131,15 +131,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
     }
 
-    public class PSJob
+    public class ASRJob
     {
         public string ID { get; set; }
         public string State { get; set; }
         public string Type { get; set; }
         public bool Completed { get; set; }
 
-        public PSJob() {}
-        public PSJob(string id, string state, string type, bool completed)
+        public ASRJob() {}
+        public ASRJob(string id, string state, string type, bool completed)
         {
             this.ID = id;
             this.State = state;

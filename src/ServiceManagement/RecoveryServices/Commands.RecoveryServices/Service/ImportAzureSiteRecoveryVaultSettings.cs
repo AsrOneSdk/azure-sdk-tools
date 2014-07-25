@@ -15,6 +15,7 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
@@ -27,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     [Cmdlet(VerbsData.Import, "AzureSiteRecoveryVaultSettingsFile")]
-    [OutputType(typeof(PSVaultSettings))]
+    [OutputType(typeof(ASRVaultSettings))]
     public class ImportAzureSiteRecoveryVaultSettingsFile : RecoveryServicesCmdletBase
     {
         #region Parameters
@@ -104,7 +105,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     resourceCredentials.cloudServiceName);
 
                 this.ImportAzureSiteRecoveryVaultSettings(resourceCredentials);
-                WriteObject(new PSVaultSettings(
+                WriteObject(new ASRVaultSettings(
                     resourceCredentials.resourceName, 
                     resourceCredentials.cloudServiceName));
             }
