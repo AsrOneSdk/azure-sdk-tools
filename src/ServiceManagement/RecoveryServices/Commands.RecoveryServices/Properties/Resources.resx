@@ -147,6 +147,9 @@
   <data name="ProtectedContainerNotFound" xml:space="preserve">
     <value>Protected Container {0} is not associated with the Server {1}</value>
   </data>
+  <data name="RecoveryPlanNotFound" xml:space="preserve">
+    <value>RecoveryPlan  {0} is not associated with the Vault {1}</value>
+  </data>
   <data name="ResourceNameNullOrEmpty" xml:space="preserve">
     <value>Resource name mentioned is either null or empty</value>
   </data>
