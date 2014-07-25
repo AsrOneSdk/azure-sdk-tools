@@ -25,11 +25,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     /// <summary>
-    /// Used to initiate a reprotect operation.
+    /// Used to initiate a commit operation.
     /// </summary>
-    [Cmdlet(VerbsData.Update, "AzureSiteRecoveryProtection")]
+    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryPlannedFailover")]
     [OutputType(typeof(Microsoft.Azure.Management.SiteRecovery.Models.Job))]
-    public class UpdateAzureSiteRecoveryProtection : RecoveryServicesCmdletBase
+    public class StartAzureSiteRecoveryPlannedFailover : RecoveryServicesCmdletBase
     {
         protected const string ByRpId = "ByRpId";
         protected const string ByVmId = "ByVmId";
@@ -46,6 +46,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.rpId = value; }
         }
         private string rpId;
+
+        /// <summary>
+        /// Failover direction for the recovery plan.
+        /// </summary>
+        [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string FailoverDirection
+        {
+            get { return this.failoverDirection; }
+            set { this.failoverDirection = value; }
+        }
+        private string failoverDirection;
 
         /// <summary>
         /// This is required to wait for job completion.
@@ -69,7 +81,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 switch (ParameterSetName)
                 {
                     case ByRpId:
-                        SetRpReprotect();
+                        StartRpPlannedFailover();
                         break;
                 }
             }
@@ -86,9 +98,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             stopProcessing = true;
         }
 
-        private void SetRpReprotect()
+        private void StartRpPlannedFailover()
         {
-            jobResponse = RecoveryServicesClient.UpdateAzureSiteRecoveryProtection(this.RpId);
+            RpPlannedFailoverRequest rpPlannedFailoverRequest = new RpPlannedFailoverRequest();
+            rpPlannedFailoverRequest.FailoverDirection = this.FailoverDirection;
+            jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryPlannedFailover(
+                this.RpId, 
+                rpPlannedFailoverRequest);
 
             writeJob(jobResponse.Job);
 

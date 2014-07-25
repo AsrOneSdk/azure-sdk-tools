@@ -48,7 +48,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string rpId;
 
         /// <summary>
-        /// Bool value to either to say either enable or disable protection.
+        /// This is required to wait for job completion.
         /// </summary>
         [Parameter]
         public SwitchParameter WaitForCompletion
