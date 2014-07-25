@@ -104,7 +104,9 @@
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMClient.cs" />
     <Compile Include="RecoveryServicesCmdletBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\StartAzureSiteRecoveryCommitFailover.cs" />
     <Compile Include="Service\SetAzureSiteRecoveryVirtualMachine.cs" />
+    <Compile Include="Service\UpdateAzureSiteRecoveryProtection.cs" />
     <Compile Include="Service\WriteAzureSiteRecoveryVaultSettingsFile.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectedContainer.cs" />

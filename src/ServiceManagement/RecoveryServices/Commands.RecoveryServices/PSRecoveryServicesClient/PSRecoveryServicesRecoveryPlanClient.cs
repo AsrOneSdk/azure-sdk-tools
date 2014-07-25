@@ -32,5 +32,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             return GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId);
         }
+
+        public JobResponse StartAzureSiteRecoveryCommitFailover(string recoveryPlanId)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId);
+        }
+
+        public JobResponse UpdateAzureSiteRecoveryProtection(string recoveryPlanId)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId);
+        }
     }
 }
