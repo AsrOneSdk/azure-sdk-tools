@@ -61,6 +61,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.cloudSeriveName = value; }
         }
         private string cloudSeriveName;
+
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string VaultKey
+        {
+            get { return this.vaultKey; }
+            set { this.vaultKey = value; }
+        }
+        private string vaultKey;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -71,6 +80,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             ResourceCredentials resourceCredentials = new ResourceCredentials();
             resourceCredentials.resourceName = resourceName;
             resourceCredentials.cloudServiceName = cloudSeriveName;
+            resourceCredentials.key = vaultKey;
 
             string tempFilePath;
             var settings = new XmlWriterSettings { Indent = true, CloseOutput = true };

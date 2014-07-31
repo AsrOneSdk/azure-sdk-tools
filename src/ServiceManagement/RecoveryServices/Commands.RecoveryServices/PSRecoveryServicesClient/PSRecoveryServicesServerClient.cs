@@ -21,7 +21,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System;
     #endregion
 
-    public partial class PSRecoveryServiceClient
+    public partial class PSRecoveryServicesClient
     {
         public ServerListResponse GetAzureSiteRecoveryServer()
         {

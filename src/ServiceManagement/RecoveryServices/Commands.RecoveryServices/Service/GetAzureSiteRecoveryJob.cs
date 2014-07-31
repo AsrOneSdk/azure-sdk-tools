@@ -24,7 +24,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         #region Parameters
 
-
         /// <summary>
         /// Job ID.
         /// </summary>
@@ -84,9 +83,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
-            WriteObject("ID: " + id);
-            WriteObject("Start time: " + starttime);
-            WriteObject("State: " + state);
+            // TODO: sanjkuma
         }
     }
 }

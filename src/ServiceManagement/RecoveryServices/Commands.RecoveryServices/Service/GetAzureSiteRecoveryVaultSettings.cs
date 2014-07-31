@@ -30,8 +30,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public override void ExecuteCmdlet()
         {
             WriteObject(new ASRVaultSettings(
-                PSRecoveryServiceClient.resourceCredentials.resourceName,
-                PSRecoveryServiceClient.resourceCredentials.cloudServiceName));
+                PSRecoveryServicesClient.resourceCredentials.resourceName,
+                PSRecoveryServicesClient.resourceCredentials.cloudServiceName));
         }
     }
 }

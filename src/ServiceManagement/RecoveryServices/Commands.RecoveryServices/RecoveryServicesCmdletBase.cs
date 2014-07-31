@@ -25,14 +25,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// abstract ?
     public abstract class RecoveryServicesCmdletBase : CmdletWithSubscriptionBase
     {
-        private PSRecoveryServiceClient recoveryServicesClient;
-        internal PSRecoveryServiceClient RecoveryServicesClient
+        private PSRecoveryServicesClient recoveryServicesClient;
+        internal PSRecoveryServicesClient RecoveryServicesClient
         {
             get
             {
                 if (recoveryServicesClient == null)
                 {
-                    recoveryServicesClient = new PSRecoveryServiceClient(CurrentSubscription);
+                    recoveryServicesClient = new PSRecoveryServicesClient(CurrentSubscription);
                 }
                 return recoveryServicesClient;
             }

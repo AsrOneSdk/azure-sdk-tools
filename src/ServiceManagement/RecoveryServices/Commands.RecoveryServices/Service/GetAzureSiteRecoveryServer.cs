@@ -101,7 +101,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     string.Format(
                     Properties.Resources.ServerNotFound,
                     name,
-                    PSRecoveryServiceClient.resourceCredentials.resourceName));
+                    PSRecoveryServicesClient.resourceCredentials.resourceName));
             }
         }
 

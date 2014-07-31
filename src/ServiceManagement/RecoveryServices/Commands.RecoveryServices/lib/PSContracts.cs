@@ -16,8 +16,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using System;
+    using System.Collections.Generic;
     using System.Runtime.Serialization;
     using System.Security.Cryptography.X509Certificates;
+    using System.Text;
     #endregion
 
     public class ResourceCredentials
@@ -127,5 +129,84 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         [DataMember]
         public string ActivityId { get; set; }
+    }
+
+    /// <summary>
+    /// CIK token details.
+    /// </summary>
+    [DataContract]
+    public class CikTokenDetails
+    {
+
+        /// <summary>
+        /// Gets or sets the timestamp before which the token is not valid.
+        /// </summary>
+        [DataMember]
+        public DateTime NotBeforeTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timestamp after which the token is not valid.
+        /// </summary>
+        [DataMember]
+        public DateTime NotAfterTimestamp { get; set; }
+
+        /// <summary>
+        /// The client request Id for the operation linked with this CIK token.
+        /// </summary>
+        [DataMember]
+        public string ClientRequestId { get; set; }
+
+        /// <summary>
+        /// Hash function used to calculate the Hmac.
+        /// </summary>
+        [DataMember]
+        public string HashFunction { get; set; }
+
+        /// <summary>
+        /// The Hmac generated using the CIK key.
+        /// </summary>
+        [DataMember]
+        public string Hmac { get; set; }
+
+        /// <summary>
+        /// Data contract version.
+        /// </summary>
+        [DataMember(Name = "Version")]
+        public Version Version { get; set; }
+
+        /// <summary>
+        /// This property bag is introduced to support addition of any new 
+        /// property in data contract without breaking the existing clients.
+        /// If any new property needs to be introduced in the contract, 
+        /// add a key value pair for it in this dictionary. 
+        /// </summary>
+        [DataMember]
+        public Dictionary<string, object> PropertyBag { get; set; }
+
+        /// <summary>
+        /// Converts the object into string.
+        /// </summary>
+        /// <returns>The string representation.</returns>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("NotBeforeTimestamp: " + NotBeforeTimestamp);
+            sb.AppendLine("NotAfterTimestamp: " + NotAfterTimestamp);
+            sb.AppendLine("ClientRequestId: " + ClientRequestId);
+            sb.AppendLine("Hmac: " + Hmac);
+            return sb.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Hash functions which can be used to calculate CIK hmac.
+    /// </summary>
+    public enum CikSupportedHashFunctions
+    {
+        HMACSHA256,
+
+        HMACSHA384,
+
+        HMACSHA512
     }
 }

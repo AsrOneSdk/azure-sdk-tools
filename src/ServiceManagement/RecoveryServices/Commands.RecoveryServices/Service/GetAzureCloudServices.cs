@@ -15,6 +15,7 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Management.RecoveryServices.Models;
     using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;

@@ -15,18 +15,24 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Management.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
+    using Microsoft.Azure.Management.RecoveryServices;
+    using Microsoft.Azure.Management.RecoveryServices.Models;
+    using Microsoft.Azure.Management.SiteRecovery;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
     using System.IO;
     using System.Runtime.Serialization;
+    using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
+    using System.Text;
     using System.Xml;
+    using System.Web.Script.Serialization;
+    using System.Collections.Generic;
     #endregion
 
-    public partial class PSRecoveryServiceClient
+    public partial class PSRecoveryServicesClient
     {
         private RecoveryServicesManagementClient recoveryServicesClient;
         private string subscriptionId;
@@ -34,11 +40,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private Uri serviceEndPoint;
 
         public static ResourceCredentials resourceCredentials = new ResourceCredentials();
-        public const string EnableProtection = "Enable";
-        public const string DisableProtection = "Disable";
         public const int TimeToSleepBeforeFetchingJobDetailsAgain = 5000;
 
-        public PSRecoveryServiceClient(WindowsAzureSubscription currentSubscription)
+        public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
             recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
@@ -46,7 +50,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             certificate = currentSubscription.Certificate;
             serviceEndPoint = currentSubscription.ServiceEndpoint;
         }
-        public PSRecoveryServiceClient() { }
+        public PSRecoveryServicesClient() { }
 
         public CloudServiceListResponse GetAzureCloudServicesSyncInt()
         {
@@ -122,7 +126,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return siteRecoveryClient;
         }
 
-        public bool ValidateVaultSettings(string resourceName, string cloudServiceName, CloudServiceListResponse services = null)
+        public bool ValidateVaultSettings(
+            string resourceName,
+            string cloudServiceName,
+            CloudServiceListResponse services = null)
         {
 
             if (string.IsNullOrEmpty(resourceName) || string.IsNullOrEmpty(cloudServiceName))
@@ -205,6 +212,35 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 psError.Message, "\n",
                 psError.PossibleCauses, "\n",
                 psError.RecommendedAction));
+        }
+
+        public void GenerateAgentAuthenticationHeader(
+            out string agentAuthenticationHeader,
+            out string clientRequestId)
+        {
+            CikTokenDetails cikTokenDetails = new CikTokenDetails();
+
+            DateTime currentDateTime = DateTime.Now;
+            currentDateTime = currentDateTime.AddHours(-1);
+            cikTokenDetails.NotBeforeTimestamp = TimeZoneInfo.ConvertTimeToUtc(currentDateTime);
+            cikTokenDetails.NotAfterTimestamp = cikTokenDetails.NotBeforeTimestamp.AddHours(6);
+            cikTokenDetails.ClientRequestId =
+                // "PS_" + Guid.NewGuid().ToString() + "_" + DateTime.Now.ToString();
+                // "PS_" + Guid.NewGuid().ToString();
+                "2e9658f8-d222-4aca-a983-92d591749573-2014-07-25 10:08:27Z";
+
+            string shaInput = new JavaScriptSerializer().Serialize(cikTokenDetails);
+
+            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(resourceCredentials.key));
+            cikTokenDetails.Hmac =
+                Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(shaInput)));
+            cikTokenDetails.HashFunction = CikSupportedHashFunctions.HMACSHA256.ToString();
+            cikTokenDetails.Version = new Version(1, 2);
+            cikTokenDetails.PropertyBag = new Dictionary<string, object>();
+
+
+            agentAuthenticationHeader = new JavaScriptSerializer().Serialize(cikTokenDetails);
+            clientRequestId = cikTokenDetails.ClientRequestId;
         }
     }
 }

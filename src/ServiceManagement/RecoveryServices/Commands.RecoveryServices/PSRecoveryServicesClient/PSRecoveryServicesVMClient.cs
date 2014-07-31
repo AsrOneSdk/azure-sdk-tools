@@ -21,8 +21,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System;
     #endregion
 
-    public partial class PSRecoveryServiceClient
+    public partial class PSRecoveryServicesClient
     {
+        public const string EnableProtection = "Enable";
+        public const string DisableProtection = "Disable";
+
         public VirtualMachineListResponse GetAzureSiteRecoveryVirtualMachine(
             string serverId,
             string protectedContainerId)
@@ -44,6 +47,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string virtualMachineId,
             string protection)
         {
+
+            string agentAuthenticationHeader = string.Empty;
+            string clientRequestId = string.Empty;
+            GenerateAgentAuthenticationHeader(out agentAuthenticationHeader, out clientRequestId);
+
+            RequestHeaders requestHeaders = new RequestHeaders();
+            requestHeaders.AgentAuthenticationHeader = agentAuthenticationHeader;
+            requestHeaders.ClientRequestId = clientRequestId;
+            
             JobResponse jobResponse = null;
 
             if(0 == string.Compare(EnableProtection, protection, true))
@@ -52,7 +64,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     GetSiteRecoveryClient().Vm.EnableProtection(
                     serverId,
                     protectedContainerId,
-                    virtualMachineId);
+                    virtualMachineId,
+                    requestHeaders);
             }
             else if(0 == string.Compare(DisableProtection, protection, true))
             {

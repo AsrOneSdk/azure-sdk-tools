@@ -100,7 +100,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     string.Format(
                     Properties.Resources.RecoveryPlanNotFound,
                     name,
-                    PSRecoveryServiceClient.resourceCredentials.resourceName));
+                    PSRecoveryServicesClient.resourceCredentials.resourceName));
             }
         }
 

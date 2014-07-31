@@ -21,7 +21,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.Azure.Management.SiteRecovery.Models;
     #endregion
 
-    public partial class PSRecoveryServiceClient
+    public partial class PSRecoveryServicesClient
     {
         public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(
             string serverId)

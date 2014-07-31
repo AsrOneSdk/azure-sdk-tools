@@ -75,8 +75,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         [ValidateSet(
-            PSRecoveryServiceClient.EnableProtection,
-            PSRecoveryServiceClient.DisableProtection)]
+            PSRecoveryServicesClient.EnableProtection,
+            PSRecoveryServicesClient.DisableProtection)]
         public string Protection
         {
             get { return this.protection; }
@@ -120,7 +120,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         break;
                     }
 
-                    Thread.Sleep(PSRecoveryServiceClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                    Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
                     jobResponse = RecoveryServicesClient.GetJobDetails(jobResponse.Job.ID);
                     WriteObject("JobState: " + jobResponse.Job.State);
                 }
