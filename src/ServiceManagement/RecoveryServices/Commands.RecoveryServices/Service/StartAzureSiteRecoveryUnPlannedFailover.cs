@@ -111,7 +111,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void StartRpUnPlannedFailover()
         {
-            RpUnPlannedFailoverRequest rpUnPlannedFailoverRequest = new RpUnPlannedFailoverRequest();
+            RpUnplannedFailoverRequest rpUnPlannedFailoverRequest = new RpUnplannedFailoverRequest();
             rpUnPlannedFailoverRequest.FailoverDirection = this.FailoverDirection;
             rpUnPlannedFailoverRequest.PrimaryAction = this.PrimaryAction;
             jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryUnPlannedFailover(

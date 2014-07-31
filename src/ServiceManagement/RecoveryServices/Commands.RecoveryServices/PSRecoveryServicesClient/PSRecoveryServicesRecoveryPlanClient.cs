@@ -54,7 +54,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public JobResponse StartAzureSiteRecoveryUnPlannedFailover(
             string recoveryPlanId,
-            RpUnPlannedFailoverRequest rpUnPlannedFailoverRequest)
+            RpUnplannedFailoverRequest rpUnPlannedFailoverRequest)
         {
             return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnPlannedFailover(
                 recoveryPlanId,
