@@ -117,12 +117,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
         {
-            PSRecoveryServicesClient.resourceCredentials.ResourceName =
-                resourceCredentials.ResourceName;
-            PSRecoveryServicesClient.resourceCredentials.CloudServiceName =
-                resourceCredentials.CloudServiceName;
-            PSRecoveryServicesClient.resourceCredentials.Key =
-                resourceCredentials.Key;
+            Object updateVaultSettingsOneAtATime = new Object();
+            lock (updateVaultSettingsOneAtATime)
+            {
+                PSRecoveryServicesClient.resourceCredentials.ResourceName =
+                    resourceCredentials.ResourceName;
+                PSRecoveryServicesClient.resourceCredentials.CloudServiceName =
+                    resourceCredentials.CloudServiceName;
+                PSRecoveryServicesClient.resourceCredentials.Key =
+                    resourceCredentials.Key;
+            }
         }
     }
 }
