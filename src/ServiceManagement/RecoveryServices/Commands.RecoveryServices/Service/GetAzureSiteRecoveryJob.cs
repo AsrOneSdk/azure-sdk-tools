@@ -15,6 +15,8 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
     using System;
     using System.Management.Automation;
     #endregion
@@ -22,12 +24,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryJob")]
     public class GetAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
+        protected const string ById = "ById";
+        protected const string ByStartTime = "ByStartTime";
+        protected const string ByState = "ByState";
+
         #region Parameters
 
         /// <summary>
         /// Job ID.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -39,7 +45,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Allows to filter the list of jobs started after the given starttime.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = ByStartTime, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public System.DateTime StartTime
         {
@@ -52,7 +58,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Take string input for possible States of ASR Job. Use this parameter to get filtered 
         /// view of Jobs
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = ByState, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         // Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
         [ValidateSet(
@@ -79,11 +85,40 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.state = value; }
         }
         private string state;
+
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
-            // TODO: sanjkuma
+            try
+            {
+                switch (ParameterSetName)
+                {
+                    case ById:
+                        GetById();
+                        break;
+                    case ByStartTime:
+                        // TODO: Sanjeev
+                        break;
+                    case ByState:
+                        // TODO: Sanjeev
+                        break;
+                }
+            }
+            catch (CloudException cloudException)
+            {
+                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
+            }
+        }
+
+        private void GetById()
+        {
+            WriteJob(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(id).Job);
+        }
+
+        private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
+        {
+            WriteObject(new ASRJob(job.ID, job.State, job.Completed));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
     public partial class PSRecoveryServicesClient
     {
-        public JobResponse GetJobDetails(string jobId)
+        public JobResponse GetAzureSiteRecoveryJobDetails(string jobId)
         {
             return GetSiteRecoveryClient().Jobs.Get(jobId);
         }

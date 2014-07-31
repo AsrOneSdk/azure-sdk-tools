@@ -117,14 +117,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 }
 
                 Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                jobResponse = RecoveryServicesClient.GetJobDetails(jobResponse.Job.ID);
+                jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobResponse.Job.ID);
                 WriteObject("JobState: " + jobResponse.Job.State);
             }
         }
 
         private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new ASRJob(job.ID, job.State, job.Type, job.Completed));
+            WriteObject(new ASRJob(job.ID, job.State, job.Completed));
         }
     }
 }

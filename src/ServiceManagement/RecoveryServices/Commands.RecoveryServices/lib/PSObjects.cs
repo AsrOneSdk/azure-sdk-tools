@@ -135,15 +135,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
     {
         public string ID { get; set; }
         public string State { get; set; }
-        public string Type { get; set; }
         public bool Completed { get; set; }
 
         public ASRJob() {}
-        public ASRJob(string id, string state, string type, bool completed)
+        public ASRJob(string id, string state, bool completed)
         {
             this.ID = id;
             this.State = state;
-            this.Type = type;
             this.Completed = completed;
         }
     }
