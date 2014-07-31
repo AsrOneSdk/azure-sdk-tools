@@ -78,9 +78,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             stream.Close();
 
             ResourceCredentials resourceCredentials = new ResourceCredentials();
-            resourceCredentials.resourceName = resourceName;
-            resourceCredentials.cloudServiceName = cloudSeriveName;
-            resourceCredentials.key = vaultKey;
+            resourceCredentials.ResourceName = resourceName;
+            resourceCredentials.CloudServiceName = cloudSeriveName;
+            resourceCredentials.Key = vaultKey;
 
             string tempFilePath;
             var settings = new XmlWriterSettings { Indent = true, CloseOutput = true };

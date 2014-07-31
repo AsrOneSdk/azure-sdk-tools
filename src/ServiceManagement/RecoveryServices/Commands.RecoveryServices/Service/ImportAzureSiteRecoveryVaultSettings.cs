@@ -85,29 +85,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
 
             // Validate required parameters taken from the Vault settings file.
-            if (string.IsNullOrEmpty(resourceCredentials.resourceName))
+            if (string.IsNullOrEmpty(resourceCredentials.ResourceName))
             {
                 throw new ArgumentException(
                     Properties.Resources.ResourceNameNullOrEmpty, 
-                    resourceCredentials.resourceName);
+                    resourceCredentials.ResourceName);
             }
 
-            if (string.IsNullOrEmpty(resourceCredentials.cloudServiceName))
+            if (string.IsNullOrEmpty(resourceCredentials.CloudServiceName))
             {
                 throw new ArgumentException(
                     Properties.Resources.CloudServiceNameNullOrEmpty,
-                    resourceCredentials.cloudServiceName);
+                    resourceCredentials.CloudServiceName);
             }
             try
             {
                 RecoveryServicesClient.ValidateVaultSettings(
-                    resourceCredentials.resourceName, 
-                    resourceCredentials.cloudServiceName);
+                    resourceCredentials.ResourceName, 
+                    resourceCredentials.CloudServiceName);
 
                 this.ImportAzureSiteRecoveryVaultSettings(resourceCredentials);
                 WriteObject(new ASRVaultSettings(
-                    resourceCredentials.resourceName, 
-                    resourceCredentials.cloudServiceName));
+                    resourceCredentials.ResourceName, 
+                    resourceCredentials.CloudServiceName));
             }
             catch (CloudException cloudException)
             {
@@ -117,12 +117,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
         {
-            PSRecoveryServicesClient.resourceCredentials.resourceName =
-                resourceCredentials.resourceName;
-            PSRecoveryServicesClient.resourceCredentials.cloudServiceName =
-                resourceCredentials.cloudServiceName;
-            PSRecoveryServicesClient.resourceCredentials.key =
-                resourceCredentials.key;
+            PSRecoveryServicesClient.resourceCredentials.ResourceName =
+                resourceCredentials.ResourceName;
+            PSRecoveryServicesClient.resourceCredentials.CloudServiceName =
+                resourceCredentials.CloudServiceName;
+            PSRecoveryServicesClient.resourceCredentials.Key =
+                resourceCredentials.Key;
         }
     }
 }

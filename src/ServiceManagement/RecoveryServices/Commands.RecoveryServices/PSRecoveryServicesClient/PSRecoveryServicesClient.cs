@@ -61,8 +61,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
             this.ValidateVaultSettings(
-                resourceCredentials.resourceName,
-                resourceCredentials.cloudServiceName,
+                resourceCredentials.ResourceName,
+                resourceCredentials.CloudServiceName,
                 services);
 
             string stampId = string.Empty;
@@ -71,7 +71,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             foreach (CloudService cloudService in services)
             {
-                if (cloudService.Name == resourceCredentials.cloudServiceName)
+                if (cloudService.Name == resourceCredentials.CloudServiceName)
                 {
                     selectedCloudService = cloudService;
                 }
@@ -84,7 +84,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             foreach (Vault vault in selectedCloudService.Resources)
             {
-                if (vault.Name == resourceCredentials.resourceName)
+                if (vault.Name == resourceCredentials.ResourceName)
                 {
                     selectedResource = vault;
                 }
@@ -110,8 +110,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             SiteRecoveryManagementClient siteRecoveryClient = 
                 new SiteRecoveryManagementClient(
-                    resourceCredentials.cloudServiceName,
-                    resourceCredentials.resourceName,
+                    resourceCredentials.CloudServiceName,
+                    resourceCredentials.ResourceName,
                     stampId, 
                     new CertificateCloudCredentials(
                         subscriptionId, 
@@ -231,7 +231,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             string shaInput = new JavaScriptSerializer().Serialize(cikTokenDetails);
 
-            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(resourceCredentials.key));
+            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(resourceCredentials.Key));
             cikTokenDetails.Hmac =
                 Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(shaInput)));
             cikTokenDetails.HashFunction = CikSupportedHashFunctions.HMACSHA256.ToString();

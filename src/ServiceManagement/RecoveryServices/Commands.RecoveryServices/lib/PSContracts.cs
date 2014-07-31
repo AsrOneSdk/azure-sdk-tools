@@ -27,42 +27,42 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets the version of the security configuration version.
         /// </summary>
-        public string version { get; set; }
+        public string Version { get; set; }
 
         /// <summary>
         /// Gets or sets the value for ACIK
         /// </summary>
-        public string key { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// Gets or sets the resource certificate
         /// </summary>
-        public X509Certificate resourceCertificate { get; set; }
+        public X509Certificate ResourceCertificate { get; set; }
 
         /// <summary>
         /// Gets or sets the password for the resource certificate.
         /// </summary>
-        public string password { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Gets or sets the password for the resource certificate.
         /// </summary>
-        public string certificateThumbprint { get; set; }
+        public string CertificateThumbprint { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the resource name.
         /// </summary>
-        public string resourceName { get; set; }
+        public string ResourceName { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the cloud service name.
         /// </summary>
-        public string cloudServiceName { get; set; }
+        public string CloudServiceName { get; set; }
         
         /// <summary>
         /// Gets or sets the value for expiry date of the credential file.
         /// </summary>
-        public DateTime notAfter { get; set; }
+        public DateTime NotAfter { get; set; }
     }
 
     /// <summary>

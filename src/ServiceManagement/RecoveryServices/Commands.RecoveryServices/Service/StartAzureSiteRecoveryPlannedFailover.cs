@@ -106,7 +106,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 this.RpId, 
                 rpPlannedFailoverRequest);
 
-            writeJob(jobResponse.Job);
+            WriteJob(jobResponse.Job);
 
             string jobId = jobResponse.Job.ID;
             while (waitForCompletion)
@@ -116,13 +116,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     break;
                 }
 
-                Thread.Sleep(PSRecoveryServiceClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
                 jobResponse = RecoveryServicesClient.GetJobDetails(jobResponse.Job.ID);
                 WriteObject("JobState: " + jobResponse.Job.State);
             }
         }
 
-        private void writeJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
+        private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
         {
             WriteObject(new ASRJob(job.ID, job.State, job.Type, job.Completed));
         }
