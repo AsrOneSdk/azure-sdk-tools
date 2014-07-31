@@ -32,5 +32,42 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             return GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId);
         }
+
+        public JobResponse StartAzureSiteRecoveryCommitFailover(string recoveryPlanId)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId);
+        }
+
+        public JobResponse UpdateAzureSiteRecoveryProtection(string recoveryPlanId)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId);
+        }
+
+        public JobResponse StartAzureSiteRecoveryPlannedFailover(
+            string recoveryPlanId, 
+            RpPlannedFailoverRequest rpPlannedFailoverRequest)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanPlannedFailover(
+                recoveryPlanId, 
+                rpPlannedFailoverRequest);
+        }
+
+        public JobResponse StartAzureSiteRecoveryUnPlannedFailover(
+            string recoveryPlanId,
+            RpUnPlannedFailoverRequest rpUnPlannedFailoverRequest)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnPlannedFailover(
+                recoveryPlanId,
+                rpUnPlannedFailoverRequest);
+        }
+
+        public JobResponse StartAzureSiteRecoveryTestFailover(
+            string recoveryPlanId,
+            RpTestFailoverRequest rpTestFailoverRequest)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanTestFailover(
+                recoveryPlanId,
+                rpTestFailoverRequest);
+        }
     }
 }
