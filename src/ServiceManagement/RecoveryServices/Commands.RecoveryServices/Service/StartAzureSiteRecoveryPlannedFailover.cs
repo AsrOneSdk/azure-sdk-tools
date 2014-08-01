@@ -51,7 +51,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Failover direction for the recovery plan.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
-        [ValidateNotNullOrEmpty]
+        [ValidateSet(
+            PSRecoveryServicesClient.PrimaryToSecondary,
+            PSRecoveryServicesClient.SecondaryToPrimary)]
         public string FailoverDirection
         {
             get { return this.failoverDirection; }

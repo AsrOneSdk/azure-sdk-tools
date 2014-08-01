@@ -51,7 +51,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Failover direction for the recovery plan.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
-        [ValidateNotNullOrEmpty]
+        [ValidateSet(
+          PSRecoveryServicesClient.PrimaryToSecondary,
+          PSRecoveryServicesClient.SecondaryToPrimary)]
         public string FailoverDirection
         {
             get { return this.failoverDirection; }
@@ -63,6 +65,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets a value indicating whether primary site actions are required or not.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = false)]
+        [ValidateSet("$true", "$false", "$TRUE", "$FALSE")]
         public bool PrimaryAction
         {
             get { return this.primaryAction; }

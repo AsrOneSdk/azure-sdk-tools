@@ -23,6 +23,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
     public partial class PSRecoveryServicesClient
     {
+        public const string PrimaryToSecondary = "PrimaryToSecondary";
+        public const string SecondaryToPrimary = "SecondaryToPrimary";
+
         public RecoveryPlanListResponse GetAzureSiteRecoveryRecoveryPlan()
         {
             return GetSiteRecoveryClient().RecoveryPlan.List();
