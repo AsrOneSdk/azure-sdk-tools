@@ -65,7 +65,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets a value indicating whether primary site actions are required or not.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = false)]
-        [ValidateSet("$true", "$false", "$TRUE", "$FALSE")]
         public bool PrimaryAction
         {
             get { return this.primaryAction; }
