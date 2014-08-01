@@ -38,7 +38,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
+        [Parameter(ParameterSetName = ByRpId, Mandatory = true, ValueFromPipelineByPropertyName=true)]
         [ValidateNotNullOrEmpty]
         public string RpId
         {

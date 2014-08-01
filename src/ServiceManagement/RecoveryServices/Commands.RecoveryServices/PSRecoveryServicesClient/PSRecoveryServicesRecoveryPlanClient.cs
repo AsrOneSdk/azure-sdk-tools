@@ -52,11 +52,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 rpPlannedFailoverRequest);
         }
 
-        public JobResponse StartAzureSiteRecoveryUnPlannedFailover(
+        public JobResponse StartAzureSiteRecoveryUnplannedFailover(
             string recoveryPlanId,
             RpUnplannedFailoverRequest rpUnPlannedFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnPlannedFailover(
+            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnplannedFailover(
                 recoveryPlanId,
                 rpUnPlannedFailoverRequest);
         }

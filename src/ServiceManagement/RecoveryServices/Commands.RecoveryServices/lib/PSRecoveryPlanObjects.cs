@@ -22,7 +22,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class ASRRecoveryPlan
     {
          #region Properties
-        public string Id { get; set; }
+        public string RpId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string ServerId { get; set; }
@@ -31,13 +31,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public ASRRecoveryPlan() { }
         public ASRRecoveryPlan(
-            string id,
+            string rpId,
             string name,
             string type,
             string serverId,
             string targetServerId)
         {
-            this.Id = id;
+            this.RpId = rpId;
             this.Name = name;
             this.Type = type;
             this.ServerId = serverId;
