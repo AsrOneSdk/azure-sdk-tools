@@ -30,7 +30,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string serverId,
             string protectedContainerId)
         {
-            return GetSiteRecoveryClient().Vm.List(serverId, protectedContainerId);
+            return GetSiteRecoveryClient().Vm.List(serverId, protectedContainerId, GetRequestHeaders());
         }
 
         public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
@@ -38,7 +38,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string protectedContainerId,
             string virtualMachineId)
         {
-            return GetSiteRecoveryClient().Vm.Get(serverId, protectedContainerId, virtualMachineId);
+            return GetSiteRecoveryClient().Vm.Get(serverId, protectedContainerId, virtualMachineId, GetRequestHeaders());
         }
 
         public JobResponse SetProtectionOnVirtualMachine(
@@ -48,17 +48,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string protection)
         {
 
-            string agentAuthenticationHeader = string.Empty;
-            string clientRequestId = string.Empty;
-            GenerateAgentAuthenticationHeader(out agentAuthenticationHeader, out clientRequestId);
-
-            RequestHeaders requestHeaders = new RequestHeaders();
-            requestHeaders.AgentAuthenticationHeader = agentAuthenticationHeader;
-            requestHeaders.ClientRequestId = clientRequestId;
+            var requestHeaders = GetRequestHeaders();
+            requestHeaders.AgentAuthenticationHeader = GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
             
             JobResponse jobResponse = null;
 
-            if(0 == string.Compare(EnableProtection, protection, true))
+            if(0 == String.Compare(EnableProtection, protection, StringComparison.OrdinalIgnoreCase))
             {
                 jobResponse =
                     GetSiteRecoveryClient().Vm.EnableProtection(
@@ -67,13 +62,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     virtualMachineId,
                     requestHeaders);
             }
-            else if(0 == string.Compare(DisableProtection, protection, true))
+            else if(0 == String.Compare(DisableProtection, protection, StringComparison.OrdinalIgnoreCase))
             {
                 jobResponse =
                     GetSiteRecoveryClient().Vm.DisableProtection(
                     serverId,
                     protectedContainerId,
-                    virtualMachineId);
+                    virtualMachineId,
+                    requestHeaders);
             }
 
             return jobResponse;
