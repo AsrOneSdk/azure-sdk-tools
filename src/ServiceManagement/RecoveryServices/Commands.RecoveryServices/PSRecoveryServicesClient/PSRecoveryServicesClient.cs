@@ -12,6 +12,8 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System.Net;
+
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
@@ -44,6 +46,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
+            // Temp hack to disable cert validation.
+            //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             subscriptionId = currentSubscription.SubscriptionId;
@@ -214,9 +218,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 psError.RecommendedAction));
         }
 
-        public void GenerateAgentAuthenticationHeader(
-            out string agentAuthenticationHeader,
-            out string clientRequestId)
+
+        /// <summary>
+        /// Site Recovery requests that go to on-premise components (like the Provider installed in VMM) require an authentication token 
+        /// that is signed with the vault key to indicate that the request indeed originated from the end-user client. 
+        /// Generating that authentication token here and sending it via http headers.
+        /// </summary>
+        /// <param name="clientRequestId">Unique identifier for the client's request</param>
+        /// <returns>The authentication token for the provider</returns>
+        public string GenerateAgentAuthenticationHeader(string clientRequestId)
         {
             CikTokenDetails cikTokenDetails = new CikTokenDetails();
 
@@ -224,10 +234,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             currentDateTime = currentDateTime.AddHours(-1);
             cikTokenDetails.NotBeforeTimestamp = TimeZoneInfo.ConvertTimeToUtc(currentDateTime);
             cikTokenDetails.NotAfterTimestamp = cikTokenDetails.NotBeforeTimestamp.AddHours(6);
-            cikTokenDetails.ClientRequestId =
-                // "PS_" + Guid.NewGuid().ToString() + "_" + DateTime.Now.ToString();
-                // "PS_" + Guid.NewGuid().ToString();
-                "2e9658f8-d222-4aca-a983-92d591749573-2014-07-25 10:08:27Z";
+            cikTokenDetails.ClientRequestId = clientRequestId;
+            cikTokenDetails.Version = new Version(1, 2);
+            cikTokenDetails.PropertyBag = new Dictionary<string, object>();
 
             string shaInput = new JavaScriptSerializer().Serialize(cikTokenDetails);
 
@@ -235,12 +244,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             cikTokenDetails.Hmac =
                 Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(shaInput)));
             cikTokenDetails.HashFunction = CikSupportedHashFunctions.HMACSHA256.ToString();
-            cikTokenDetails.Version = new Version(1, 2);
-            cikTokenDetails.PropertyBag = new Dictionary<string, object>();
 
+            return new JavaScriptSerializer().Serialize(cikTokenDetails);
+        }
 
-            agentAuthenticationHeader = new JavaScriptSerializer().Serialize(cikTokenDetails);
-            clientRequestId = cikTokenDetails.ClientRequestId;
+        public CustomRequestHeaders GetRequestHeaders()
+        {
+            return new CustomRequestHeaders()
+            {
+                // ClientRequestId is a unique ID for every request to Azure Site Recovery. It is useful when diagnosing failures in API calls.
+                ClientRequestId = Guid.NewGuid().ToString()
+            };
         }
     }
 }

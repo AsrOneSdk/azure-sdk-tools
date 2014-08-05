@@ -26,14 +26,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(
             string serverId)
         {
-            return GetSiteRecoveryClient().ProtectedContainers.List(serverId);
+            return GetSiteRecoveryClient().ProtectedContainers.List(serverId, GetRequestHeaders());
         }
 
         public ProtectedContainerResponse GetAzureSiteRecoveryProtectedContainer(
             string serverId,
             string protectedContainerId)
         {
-            return GetSiteRecoveryClient().ProtectedContainers.Get(serverId, protectedContainerId);
+            return GetSiteRecoveryClient().ProtectedContainers.Get(serverId, protectedContainerId, GetRequestHeaders());
         }
     }
 }

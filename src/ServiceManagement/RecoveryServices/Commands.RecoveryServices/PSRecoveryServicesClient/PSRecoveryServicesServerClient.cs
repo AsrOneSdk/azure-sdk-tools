@@ -25,12 +25,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public ServerListResponse GetAzureSiteRecoveryServer()
         {
-            return GetSiteRecoveryClient().Servers.List();
+            return GetSiteRecoveryClient().Servers.List(GetRequestHeaders());
         }
 
         public ServerResponse GetAzureSiteRecoveryServer(string serverId)
         {
-            return GetSiteRecoveryClient().Servers.Get(serverId);
+            return GetSiteRecoveryClient().Servers.Get(serverId, GetRequestHeaders());
         }
     }
 }
