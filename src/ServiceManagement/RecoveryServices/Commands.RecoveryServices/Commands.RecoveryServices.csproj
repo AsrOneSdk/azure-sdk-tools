@@ -122,7 +122,6 @@
     <Compile Include="Service\ImportAzureSiteRecoveryVaultSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

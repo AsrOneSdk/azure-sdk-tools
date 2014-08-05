@@ -23,7 +23,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public JobResponse GetAzureSiteRecoveryJobDetails(string jobId)
         {
-            return GetSiteRecoveryClient().Jobs.Get(jobId);
+            return GetSiteRecoveryClient().Jobs.Get(jobId, GetRequestHeaders());
         }
     }
 }
