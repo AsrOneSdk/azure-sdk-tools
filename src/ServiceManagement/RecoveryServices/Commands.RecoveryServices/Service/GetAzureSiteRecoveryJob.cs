@@ -25,8 +25,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class GetAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
         protected const string ById = "ById";
-        protected const string ByStartTime = "ByStartTime";
-        protected const string ByState = "ByState";
+        protected const string ByParam = "ByParam";
 
         #region Parameters
 
@@ -45,20 +44,32 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Allows to filter the list of jobs started after the given starttime.
         /// </summary>
-        [Parameter(ParameterSetName = ByStartTime, Mandatory = true)]
+        [Parameter(ParameterSetName = "ByParam", HelpMessage = "Start time of job should be greater than this.")]
         [ValidateNotNullOrEmpty]
         public System.DateTime StartTime
         {
-            get { return this.starttime; }
-            set { this.starttime = value; }
+            get { return this.startTime; }
+            set { this.startTime = value; }
         }
-        private System.DateTime starttime;
+        private System.DateTime startTime;
 
+        /// <summary>
+        /// Allows to filter the list of jobs started after the given starttime.
+        /// </summary>
+        [Parameter(ParameterSetName = "ByParam", HelpMessage = "End time of job should be less than this.")]
+        [ValidateNotNullOrEmpty]
+        public System.DateTime EndTime
+        {
+            get { return this.endTime; }
+            set { this.endTime = value; }
+        }
+        private System.DateTime endTime;
+		
         /// <summary>
         /// Take string input for possible States of ASR Job. Use this parameter to get filtered 
         /// view of Jobs
         /// </summary>
-        [Parameter(ParameterSetName = ByState, Mandatory = true)]
+        [Parameter(ParameterSetName = "ByParam", HelpMessage = "State of job to return.")]
         [ValidateNotNullOrEmpty]
         // Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
         [ValidateSet(
@@ -97,11 +108,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ById:
                         GetById();
                         break;
-                    case ByStartTime:
-                        // TODO: Sanjeev
-                        break;
-                    case ByState:
-                        // TODO: Sanjeev
+
+                    case ByParam:
+                    default:
+                        GetByParam();
                         break;
                 }
             }
@@ -113,12 +123,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetById()
         {
-            WriteJob(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(id).Job);
+            WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(id).Job);
         }
 
-        private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
+        private void GetByParam()
         {
-            WriteObject(new ASRJob(job.ID, job.State, job.Completed));
+            WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob().Jobs);
         }
     }
 }

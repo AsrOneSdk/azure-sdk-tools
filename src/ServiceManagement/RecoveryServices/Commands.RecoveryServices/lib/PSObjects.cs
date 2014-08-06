@@ -15,7 +15,9 @@
 namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 {
     #region Using directives
+    using Microsoft.Azure.Management.SiteRecovery.Models;
     using System;
+    using System.Collections.Generic;
     using System.Runtime.Serialization;
     #endregion
 
@@ -133,16 +135,34 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 
     public class ASRJob
     {
+        #region Properties
         public string ID { get; set; }
+        public string ActivityId { get; set; }
         public string State { get; set; }
+        public DateTime StartTimestamp { get; set; }
+        public DateTime EndTimestamp { get; set; }
         public bool Completed { get; set; }
+        public List<string> AllowedActions { get; set; }
+        public string JobDisplayName { get; set; }
+        public List<Job> Jobs { get; set; }
+        public List<AsrTask> Tasks { get; set; }
+        public List<ErrorDetails> Errors { get; set; }
+        #endregion
 
-        public ASRJob() {}
-        public ASRJob(string id, string state, bool completed)
+        public ASRJob() { }
+        public ASRJob(Job job)
         {
-            this.ID = id;
-            this.State = state;
-            this.Completed = completed;
+            this.ID = job.ID;
+            this.ActivityId = job.ActivityId;
+            this.State = job.State;
+            this.EndTimestamp = job.EndTimestamp;
+            this.StartTimestamp = job.StartTimestamp;
+            this.Completed = job.Completed;
+            this.AllowedActions = job.AllowedActions as List<string>;
+            this.JobDisplayName = job.JobDisplayName;
+            this.Jobs = job.Jobs as List<Job>;
+            this.Tasks = job.Tasks as List<AsrTask>;
+            this.Errors = job.Errors as List<ErrorDetails>;
         }
     }
 }
