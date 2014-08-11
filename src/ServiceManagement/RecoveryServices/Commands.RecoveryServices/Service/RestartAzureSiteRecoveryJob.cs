@@ -15,22 +15,34 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Management.SiteRecovery;
     using Microsoft.Azure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
+    using Microsoft.Azure.Management.RecoveryServices.Models;
     using System;
+    using System.Management.Automation;
     #endregion
 
-    public partial class PSRecoveryServicesClient
+    [Cmdlet(VerbsLifecycle.Restart, "AzureSiteRecoveryJob")]
+    public class RestartAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
-        public ServerListResponse GetAzureSiteRecoveryServer()
-        {
-            return GetSiteRecoveryClient().Servers.List(GetRequestHeaders());
-        }
+        #region Parameters
 
-        public ServerResponse GetAzureSiteRecoveryServer(string serverId)
+        /// <summary>
+        /// Job ID.
+        /// </summary>
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string Id
         {
-            return GetSiteRecoveryClient().Servers.Get(serverId, GetRequestHeaders());
+            get { return this.id; }
+            set { this.id = value; }
+        }
+        private string id;
+
+        #endregion Parameters
+
+        public override void ExecuteCmdlet()
+        {
+            RecoveryServicesClient.RestartAzureSiteRecoveryJob(Id);
         }
     }
 }

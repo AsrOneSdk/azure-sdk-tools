@@ -27,9 +27,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Used to initiate a commit operation.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryUnPlannedFailover")]
+    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryUnplannedFailover")]
     [OutputType(typeof(Microsoft.Azure.Management.SiteRecovery.Models.Job))]
-    public class StartAzureSiteRecoveryUnPlannedFailover : RecoveryServicesCmdletBase
+    public class StartAzureSiteRecoveryUnplannedFailover : RecoveryServicesCmdletBase
     {
         protected const string ByRpId = "ByRpId";
         protected const string ByVmId = "ByVmId";
@@ -38,7 +38,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
+        [Parameter(ParameterSetName = ByRpId, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         public string RpId
         {
@@ -51,7 +51,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Failover direction for the recovery plan.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
-        [ValidateNotNullOrEmpty]
+        [ValidateSet(
+          PSRecoveryServicesClient.PrimaryToSecondary,
+          PSRecoveryServicesClient.SecondaryToPrimary)]
         public string FailoverDirection
         {
             get { return this.failoverDirection; }
@@ -111,10 +113,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void StartRpUnPlannedFailover()
         {
-            RpUnPlannedFailoverRequest rpUnPlannedFailoverRequest = new RpUnPlannedFailoverRequest();
+            RpUnplannedFailoverRequest rpUnPlannedFailoverRequest = new RpUnplannedFailoverRequest();
             rpUnPlannedFailoverRequest.FailoverDirection = this.FailoverDirection;
             rpUnPlannedFailoverRequest.PrimaryAction = this.PrimaryAction;
-            jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryUnPlannedFailover(
+            jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryUnplannedFailover(
                 this.RpId, 
                 rpUnPlannedFailoverRequest);
 
@@ -136,7 +138,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new ASRJob(job.ID, job.State, job.Completed));
+            WriteObject(new ASRJob(job));
         }
     }
 }

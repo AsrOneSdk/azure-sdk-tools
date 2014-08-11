@@ -15,11 +15,12 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Text;
+    using Microsoft.Azure.Management.SiteRecovery.Models;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
     #endregion
 
     public class ResourceCredentials
@@ -76,6 +77,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         public Error()
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Error" /> class.
+        /// </summary>
+        public Error(ServiceError se)
+        {
+            this.ActivityId = se.ActivityId;
+            this.Code = se.Code;
+            this.Message = se.Message;
+            this.PossibleCauses = se.PossibleCauses;
+            this.RecommendedAction = se.RecommendedAction;
         }
 
         /// <summary>

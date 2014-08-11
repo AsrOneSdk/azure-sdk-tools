@@ -1,0 +1,62 @@
+﻿// ----------------------------------------------------------------------------------
+//
+// Copyright Microsoft Corporation
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ----------------------------------------------------------------------------------
+
+namespace Microsoft.Azure.Commands.RecoveryServices
+{
+    #region Using directives
+    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.Azure.Management.RecoveryServices.Models;
+    using System;
+    using System.Management.Automation;
+    #endregion
+
+    [Cmdlet(VerbsLifecycle.Resume, "AzureSiteRecoveryJob")]
+    public class ResumeAzureSiteRecoveryJob : RecoveryServicesCmdletBase
+    {
+        #region Parameters
+
+        /// <summary>
+        /// Job ID.
+        /// </summary>
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string Id
+        {
+            get { return this.comments; }
+            set { this.comments = value; }
+        }
+        private string id;
+
+        /// <summary>
+        /// Resume job comments.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        [ValidateNotNullOrEmpty]
+        public string Comments
+        {
+            get { return this.comments; }
+            set { this.comments = value; }
+        }
+        private string comments;
+
+        #endregion Parameters
+
+        public override void ExecuteCmdlet()
+        {
+            ResumeJobParams resumeJobParams = new ResumeJobParams();
+            resumeJobParams.Comments = this.Comments;
+            RecoveryServicesClient.ResumeAzureSiteRecoveryJob(Id, resumeJobParams);
+        }
+    }
+}

@@ -23,24 +23,27 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
     public partial class PSRecoveryServicesClient
     {
+        public const string PrimaryToSecondary = "PrimaryToSecondary";
+        public const string SecondaryToPrimary = "SecondaryToPrimary";
+
         public RecoveryPlanListResponse GetAzureSiteRecoveryRecoveryPlan()
         {
-            return GetSiteRecoveryClient().RecoveryPlan.List();
+            return GetSiteRecoveryClient().RecoveryPlan.List(GetRequestHeaders());
         }
 
         public RecoveryPlanResponse GetAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId);
+            return GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId, GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryCommitFailover(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId);
+            return GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId, GetRequestHeaders());
         }
 
         public JobResponse UpdateAzureSiteRecoveryProtection(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId);
+            return GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId, GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryPlannedFailover(
@@ -48,17 +51,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             RpPlannedFailoverRequest rpPlannedFailoverRequest)
         {
             return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanPlannedFailover(
-                recoveryPlanId, 
-                rpPlannedFailoverRequest);
+                recoveryPlanId,
+                rpPlannedFailoverRequest, GetRequestHeaders());
         }
 
-        public JobResponse StartAzureSiteRecoveryUnPlannedFailover(
+        public JobResponse StartAzureSiteRecoveryUnplannedFailover(
             string recoveryPlanId,
-            RpUnPlannedFailoverRequest rpUnPlannedFailoverRequest)
+            RpUnplannedFailoverRequest rpUnPlannedFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnPlannedFailover(
+            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnplannedFailover(
                 recoveryPlanId,
-                rpUnPlannedFailoverRequest);
+                rpUnPlannedFailoverRequest, 
+                GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryTestFailover(
@@ -67,7 +71,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanTestFailover(
                 recoveryPlanId,
-                rpTestFailoverRequest);
+                rpTestFailoverRequest, 
+                GetRequestHeaders());
         }
     }
 }
