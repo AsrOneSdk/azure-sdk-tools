@@ -46,8 +46,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
-            // Temp hack to disable cert validation.
-            //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             subscriptionId = currentSubscription.SubscriptionId;
@@ -218,10 +216,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 psError.RecommendedAction));
         }
 
-
         /// <summary>
-        /// Site Recovery requests that go to on-premise components (like the Provider installed in VMM) require an authentication token 
-        /// that is signed with the vault key to indicate that the request indeed originated from the end-user client. 
+        /// Site Recovery requests that go to on-premise components (like the Provider installed
+        /// in VMM) require an authentication token that is signed with the vault key to indicate
+        /// that the request indeed originated from the end-user client.
         /// Generating that authentication token here and sending it via http headers.
         /// </summary>
         /// <param name="clientRequestId">Unique identifier for the client's request</param>
@@ -252,8 +250,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             return new CustomRequestHeaders()
             {
-                // ClientRequestId is a unique ID for every request to Azure Site Recovery. It is useful when diagnosing failures in API calls.
-                ClientRequestId = Guid.NewGuid().ToString()
+                // ClientRequestId is a unique ID for every request to Azure Site Recovery.
+                // It is useful when diagnosing failures in API calls.
+                ClientRequestId = "PS" + Guid.NewGuid().ToString()
             };
         }
     }

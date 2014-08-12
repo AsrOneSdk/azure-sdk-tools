@@ -33,7 +33,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string serverId,
             string protectedContainerId)
         {
-            return GetSiteRecoveryClient().ProtectedContainers.Get(serverId, protectedContainerId, GetRequestHeaders());
+            return GetSiteRecoveryClient().ProtectedContainers.Get(
+                serverId,
+                protectedContainerId,
+                GetRequestHeaders());
         }
     }
 }

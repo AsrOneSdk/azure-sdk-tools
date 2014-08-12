@@ -30,7 +30,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string serverId,
             string protectedContainerId)
         {
-            return GetSiteRecoveryClient().Vm.List(serverId, protectedContainerId, GetRequestHeaders());
+            return GetSiteRecoveryClient().Vm.List(
+                serverId,
+                protectedContainerId,
+                GetRequestHeaders());
         }
 
         public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
@@ -38,7 +41,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string protectedContainerId,
             string virtualMachineId)
         {
-            return GetSiteRecoveryClient().Vm.Get(serverId, protectedContainerId, virtualMachineId, GetRequestHeaders());
+            return GetSiteRecoveryClient().Vm.Get(
+                serverId,
+                protectedContainerId,
+                virtualMachineId,
+                GetRequestHeaders());
         }
 
         public JobResponse SetProtectionOnVirtualMachine(
@@ -49,7 +56,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
 
             var requestHeaders = GetRequestHeaders();
-            requestHeaders.AgentAuthenticationHeader = GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
+            requestHeaders.AgentAuthenticationHeader =
+                GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
             
             JobResponse jobResponse = null;
 
