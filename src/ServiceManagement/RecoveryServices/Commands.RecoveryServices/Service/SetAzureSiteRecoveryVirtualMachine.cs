@@ -16,7 +16,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
@@ -25,7 +25,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByObject)]
-    [OutputType(typeof(Microsoft.Azure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class SetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
         #region Parameters
@@ -157,7 +157,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             stopProcessing = true;
         }
 
-        private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
+        private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
             WriteObject(new ASRJob(job));
         }

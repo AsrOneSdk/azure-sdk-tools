@@ -16,7 +16,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.WindowsAzure;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     public partial class PSRecoveryServicesClient
