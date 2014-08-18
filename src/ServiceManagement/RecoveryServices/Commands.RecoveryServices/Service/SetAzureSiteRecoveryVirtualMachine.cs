@@ -24,19 +24,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Threading;
     #endregion
 
-    /// <summary>
-    ///
-    /// </summary>
-    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryVirtualMachine")]
+    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.Azure.Management.SiteRecovery.Models.Job))]
     public class SetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
-
         #region Parameters
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
-        [Parameter(Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -48,7 +44,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the ProtectedContainer containing the Virtual Machine.
         /// </summary>
-        [Parameter(Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectedContianerId
         {
@@ -60,7 +56,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the Server managing the Virtual Machine.
         /// </summary>
-        [Parameter(Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ServerId
         {
@@ -68,6 +64,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.serverId = value; }
         }
         private string serverId;
+
+        /// <summary>
+        /// Virtual Machine Object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRVirtualMachine VirtualMachine
+        {
+            get { return this.virtualMachine; }
+            set { this.virtualMachine = value; }
+        }
+        private ASRVirtualMachine virtualMachine;
 
         /// <summary>
         /// Bool value to either to say either enable or disable protection.
@@ -103,6 +111,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             try
             {
+                switch (ParameterSetName)
+                {
+                    case ASRParameterSets.ByObject:
+                        id = virtualMachine.VirtualMachineId;
+                        protectedContainerId = virtualMachine.ProtectedContainerId;
+                        serverId = virtualMachine.ServerId;
+                        break;
+                    case ASRParameterSets.ByIDs:
+                        break;
+                }
+
                 jobResponse =
                     RecoveryServicesClient.SetProtectionOnVirtualMachine(
                     serverId,

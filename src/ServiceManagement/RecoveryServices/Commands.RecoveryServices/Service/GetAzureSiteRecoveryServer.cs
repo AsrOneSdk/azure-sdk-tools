@@ -23,19 +23,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = Default)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = ASRParameterSets.Default)]
     [OutputType(typeof(IEnumerable<ASRServer>))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
-        protected const string Default = "Default";
-        protected const string ByName = "ByName";
-        protected const string ById = "ById";
-
         #region Parameters
         /// <summary>
         /// ID of the Server.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -47,7 +43,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Name of the Server.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
@@ -63,14 +59,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (ParameterSetName)
                 {
-                    case ByName:
+                    case ASRParameterSets.ByName:
                         GetByName();
                         break;
-                    case ById:
+                    case ASRParameterSets.ById:
                         GetById();
                         break;
-                    case Default:
-                        GetByDefault();
+                    case ASRParameterSets.Default:
+                        GetAll();
                         break;
                 }
             }
@@ -113,7 +109,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             WriteServer(serverResponse.Server);
         }
 
-        private void GetByDefault()
+        private void GetAll()
         {
             ServerListResponse serverListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryServer();
