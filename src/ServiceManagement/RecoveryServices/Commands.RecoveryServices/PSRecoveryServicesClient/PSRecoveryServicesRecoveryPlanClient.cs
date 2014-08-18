@@ -74,5 +74,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 rpTestFailoverRequest, 
                 GetRequestHeaders());
         }
+
+        public JobResponse RemoveAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
+        {
+            return GetSiteRecoveryClient().RecoveryPlan.Delete(recoveryPlanId, GetRequestHeaders());
+        }
     }
 }
