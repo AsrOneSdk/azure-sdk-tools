@@ -16,7 +16,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.WindowsAzure;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
@@ -134,7 +134,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 new ASRRecoveryPlan(
                     recoveryPlan.ID,
                     recoveryPlan.Name,
-                    recoveryPlan.Type,
                     recoveryPlan.ServerId,
                     recoveryPlan.TargetServerId),
                 true);

@@ -33,13 +33,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public ASRRecoveryPlan(
             string rpId,
             string name,
-            string type,
             string serverId,
             string targetServerId)
         {
             this.RpId = rpId;
             this.Name = name;
-            this.Type = type;
             this.ServerId = serverId;
             this.TargetServerId = targetServerId;
         }

@@ -19,11 +19,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #region Using directives
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
-    using Microsoft.Azure.Management.RecoveryServices;
-    using Microsoft.Azure.Management.RecoveryServices.Models;
-    using Microsoft.Azure.Management.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
-    using System;
+    using Microsoft.WindowsAzure.Management.RecoveryServices;
+    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
+    using System;   
     using System.IO;
     using System.Runtime.Serialization;
     using System.Security.Cryptography;
@@ -47,7 +47,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
             // Temp hack to disable cert validation.
-            //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             subscriptionId = currentSubscription.SubscriptionId;

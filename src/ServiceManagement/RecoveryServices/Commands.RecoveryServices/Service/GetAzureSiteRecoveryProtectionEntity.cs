@@ -16,16 +16,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectedContainer", DefaultParameterSetName = Default)]
-    [OutputType(typeof(IEnumerable<ASRProtectedContainer>))]
-    public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = Default)]
+    [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
+    public class GetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
         protected const string ByName = "ByName";
@@ -33,7 +34,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #region Parameters
         /// <summary>
-        /// ID of the Protected Container.
+        /// ID of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -45,7 +46,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
-        /// Name of the Protected Container.
+        /// Name of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -57,18 +58,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string name;
 
         /// <summary>
-        /// ID of the Protected Container management server.
+        /// ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string ServerId
+        public string ProtectionContainerId
         {
-            get { return this.serverId; }
-            set { this.serverId = value; }
+            get { return this.protectionContainerId; }
+            set { this.protectionContainerId = value; }
         }
-        private string serverId;
+        private string protectionContainerId;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -96,17 +97,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetByName()
         {
-            ProtectedContainerListResponse protectedContainerListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryProtectedContainer(serverId);
+            ProtectionEntityListResponse peListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
+                protectionContainerId);
 
             bool found = false;
-            foreach (
-                ProtectedContainer protectedContainer in 
-                protectedContainerListResponse.ProtectedContainers)
+            foreach (ProtectionEntity pe in peListResponse.ProtectionEntities)
             {
-                if (0 == string.Compare(name, protectedContainer.Name, true))
+                if (0 == string.Compare(name, pe.Name, true))
                 {
-                    WriteProtectedContainer(protectedContainer);
+                    WriteProtectionEntity(pe);
                     found = true;
                 }
             }
@@ -115,47 +115,52 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 throw new InvalidOperationException(
                     string.Format(
-                    Properties.Resources.ProtectedContainerNotFound,
+                    Properties.Resources.VirtualMachineNotFound,
                     name,
-                    serverId));
+                    protectionContainerId));
             }
         }
 
         private void GetById()
         {
-            ProtectedContainerResponse protectedContainerResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryProtectedContainer(serverId, id);
+            ProtectionEntityResponse peResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
+                protectionContainerId, 
+                id);
 
-            WriteProtectedContainer(protectedContainerResponse.ProtectedContainer);
+            WriteProtectionEntity(peResponse.ProtectionEntity);
         }
 
         private void GetByDefault()
         {
-            ProtectedContainerListResponse protectedContainerListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryProtectedContainer(serverId);
+            ProtectionEntityListResponse peListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
+                protectionContainerId);
 
-            WriteProtectedContainers(protectedContainerListResponse.ProtectedContainers);
+            WriteProtectionEntities(peListResponse.ProtectionEntities);
         }
 
-        private void WriteProtectedContainers (IList<ProtectedContainer> protectedContainers)
+        private void WriteProtectionEntities(IList<ProtectionEntity> protectionEntities)
         {
-            foreach (ProtectedContainer protectedContainer in protectedContainers)
+            foreach (ProtectionEntity pe in protectionEntities)
             {
-                WriteProtectedContainer(protectedContainer);
+                WriteProtectionEntity(pe);
             }
         }
 
-        private void WriteProtectedContainer (ProtectedContainer protectedContainer)
+        private void WriteProtectionEntity(ProtectionEntity pe)
         {
             WriteObject(
-                new ASRProtectedContainer(
-                    protectedContainer.ID,
-                    protectedContainer.Name,
-                    protectedContainer.Type,
-                    protectedContainer.Configured,
-                    protectedContainer.ReplicationProvider,
-                    protectedContainer.ReplicationProviderSettings,
-                    protectedContainer.ServerId),
+                new ASRProtectionEntity(
+                    pe.ID,
+                    pe.ServerId,
+                    pe.ProtectionContainerId,
+                    pe.Name,
+                    pe.Protected,
+                    pe.IsRelationshipReversed,
+                    pe.ProtectionState,
+                    pe.TestFailoverState,
+                    pe.ReplicationProvider),
                 true);
         }
     }

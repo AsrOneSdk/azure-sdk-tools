@@ -17,23 +17,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #region Using directives
     using Microsoft.WindowsAzure;
     using System;
-    using Microsoft.Azure.Management.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     public partial class PSRecoveryServicesClient
     {
-        public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(
-            string serverId)
+        public ProtectionContainerListResponse GetAzureSiteRecoveryProtectionContainer()
         {
-            return GetSiteRecoveryClient().ProtectedContainers.List(serverId, GetRequestHeaders());
+            return GetSiteRecoveryClient().ProtectionContainer.List(GetRequestHeaders());
         }
 
-        public ProtectedContainerResponse GetAzureSiteRecoveryProtectedContainer(
-            string serverId,
-            string protectedContainerId)
+        public ProtectionContainerResponse GetAzureSiteRecoveryProtectionContainer(
+            string protectionContainerId)
         {
-            return GetSiteRecoveryClient().ProtectedContainers.Get(serverId, protectedContainerId, GetRequestHeaders());
+            return GetSiteRecoveryClient().ProtectionContainer.Get(protectionContainerId, GetRequestHeaders());
         }
     }
 }

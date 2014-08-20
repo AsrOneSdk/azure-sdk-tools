@@ -142,11 +142,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Protected Container {0} is not associated with the Server {1}.
+        ///   Looks up a localized string similar to Protection Container {0} is not associated with the Server {1}.
         /// </summary>
-        internal static string ProtectedContainerNotFound {
+        internal static string ProtectionContainerNotFound {
             get {
-                return ResourceManager.GetString("ProtectedContainerNotFound", resourceCulture);
+                return ResourceManager.GetString("ProtectionContainerNotFound", resourceCulture);
             }
         }
         

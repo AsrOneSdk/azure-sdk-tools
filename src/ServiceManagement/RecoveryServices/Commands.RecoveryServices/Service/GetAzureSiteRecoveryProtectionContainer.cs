@@ -23,9 +23,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = Default)]
-    [OutputType(typeof(IEnumerable<ASRServer>))]
-    public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionContainer", DefaultParameterSetName = Default)]
+    [OutputType(typeof(IEnumerable<ASRProtectionContainer>))]
+    public class GetAzureSiteRecoveryProtectionContainer : RecoveryServicesCmdletBase
     {
         protected const string Default = "Default";
         protected const string ByName = "ByName";
@@ -33,7 +33,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #region Parameters
         /// <summary>
-        /// ID of the Server.
+        /// ID of the Protected Container.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -45,7 +45,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
-        /// Name of the Server.
+        /// Name of the Protected Container.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -55,6 +55,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.name = value; }
         }
         private string name;
+
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -82,15 +83,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetByName()
         {
-            ServerListResponse serverListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryServer();
+            ProtectionContainerListResponse protectionContainerListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer();
 
             bool found = false;
-            foreach (Server server in serverListResponse.Servers)
+            foreach (
+                ProtectionContainer protectionContainer in 
+                protectionContainerListResponse.ProtectionContainers)
             {
-                if(0 == string.Compare(name, server.Name, true))
+                if (0 == string.Compare(name, protectionContainer.Name, true))
                 {
-                    WriteServer(server);
+                    WriteProtectionContainer(protectionContainer);
                     found = true;
                 }
             }
@@ -99,45 +102,44 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 throw new InvalidOperationException(
                     string.Format(
-                    Properties.Resources.ServerNotFound,
-                    name,
-                    PSRecoveryServicesClient.resourceCredentials.ResourceName));
+                    Properties.Resources.ProtectionContainerNotFound,
+                    name));
             }
         }
 
         private void GetById()
         {
-            ServerResponse serverResponse = 
-                RecoveryServicesClient.GetAzureSiteRecoveryServer(id);
+            ProtectionContainerResponse protectionContainerResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer(id);
 
-            WriteServer(serverResponse.Server);
+            WriteProtectionContainer(protectionContainerResponse.ProtectionContainer);
         }
 
         private void GetByDefault()
         {
-            ServerListResponse serverListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryServer();
+            ProtectionContainerListResponse protectionContainerListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer();
 
-            WriteServers(serverListResponse.Servers);
+            WriteProtectionContainers(protectionContainerListResponse.ProtectionContainers);
         }
 
-        private void WriteServers(IList<Server> servers)
+        private void WriteProtectionContainers (IList<ProtectionContainer> protectionContainers)
         {
-            foreach (Server server in servers)
+            foreach (ProtectionContainer protectionContainer in protectionContainers)
             {
-                WriteServer(server);
+                WriteProtectionContainer(protectionContainer);
             }
         }
 
-        private void WriteServer(Server server)
+        private void WriteProtectionContainer (ProtectionContainer protectionContainer)
         {
             WriteObject(
-                new ASRServer(
-                    server.ID,
-                    server.Name,
-                    server.LastHeartbeat,
-                    server.ProviderVersion,
-                    server.ServerVersion),
+                new ASRProtectionContainer(
+                    protectionContainer.ID,
+                    protectionContainer.Name,
+                    protectionContainer.ConfigurationStatus,
+                    protectionContainer.ReplicationProviderSettings,
+                    protectionContainer.ServerId),
                 true);
         }
     }

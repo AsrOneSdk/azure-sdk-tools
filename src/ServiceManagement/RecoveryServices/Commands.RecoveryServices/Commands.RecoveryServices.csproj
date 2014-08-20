@@ -97,6 +97,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesPEClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesJobsClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesProtectedContainerClient.cs" />
@@ -105,10 +106,11 @@
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMClient.cs" />
     <Compile Include="RecoveryServicesCmdletBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\GetAzureSiteRecoveryProtectionEntity.cs" />
     <Compile Include="Service\RestartAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\ResumeAzureSiteRecoveryJob.cs" />
+    <Compile Include="Service\SetAzureSiteRecoveryProtectionEntity.cs" />
     <Compile Include="Service\StartAzureSiteRecoveryCommitFailover.cs" />
-    <Compile Include="Service\SetAzureSiteRecoveryVirtualMachine.cs" />
     <Compile Include="Service\StartAzureSiteRecoveryPlannedFailover.cs" />
     <Compile Include="Service\StartAzureSiteRecoveryTestFailover.cs" />
     <Compile Include="Service\StartAzureSiteRecoveryUnPlannedFailover.cs" />
@@ -116,7 +118,7 @@
     <Compile Include="Service\UpdateAzureSiteRecoveryProtection.cs" />
     <Compile Include="Service\WriteAzureSiteRecoveryVaultSettingsFile.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryJob.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryProtectedContainer.cs" />
+    <Compile Include="Service\GetAzureSiteRecoveryProtectionContainer.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryRecoveryPlan.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryServer.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryVaultSettings.cs" />
@@ -134,7 +136,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="lib\Microsoft.Azure.RecoveryServices.dll" />
     <Content Include="Microsoft.Azure.Commands.RecoveryServices.dll-help.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -143,6 +144,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

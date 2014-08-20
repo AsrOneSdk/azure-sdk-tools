@@ -16,7 +16,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
     using System.Collections.Generic;
@@ -57,32 +57,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string name;
 
         /// <summary>
-        /// ID of the ProtectedContainer containing the Virtual Machine.
+        /// ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string ProtectedContainerId
+        public string ProtectionContainerId
         {
-            get { return this.protectedContainerId; }
-            set { this.protectedContainerId = value; }
+            get { return this.protectionContainerId; }
+            set { this.protectionContainerId = value; }
         }
-        private string protectedContainerId;
+        private string protectionContainerId;
 
-        /// <summary>
-        /// GUID of the Server managing the Virtual Machine.
-        /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string ServerId
-        {
-            get { return this.serverId; }
-            set { this.serverId = value; }
-        }
-        private string serverId;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -112,8 +99,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             VirtualMachineListResponse vmListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
-                serverId,
-                protectedContainerId);
+                protectionContainerId);
 
             bool found = false;
             foreach (VirtualMachine vm in vmListResponse.Vms)
@@ -131,7 +117,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     string.Format(
                     Properties.Resources.VirtualMachineNotFound,
                     name,
-                    protectedContainerId));
+                    protectionContainerId));
             }
         }
 
@@ -139,8 +125,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             VirtualMachineResponse vmResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
-                serverId, 
-                protectedContainerId, 
+                protectionContainerId, 
                 id);
 
             WriteVirtualMachine(vmResponse.Vm);
@@ -150,8 +135,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             VirtualMachineListResponse vmListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
-                serverId,
-                protectedContainerId);
+                protectionContainerId);
 
             WriteVirtualMachines(vmListResponse.Vms);
         }
@@ -169,14 +153,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             WriteObject(
                 new ASRVirtualMachine(
                     vm.ID,
-                    vm.Name,
-                    vm.Type,
-                    vm.Protected,
-                    vm.ProtectedContainerId,
-                    vm.ReplicationProvider,
-                    vm.ReplicationProviderSettings,
                     vm.ServerId,
-                    vm.Name),
+                    vm.ProtectionContainerId,
+                    vm.Name,
+                    vm.Protected,
+                    vm.IsRelationshipReversed,
+                    vm.ProtectionState,
+                    vm.TestFailoverState,
+                    vm.ReplicationProvider,
+                    vm.ReplicationProviderSettings),
                 true);
         }
     }

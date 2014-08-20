@@ -144,8 +144,8 @@
   <data name="NullRecoveryServicesClient" xml:space="preserve">
     <value>RecoveryServices client is null, please check Resource, Cloud Service information in Vault Settings</value>
   </data>
-  <data name="ProtectedContainerNotFound" xml:space="preserve">
-    <value>Protected Container {0} is not associated with the Server {1}</value>
+  <data name="ProtectionContainerNotFound" xml:space="preserve">
+    <value>Protection Container {0} is not associated with the Server {1}</value>
   </data>
   <data name="RecoveryPlanNotFound" xml:space="preserve">
     <value>RecoveryPlan  {0} is not associated with the Vault {1}</value>

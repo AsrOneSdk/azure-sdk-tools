@@ -16,7 +16,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// Used to initiate a reprotect operation.
     /// </summary>
     [Cmdlet(VerbsData.Update, "AzureSiteRecoveryProtection")]
-    [OutputType(typeof(Microsoft.Azure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class UpdateAzureSiteRecoveryProtection : RecoveryServicesCmdletBase
     {
         protected const string ByRpId = "ByRpId";
@@ -106,7 +106,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
-        private void WriteJob(Microsoft.Azure.Management.SiteRecovery.Models.Job job)
+        private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
             WriteObject(new ASRJob(job));
         }

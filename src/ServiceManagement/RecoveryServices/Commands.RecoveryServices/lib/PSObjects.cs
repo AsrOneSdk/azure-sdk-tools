@@ -15,7 +15,7 @@
 namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 {
     #region Using directives
-    using Microsoft.Azure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
@@ -41,7 +41,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         #region Properties
         public string ServerId { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
         public DateTime LastHeartbeat { get; set; }
         public string ProviderVersion { get; set; }
         public string ServerVersion { get; set; }
@@ -51,85 +50,113 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public ASRServer(
             string serverId,
             string name,
-            string type,
             DateTime lastHeartbeat,
             string providerVersion,
             string serverVersion)
         {
             this.ServerId = serverId;
             this.Name = name;
-            this.Type = type;
             this.LastHeartbeat = lastHeartbeat;
             this.ProviderVersion = providerVersion;
             this.ServerVersion = serverVersion;
         }
     }
 
-    public class ASRProtectedContainer
+    public class ASRProtectionContainer
     {
         #region Properties
-        public string ProtectedContainerId { get; set; }
+        public string ProtectionContainerId { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
-        public bool Configured { get; set; }
-        public string ReplicationProvider { get; set; }
+        public string ConfigurationStatus { get; set; }
         public string ReplicationProviderSettings { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Server Id.
+        /// </summary>
+        [DataMember]
         public string ServerId { get; set; }
         #endregion
 
-        public ASRProtectedContainer() { }
-        public ASRProtectedContainer(
-            string protectedContainerId,
+        public ASRProtectionContainer() { }
+        public ASRProtectionContainer(
+            string protectionContainerId,
             string name,
-            string type,
-            bool configured,
-            string replicationProvider,
+            string configurationStatus,
             string replicationProviderSettings,
             string serverId)
         {
-            this.ProtectedContainerId = protectedContainerId;
+            this.ProtectionContainerId = protectionContainerId;
             this.Name = name;
-            this.Type = type;
-            this.Configured = configured;
-            this.ReplicationProvider = replicationProvider;
+            this.ConfigurationStatus = configurationStatus;
             this.ReplicationProviderSettings = replicationProviderSettings;
             this.ServerId = serverId;
         }
     }
 
-    public class ASRVirtualMachine
+    public class ASRVirtualMachine : ASRProtectionEntity
     {
-        public string VirtualMachineId { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public bool Protected { get; set; }
-        public string ProtectedContainerId { get; set; }
-        public string ReplicationProvider { get; set; }
         public string ReplicationProviderSettings { get; set; }
-        public string ServerId { get; set; }
-        public string ServerName { get; set; }
 
         public ASRVirtualMachine() { }
         public ASRVirtualMachine(
             string virtualMachineId,
-            string name,
-            string type,
-            bool protectedOrNot,
-            string protectedContainerId,
-            string replicationProvider,
-            string replicationProviderSettings,
             string serverId,
-            string serverName)
+            string protectionContainerId,
+            string name,
+            bool protectedOrNot,
+            bool isRelationshipReversed,
+            string protectionState,
+            string testFailoverState,
+            string replicationProvider,
+            string replicationProviderSettings)
+            : base(
+            virtualMachineId, 
+            serverId,
+            protectionContainerId,
+            name,
+            protectedOrNot,
+            isRelationshipReversed,
+            protectionState,
+            testFailoverState,
+            replicationProvider)
         {
-            this.VirtualMachineId = virtualMachineId;
-            this.Name = name;
-            this.Type = type;
-            this.Protected = protectedOrNot;
-            this.ProtectedContainerId = protectedContainerId;
-            this.ReplicationProvider = replicationProvider;
             this.ReplicationProviderSettings = replicationProviderSettings;
+        }
+    }
+
+    public class ASRProtectionEntity
+    {
+        public string ID { get; set; }
+        public string ServerId { get; set; }
+        public string ProtectionContainerId { get; set; }
+        public string Name { get; set; }
+        public bool Protected { get; set; }
+        public bool IsRelationshipReversed { get; set; }
+        public string ProtectionState { get; set; }
+        public string TestFailoverState { get; set; }
+        public string ReplicationProvider { get; set; }
+
+        public ASRProtectionEntity() { }
+        public ASRProtectionEntity(
+            string protectionEntityId,
+            string serverId,
+            string protectionContainerId,
+            string name,
+            bool protectedOrNot,
+            bool isRelationshipReversed,
+            string protectionState,
+            string testFailoverState,
+            string replicationProvider)
+        {
+            this.ID = protectionEntityId;
             this.ServerId = serverId;
-            this.ServerName = serverName;
+            this.ProtectionContainerId = protectionContainerId;
+            this.Name = name;
+            this.Protected = protectedOrNot;
+            this.ProtectionState = protectionState;
+            this.ReplicationProvider = replicationProvider;
+            this.IsRelationshipReversed = isRelationshipReversed;
+            this.TestFailoverState = testFailoverState;
         }
     }
 
