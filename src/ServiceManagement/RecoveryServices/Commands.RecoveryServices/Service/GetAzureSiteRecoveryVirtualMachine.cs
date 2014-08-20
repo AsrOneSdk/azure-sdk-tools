@@ -23,19 +23,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = Default)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
     public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
-        protected const string Default = "Default";
-        protected const string ByName = "ByName";
-        protected const string ById = "ById";
-
         #region Parameters
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -47,7 +44,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Name of the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
@@ -59,9 +57,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectionContainerId
         {
@@ -69,6 +67,34 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.protectionContainerId = value; }
         }
         private string protectionContainerId;
+
+        /// <summary>
+        /// GUID of the Server managing the Virtual Machine.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string ServerId
+        {
+            get { return this.serverId; }
+            set { this.serverId = value; }
+        }
+        private string serverId;
+
+        /// <summary>
+        /// Protected Container Object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRProtectionContainer ProtectedContainer
+        {
+            get { return this.protectedContainer; }
+            set { this.protectedContainer = value; }
+        }
+        private ASRProtectionContainer protectedContainer;
 
         #endregion Parameters
 
@@ -78,15 +104,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (ParameterSetName)
                 {
-                    case ByName:
-                        GetByName();
+                    case ASRParameterSets.ByObject:
+                    case ASRParameterSets.ByObjectWithId:
+                    case ASRParameterSets.ByObjectWithName:
+                        serverId = protectedContainer.ServerId;
+                        protectionContainerId = protectedContainer.ProtectionContainerId;
                         break;
-                    case ById:
-                        GetById();
+                    case ASRParameterSets.ByIDs:
+                    case ASRParameterSets.ByIDsWithId:
+                    case ASRParameterSets.ByIDsWithName:
                         break;
-                    case Default:
-                        GetByDefault();
-                        break;
+                }
+
+                if (id != null)
+                {
+                    GetById();
+                }
+                else if (name != null)
+                {
+                    GetByName();
+                }
+                else
+                {
+                    GetAll();
                 }
             }
             catch (CloudException cloudException)
@@ -131,7 +171,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             WriteVirtualMachine(vmResponse.Vm);
         }
 
-        private void GetByDefault()
+        private void GetAll()
         {
             VirtualMachineListResponse vmListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(

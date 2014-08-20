@@ -52,7 +52,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public override void ExecuteCmdlet()
         {
-            WriteVerbose("File path: " + azureSiteRecoveryVaultSettingsFile);
+            WriteVerbose("Vault Settings File path: " + azureSiteRecoveryVaultSettingsFile);
 
             ResourceCredentials resourceCredentials = null;
             if (File.Exists(azureSiteRecoveryVaultSettingsFile))

@@ -41,8 +41,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         #region Parameters
 
-        private string azureSiteRecoveryVaultSettingsFile = 
-            Directory.GetCurrentDirectory() + "\\RecoveryServicesVaultSettings.vaultsettings";
+        private string azureSiteRecoveryVaultSettingsFile = string.Empty;
 
         [Parameter (Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -70,10 +69,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.vaultKey = value; }
         }
         private string vaultKey;
+
+        [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string FilePath
+        {
+            get { return this.filePath; }
+            set { this.filePath = value; }
+        }
+        private string filePath;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
+            azureSiteRecoveryVaultSettingsFile =
+                filePath + "\\RecoveryServicesVaultSettings.vaultsettings";
             FileStream stream = new FileStream(azureSiteRecoveryVaultSettingsFile, FileMode.Create);
             stream.Close();
 

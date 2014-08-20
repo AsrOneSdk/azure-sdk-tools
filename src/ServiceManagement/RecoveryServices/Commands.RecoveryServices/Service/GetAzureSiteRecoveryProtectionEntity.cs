@@ -24,19 +24,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = Default)]
-    [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
-    public class GetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [OutputType(typeof(IEnumerable<ASRProtectionEntity>))]
+    public class GetAzureSiteRecoveryProtectedContainer : RecoveryServicesCmdletBase
     {
-        protected const string Default = "Default";
-        protected const string ByName = "ByName";
-        protected const string ById = "ById";
-
         #region Parameters
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -48,7 +45,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Name of the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
@@ -60,9 +58,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [Parameter(ParameterSetName = ByName, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [Parameter(ParameterSetName = Default, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectionContainerId
         {
@@ -70,6 +68,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             set { this.protectionContainerId = value; }
         }
         private string protectionContainerId;
+
+        private string serverId;
+
+        /// <summary>
+        /// Server Object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRServer Server
+        {
+            get { return this.server; }
+            set { this.server = value; }
+        }
+        private ASRServer server;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
@@ -78,15 +92,28 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (ParameterSetName)
                 {
-                    case ByName:
-                        GetByName();
+                    case ASRParameterSets.ByObject:
+                    case ASRParameterSets.ByObjectWithId:
+                    case ASRParameterSets.ByObjectWithName:
+                        serverId = server.ServerId;
                         break;
-                    case ById:
-                        GetById();
+                    case ASRParameterSets.ByIDs:
+                    case ASRParameterSets.ByIDsWithId:
+                    case ASRParameterSets.ByIDsWithName:
                         break;
-                    case Default:
-                        GetByDefault();
-                        break;
+                }
+
+                if (id != null)
+                {
+                    GetById();
+                }
+                else if (name != null)
+                {
+                    GetByName();
+                }
+                else
+                {
+                    GetAll();
                 }
             }
             catch (CloudException cloudException)
@@ -131,7 +158,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             WriteProtectionEntity(peResponse.ProtectionEntity);
         }
 
-        private void GetByDefault()
+        private void GetAll()
         {
             ProtectionEntityListResponse peListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(

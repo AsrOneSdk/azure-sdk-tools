@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="lib\PSContracts.cs" />
     <Compile Include="lib\PSObjects.cs" />
+    <Compile Include="lib\PSParameterSets.cs" />
     <Compile Include="lib\PSRecoveryPlanObjects.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
