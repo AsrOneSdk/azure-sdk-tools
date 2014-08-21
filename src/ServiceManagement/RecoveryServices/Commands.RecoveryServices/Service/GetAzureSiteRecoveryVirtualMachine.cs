@@ -193,6 +193,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vm.IsRelationshipReversed,
                     vm.ProtectionState,
                     vm.TestFailoverState,
+                    vm.ReplicationHealth,
                     vm.ReplicationProvider,
                     vm.ReplicationProviderSettings),
                 true);

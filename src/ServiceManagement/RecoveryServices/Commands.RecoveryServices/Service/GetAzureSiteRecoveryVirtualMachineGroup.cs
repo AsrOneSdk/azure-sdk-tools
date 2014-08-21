@@ -194,6 +194,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vmg.IsRelationshipReversed,
                     vmg.ProtectionState,
                     vmg.TestFailoverState,
+                    vmg.ReplicationHealth,
                     vmg.ReplicationProvider,
                     vmg.ReplicationProviderSettings,
                     vmg.VirtualMachineList),
