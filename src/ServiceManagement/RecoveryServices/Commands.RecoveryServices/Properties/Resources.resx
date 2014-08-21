@@ -160,6 +160,12 @@
     <value>Vault settings file not found, please pass the file downloaded from portal</value>
   </data>
   <data name="VirtualMachineNotFound" xml:space="preserve">
-    <value>Virtual Machine {0} is not associated with Protected Container {1}</value>
+    <value>Virtual Machine {0} is not associated with Protection Container {1}</value>
+  </data>
+  <data name="VirtualMachineGroupNotFound" xml:space="preserve">
+    <value>Virtual Machine Group {0} is not associated with Protection Container {1}</value>
+  </data>
+  <data name="ProtectionEntityNotFound" xml:space="preserve">
+    <value>Protection Entity {0} is not associated with Protection Container {1}</value>
   </data>
 </root>

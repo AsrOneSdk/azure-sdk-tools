@@ -46,6 +46,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
+            // Temp code.
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
             recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             subscriptionId = currentSubscription.SubscriptionId;

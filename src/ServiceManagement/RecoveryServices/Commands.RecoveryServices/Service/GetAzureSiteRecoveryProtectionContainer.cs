@@ -33,7 +33,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #region Parameters
         /// <summary>
-        /// ID of the Protected Container.
+        /// ID of the Protection Container.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -45,7 +45,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
-        /// Name of the Protected Container.
+        /// Name of the Protection Container.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]

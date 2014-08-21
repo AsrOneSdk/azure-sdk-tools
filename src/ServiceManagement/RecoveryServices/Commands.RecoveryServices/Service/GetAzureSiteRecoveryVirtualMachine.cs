@@ -69,32 +69,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string protectionContainerId;
 
         /// <summary>
-        /// GUID of the Server managing the Virtual Machine.
-        /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
-        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
-        [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
-        [ValidateNotNullOrEmpty]
-        public string ServerId
-        {
-            get { return this.serverId; }
-            set { this.serverId = value; }
-        }
-        private string serverId;
-
-        /// <summary>
-        /// Protected Container Object.
+        /// Protection Container Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public ASRProtectionContainer ProtectedContainer
+        public ASRProtectionContainer ProtectionContainer
         {
-            get { return this.protectedContainer; }
-            set { this.protectedContainer = value; }
+            get { return this.protectionContainer; }
+            set { this.protectionContainer = value; }
         }
-        private ASRProtectionContainer protectedContainer;
+        private ASRProtectionContainer protectionContainer;
 
         #endregion Parameters
 
@@ -107,8 +93,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ASRParameterSets.ByObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
-                        serverId = protectedContainer.ServerId;
-                        protectionContainerId = protectedContainer.ProtectionContainerId;
+                        protectionContainerId = protectionContainer.ProtectionContainerId;
                         break;
                     case ASRParameterSets.ByIDs:
                     case ASRParameterSets.ByIDsWithId:
@@ -196,7 +181,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vm.ServerId,
                     vm.ProtectionContainerId,
                     vm.Name,
+                    vm.Type,
+                    vm.FabricObjectId,
                     vm.Protected,
+                    vm.CanCommit,
+                    vm.CanFailover,
+                    vm.CanReverseReplicate,
                     vm.IsRelationshipReversed,
                     vm.ProtectionState,
                     vm.TestFailoverState,

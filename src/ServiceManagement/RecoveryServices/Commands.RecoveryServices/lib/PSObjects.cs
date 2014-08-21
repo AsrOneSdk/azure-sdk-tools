@@ -99,28 +99,102 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 
         public ASRVirtualMachine() { }
         public ASRVirtualMachine(
-            string virtualMachineId,
+            string Id,
             string serverId,
             string protectionContainerId,
             string name,
+            string type,
+            string fabricObjectId,
             bool protectedOrNot,
+            bool canCommit,
+            bool canFailover,
+            bool canReverseReplicate,
             bool isRelationshipReversed,
             string protectionState,
             string testFailoverState,
             string replicationProvider,
             string replicationProviderSettings)
             : base(
-            virtualMachineId, 
-            serverId,
-            protectionContainerId,
-            name,
-            protectedOrNot,
-            isRelationshipReversed,
-            protectionState,
-            testFailoverState,
-            replicationProvider)
+                Id,
+                serverId,
+                protectionContainerId,
+                name,
+                type,
+                fabricObjectId,
+                protectedOrNot,
+                canCommit,
+                canFailover,
+                canReverseReplicate,
+                isRelationshipReversed,
+                protectionState,
+                testFailoverState,
+                replicationProvider)
         {
             this.ReplicationProviderSettings = replicationProviderSettings;
+        }
+    }
+
+    public class ASRVirtualMachineGroup : ASRProtectionEntity
+    {
+        public string ReplicationProviderSettings { get; set; }
+        public List<ASRVirtualMachine> VirtualMachineList { get; set; }
+
+        public ASRVirtualMachineGroup() { }
+        public ASRVirtualMachineGroup(
+            string Id,
+            string serverId,
+            string protectionContainerId,
+            string name,
+            string type,
+            string fabricObjectId,
+            bool protectedOrNot,
+            bool canCommit,
+            bool canFailover,
+            bool canReverseReplicate,
+            bool isRelationshipReversed,
+            string protectionState,
+            string testFailoverState,
+            string replicationProvider,
+            string replicationProviderSettings,
+            IList<VirtualMachine> virtualMachineList)
+            : base(
+                Id,
+                serverId,
+                protectionContainerId,
+                name,
+                type,
+                fabricObjectId,
+                protectedOrNot,
+                canCommit,
+                canFailover,
+                canReverseReplicate,
+                isRelationshipReversed,
+                protectionState,
+                testFailoverState,
+                replicationProvider)
+        {
+            this.ReplicationProviderSettings = replicationProviderSettings;
+            this.VirtualMachineList = new List<ASRVirtualMachine>();
+            foreach (var vm in virtualMachineList)
+            {
+                this.VirtualMachineList.Add(
+                    new ASRVirtualMachine(
+                    vm.ID,
+                    vm.ServerId,
+                    vm.ProtectionContainerId,
+                    vm.Name,
+                    vm.Type,
+                    vm.FabricObjectId,
+                    vm.Protected,
+                    vm.CanCommit,
+                    vm.CanFailover,
+                    vm.CanReverseReplicate,
+                    vm.IsRelationshipReversed,
+                    vm.ProtectionState,
+                    vm.TestFailoverState,
+                    vm.ReplicationProvider,
+                    vm.ReplicationProviderSettings));
+            }
         }
     }
 
@@ -130,7 +204,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public string ServerId { get; set; }
         public string ProtectionContainerId { get; set; }
         public string Name { get; set; }
+        public string Type { get; set; }
+        public string FabricObjectId { get; set; }
         public bool Protected { get; set; }
+        public bool CanCommit { get; set; }
+        public bool CanFailover { get; set; }
+        public bool CanReverseReplicate { get; set; }
         public bool IsRelationshipReversed { get; set; }
         public string ProtectionState { get; set; }
         public string TestFailoverState { get; set; }
@@ -142,7 +221,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             string serverId,
             string protectionContainerId,
             string name,
+            string type,
+            string fabricObjectId,
             bool protectedOrNot,
+            bool canCommit,
+            bool canFailover,
+            bool canReverseReplicate,
             bool isRelationshipReversed,
             string protectionState,
             string testFailoverState,
@@ -152,8 +236,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.ServerId = serverId;
             this.ProtectionContainerId = protectionContainerId;
             this.Name = name;
+            this.Type = type;
+            this.FabricObjectId = fabricObjectId;
             this.Protected = protectedOrNot;
             this.ProtectionState = protectionState;
+            this.CanCommit = canCommit;
+            this.CanFailover = canFailover;
+            this.CanReverseReplicate = canReverseReplicate;
             this.ReplicationProvider = replicationProvider;
             this.IsRelationshipReversed = isRelationshipReversed;
             this.TestFailoverState = testFailoverState;

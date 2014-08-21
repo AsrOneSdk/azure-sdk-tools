@@ -98,6 +98,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMGroupClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesPEClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesJobsClient.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMClient.cs" />
     <Compile Include="RecoveryServicesCmdletBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\GetAzureSiteRecoveryVirtualMachineGroup.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectionEntity.cs" />
     <Compile Include="Service\RestartAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\ResumeAzureSiteRecoveryJob.cs" />
