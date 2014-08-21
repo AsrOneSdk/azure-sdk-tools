@@ -15,10 +15,10 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using System;
     #endregion
 
     public partial class PSRecoveryServicesClient
@@ -29,14 +29,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public ProtectionEntityListResponse GetAzureSiteRecoveryProtectionEntity(
             string protectionContainerId)
         {
-            return GetSiteRecoveryClient().ProtectionEntity.List(protectionContainerId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().ProtectionEntity.List(protectionContainerId, this.GetRequestHeaders());
         }
 
         public ProtectionEntityResponse GetAzureSiteRecoveryProtectionEntity(
             string protectionContainerId,
             string virtualMachineId)
         {
-            return GetSiteRecoveryClient().ProtectionEntity.Get(protectionContainerId, virtualMachineId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().ProtectionEntity.Get(protectionContainerId, virtualMachineId, this.GetRequestHeaders());
         }
 
         public JobResponse SetProtectionOnProtectionEntity(
@@ -44,24 +44,23 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string virtualMachineId,
             string protection)
         {
-
-            var requestHeaders = GetRequestHeaders();
-            requestHeaders.AgentAuthenticationHeader = GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
+            var requestHeaders = this.GetRequestHeaders();
+            requestHeaders.AgentAuthenticationHeader = this.GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
             
             JobResponse jobResponse = null;
 
-            if(0 == String.Compare(EnableProtection, protection, StringComparison.OrdinalIgnoreCase))
+            if (0 == string.Compare(EnableProtection, protection, StringComparison.OrdinalIgnoreCase))
             {
                 jobResponse =
-                    GetSiteRecoveryClient().ProtectionEntity.EnableProtection(
+                    this.GetSiteRecoveryClient().ProtectionEntity.EnableProtection(
                     protectionContainerId,
                     virtualMachineId,
                     requestHeaders);
             }
-            else if(0 == String.Compare(DisableProtection, protection, StringComparison.OrdinalIgnoreCase))
+            else if (0 == string.Compare(DisableProtection, protection, StringComparison.OrdinalIgnoreCase))
             {
                 jobResponse =
-                    GetSiteRecoveryClient().ProtectionEntity.DisableProtection(
+                    this.GetSiteRecoveryClient().ProtectionEntity.DisableProtection(
                     protectionContainerId,
                     virtualMachineId,
                     requestHeaders);

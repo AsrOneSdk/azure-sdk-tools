@@ -15,12 +15,15 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure site Recovery Job.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryJob")]
     public class GetAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
@@ -28,6 +31,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         protected const string ByParam = "ByParam";
 
         #region Parameters
+        private string id;
+        private System.DateTime startTime;
+        private System.DateTime endTime;
+        private string state;
 
         /// <summary>
         /// Job ID.
@@ -39,10 +46,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
-        /// Allows to filter the list of jobs started after the given starttime.
+        /// Allows to filter the list of jobs started after the given start time.
         /// </summary>
         [Parameter(ParameterSetName = "ByParam", HelpMessage = "Start time of job should be greater than this.")]
         [ValidateNotNullOrEmpty]
@@ -51,10 +57,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.startTime; }
             set { this.startTime = value; }
         }
-        private System.DateTime startTime;
 
         /// <summary>
-        /// Allows to filter the list of jobs started after the given starttime.
+        /// Allows to filter the list of jobs started after the given start time.
         /// </summary>
         [Parameter(ParameterSetName = "ByParam", HelpMessage = "End time of job should be less than this.")]
         [ValidateNotNullOrEmpty]
@@ -63,15 +68,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.endTime; }
             set { this.endTime = value; }
         }
-        private System.DateTime endTime;
-		
+
         /// <summary>
         /// Take string input for possible States of ASR Job. Use this parameter to get filtered 
         /// view of Jobs
         /// </summary>
+        /// Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
         [Parameter(ParameterSetName = "ByParam", HelpMessage = "State of job to return.")]
         [ValidateNotNullOrEmpty]
-        // Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
         [ValidateSet(
             "Aborted", 
             "Cancelled", 
@@ -95,23 +99,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.state; }
             set { this.state = value; }
         }
-        private string state;
-
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ById:
-                        GetById();
+                        this.GetById();
                         break;
 
                     case ByParam:
                     default:
-                        GetByParam();
+                        this.GetByParam();
                         break;
                 }
             }
@@ -123,12 +125,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetById()
         {
-            WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(id).Job);
+            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.id).Job);
         }
 
         private void GetByParam()
         {
-            WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob().Jobs);
+            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob().Jobs);
         }
     }
 }

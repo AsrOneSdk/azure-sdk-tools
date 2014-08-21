@@ -15,22 +15,22 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
-    using System;
     #endregion
 
     public partial class PSRecoveryServicesClient
     {
         public ServerListResponse GetAzureSiteRecoveryServer()
         {
-            return GetSiteRecoveryClient().Servers.List(GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Servers.List(this.GetRequestHeaders());
         }
 
         public ServerResponse GetAzureSiteRecoveryServer(string serverId)
         {
-            return GetSiteRecoveryClient().Servers.Get(serverId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Servers.Get(serverId, this.GetRequestHeaders());
         }
     }
 }

@@ -14,6 +14,9 @@
 
 namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 {
+    /// <summary>
+    /// Parameter Sets used for Azure Site Recovery commands.
+    /// </summary>
     internal static class ASRParameterSets
     {
         internal const string ByObject = "ByObject";

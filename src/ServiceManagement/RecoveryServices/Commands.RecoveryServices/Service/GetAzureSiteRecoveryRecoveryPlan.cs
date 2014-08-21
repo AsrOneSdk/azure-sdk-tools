@@ -15,13 +15,16 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure Site Recovery Recovery Plan.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = Default)]
     [OutputType(typeof(IEnumerable<ASRRecoveryPlan>))]
     public class GetAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
@@ -31,6 +34,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         protected const string ById = "ById";
 
         #region Parameters
+        private string id; 
+        private string name;
+
         /// <summary>
         /// ID of the Server.
         /// </summary>
@@ -41,7 +47,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
         /// Name of the Server.
@@ -53,23 +58,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.name; }
             set { this.name = value; }
         }
-        private string name;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ByName:
-                        GetByName();
+                        this.GetByName();
                         break;
                     case ById:
-                        GetById();
+                        this.GetById();
                         break;
                     case Default:
-                        GetByDefault();
+                        this.GetByDefault();
                         break;
                 }
             }
@@ -87,9 +91,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             bool found = false;
             foreach (RecoveryPlan recoveryPlan in recoveryPlanListResponse.RecoveryPlans)
             {
-                if(0 == string.Compare(name, recoveryPlan.Name, true))
+                if (0 == string.Compare(this.name, recoveryPlan.Name, true))
                 {
-                    WriteRecoveryPlan(recoveryPlan);
+                    this.WriteRecoveryPlan(recoveryPlan);
                     found = true;
                 }
             }
@@ -99,17 +103,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.RecoveryPlanNotFound,
-                    name,
-                    PSRecoveryServicesClient.resourceCredentials.ResourceName));
+                    this.name,
+                    PSRecoveryServicesClient.ResourceCreds.ResourceName));
             }
         }
 
         private void GetById()
         {
             RecoveryPlanResponse recoveryPlanResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan(id);
+                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan(this.id);
 
-            WriteRecoveryPlan(recoveryPlanResponse.RecoveryPlan);
+            this.WriteRecoveryPlan(recoveryPlanResponse.RecoveryPlan);
         }
 
         private void GetByDefault()
@@ -117,20 +121,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             RecoveryPlanListResponse recoveryPlanListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan();
 
-            WriteRecoveryPlans(recoveryPlanListResponse.RecoveryPlans);
+            this.WriteRecoveryPlans(recoveryPlanListResponse.RecoveryPlans);
         }
 
         private void WriteRecoveryPlans(IList<RecoveryPlan> recoveryPlans)
         {
             foreach (RecoveryPlan recoveryPlan in recoveryPlans)
             {
-                WriteRecoveryPlan(recoveryPlan);
+                this.WriteRecoveryPlan(recoveryPlan);
             }
         }
 
         private void WriteRecoveryPlan(RecoveryPlan recoveryPlan)
         {
-            WriteObject(
+            this.WriteObject(
                 new ASRRecoveryPlan(
                     recoveryPlan.ID,
                     recoveryPlan.Name,

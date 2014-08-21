@@ -15,14 +15,17 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure Site Recovery Protection Container.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionContainer", DefaultParameterSetName = Default)]
     [OutputType(typeof(IEnumerable<ASRProtectionContainer>))]
     public class GetAzureSiteRecoveryProtectionContainer : RecoveryServicesCmdletBase
@@ -32,6 +35,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         protected const string ById = "ById";
 
         #region Parameters
+        private string id;
+        private string name;
+
         /// <summary>
         /// ID of the Protection Container.
         /// </summary>
@@ -42,7 +48,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
         /// Name of the Protection Container.
@@ -54,24 +59,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.name; }
             set { this.name = value; }
         }
-        private string name;
-
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ByName:
-                        GetByName();
+                        this.GetByName();
                         break;
                     case ById:
-                        GetById();
+                        this.GetById();
                         break;
                     case Default:
-                        GetByDefault();
+                        this.GetByDefault();
                         break;
                 }
             }
@@ -91,9 +94,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 ProtectionContainer protectionContainer in 
                 protectionContainerListResponse.ProtectionContainers)
             {
-                if (0 == string.Compare(name, protectionContainer.Name, true))
+                if (0 == string.Compare(this.name, protectionContainer.Name, true))
                 {
-                    WriteProtectionContainer(protectionContainer);
+                    this.WriteProtectionContainer(protectionContainer);
                     found = true;
                 }
             }
@@ -103,16 +106,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.ProtectionContainerNotFound,
-                    name));
+                    this.name));
             }
         }
 
         private void GetById()
         {
             ProtectionContainerResponse protectionContainerResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer(id);
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer(this.id);
 
-            WriteProtectionContainer(protectionContainerResponse.ProtectionContainer);
+            this.WriteProtectionContainer(protectionContainerResponse.ProtectionContainer);
         }
 
         private void GetByDefault()
@@ -120,20 +123,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             ProtectionContainerListResponse protectionContainerListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer();
 
-            WriteProtectionContainers(protectionContainerListResponse.ProtectionContainers);
+            this.WriteProtectionContainers(protectionContainerListResponse.ProtectionContainers);
         }
 
-        private void WriteProtectionContainers (IList<ProtectionContainer> protectionContainers)
+        private void WriteProtectionContainers(IList<ProtectionContainer> protectionContainers)
         {
             foreach (ProtectionContainer protectionContainer in protectionContainers)
             {
-                WriteProtectionContainer(protectionContainer);
+                this.WriteProtectionContainer(protectionContainer);
             }
         }
 
-        private void WriteProtectionContainer (ProtectionContainer protectionContainer)
+        private void WriteProtectionContainer(ProtectionContainer protectionContainer)
         {
-            WriteObject(
+            this.WriteObject(
                 new ASRProtectionContainer(
                     protectionContainer.ID,
                     protectionContainer.Name,

@@ -15,13 +15,13 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
     using System.Management.Automation;
     using System.Threading;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
@@ -35,6 +35,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         protected const string ByVmId = "ByVmId";
 
         #region Parameters
+        private string recoveryPlanId;
+        private string failoverDirection;
+        private bool waitForCompletion;
+        private JobResponse jobResponse = null;
+        private bool stopProcessing = false;
+
         /// <summary>
         /// ID of the Recovery Plan.
         /// </summary>
@@ -42,10 +48,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [ValidateNotNullOrEmpty]
         public string RpId
         {
-            get { return this.rpId; }
-            set { this.rpId = value; }
+            get { return this.recoveryPlanId; }
+            set { this.recoveryPlanId = value; }
         }
-        private string rpId;
 
         /// <summary>
         /// Failover direction for the recovery plan.
@@ -59,7 +64,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.failoverDirection; }
             set { this.failoverDirection = value; }
         }
-        private string failoverDirection;
 
         /// <summary>
         /// This is required to wait for job completion.
@@ -70,20 +74,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
-        private bool waitForCompletion;
         #endregion Parameters
-
-        private JobResponse jobResponse = null;
-        private bool stopProcessing = false;
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ByRpId:
-                        StartRpTestFailover();
+                        this.StartRpTestFailover();
                         break;
                 }
             }
@@ -97,36 +97,36 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             // Ctrl + C and etc
             base.StopProcessing();
-            stopProcessing = true;
+            this.stopProcessing = true;
         }
 
         private void StartRpTestFailover()
         {
-            RpTestFailoverRequest rpTestFailoverRequest = new RpTestFailoverRequest();
-            rpTestFailoverRequest.FailoverDirection = this.FailoverDirection;
-            jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
+            RpTestFailoverRequest recoveryPlanTestFailoverRequest = new RpTestFailoverRequest();
+            recoveryPlanTestFailoverRequest.FailoverDirection = this.FailoverDirection;
+            this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
                 this.RpId, 
-                rpTestFailoverRequest);
+                recoveryPlanTestFailoverRequest);
 
-            WriteJob(jobResponse.Job);
+            this.WriteJob(this.jobResponse.Job);
 
-            string jobId = jobResponse.Job.ID;
-            while (waitForCompletion)
+            string jobId = this.jobResponse.Job.ID;
+            while (this.waitForCompletion)
             {
-                if (jobResponse.Job.Completed || stopProcessing)
+                if (this.jobResponse.Job.Completed || this.stopProcessing)
                 {
                     break;
                 }
 
                 Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobResponse.Job.ID);
-                WriteObject("JobState: " + jobResponse.Job.State);
+                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                this.WriteObject("JobState: " + this.jobResponse.Job.State);
             }
         }
 
         private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new ASRJob(job));
+            this.WriteObject(new ASRJob(job));
         }
     }
 }

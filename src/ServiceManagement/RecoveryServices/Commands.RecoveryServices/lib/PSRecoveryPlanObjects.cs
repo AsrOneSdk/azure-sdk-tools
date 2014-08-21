@@ -19,27 +19,37 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Runtime.Serialization;
     #endregion
 
+    /// <summary>
+    /// Azure Site Recovery Recovery Plan.
+    /// </summary>
     public class ASRRecoveryPlan
     {
-         #region Properties
-        public string RpId { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string ServerId { get; set; }
-        public string TargetServerId { get; set; }
-        #endregion
+        public ASRRecoveryPlan()
+        {
+        }
 
-        public ASRRecoveryPlan() { }
         public ASRRecoveryPlan(
-            string rpId,
+            string recoveryPlanId,
             string name,
             string serverId,
             string targetServerId)
         {
-            this.RpId = rpId;
+            this.RpId = recoveryPlanId;
             this.Name = name;
             this.ServerId = serverId;
             this.TargetServerId = targetServerId;
         }
+
+        #region Properties
+        public string RpId { get; set; }
+
+        public string Name { get; set; }
+
+        public string Type { get; set; }
+
+        public string ServerId { get; set; }
+
+        public string TargetServerId { get; set; }
+        #endregion
     }
 }

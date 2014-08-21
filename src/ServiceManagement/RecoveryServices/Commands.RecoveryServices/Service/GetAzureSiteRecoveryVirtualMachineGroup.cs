@@ -15,19 +15,27 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure Site Recovery Virtual Machine group.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachineGroup", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(IEnumerable<ASRVirtualMachineGroup>))]
     public class GetAzureSiteRecoveryVirtualMachineGroup : RecoveryServicesCmdletBase
     {
         #region Parameters
+        private string id;
+        private string name;
+        private string protectionContainerId;
+        private ASRProtectionContainer protectionContainer;
+
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
@@ -39,7 +47,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
         /// Name of the Virtual Machine.
@@ -52,7 +59,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.name; }
             set { this.name = value; }
         }
-        private string name;
 
         /// <summary>
         /// ID of the ProtectionContainer containing the Virtual Machine.
@@ -66,7 +72,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionContainerId; }
             set { this.protectionContainerId = value; }
         }
-        private string protectionContainerId;
 
         /// <summary>
         /// Protection Container Object.
@@ -80,7 +85,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionContainer; }
             set { this.protectionContainer = value; }
         }
-        private ASRProtectionContainer protectionContainer;
 
         #endregion Parameters
 
@@ -88,12 +92,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
-                        protectionContainerId = protectionContainer.ProtectionContainerId;
+                        this.protectionContainerId = this.protectionContainer.ProtectionContainerId;
                         break;
                     case ASRParameterSets.ByIDs:
                     case ASRParameterSets.ByIDsWithId:
@@ -101,17 +105,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         break;
                 }
 
-                if (id != null)
+                if (this.id != null)
                 {
-                    GetById();
+                    this.GetById();
                 }
-                else if (name != null)
+                else if (this.name != null)
                 {
-                    GetByName();
+                    this.GetByName();
                 }
                 else
                 {
-                    GetAll();
+                    this.GetAll();
                 }
             }
             catch (CloudException cloudException)
@@ -122,16 +126,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetByName()
         {
-            VirtualMachineGroupListResponse vmListResponse =
+            VirtualMachineGroupListResponse virtualMachineListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachineGroup(
-                protectionContainerId);
+                this.protectionContainerId);
 
             bool found = false;
-            foreach (var vmGroup in vmListResponse.VmGroups)
+            foreach (var virtualMachineGroup in virtualMachineListResponse.VmGroups)
             {
-                if (0 == string.Compare(name, vmGroup.Name, true))
+                if (0 == string.Compare(this.name, virtualMachineGroup.Name, true))
                 {
-                    WriteVirtualMachineGroup(vmGroup);
+                    this.WriteVirtualMachineGroup(virtualMachineGroup);
                     found = true;
                 }
             }
@@ -141,8 +145,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.VirtualMachineGroupNotFound,
-                    name,
-                    protectionContainerId));
+                    this.name,
+                    this.protectionContainerId));
             }
         }
 
@@ -150,32 +154,32 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             var vmgResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachineGroup(
-                protectionContainerId, 
-                id);
+                this.protectionContainerId,
+                this.id);
 
-            WriteVirtualMachineGroup(vmgResponse.VmGroup);
+            this.WriteVirtualMachineGroup(vmgResponse.VmGroup);
         }
 
         private void GetAll()
         {
             VirtualMachineGroupListResponse vmgListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachineGroup(
-                protectionContainerId);
+                this.protectionContainerId);
 
-            WriteVirtualMachineGroups(vmgListResponse.VmGroups);
+            this.WriteVirtualMachineGroups(vmgListResponse.VmGroups);
         }
 
         private void WriteVirtualMachineGroups(IList<VirtualMachineGroup> vmgs)
         {
             foreach (var vmg in vmgs)
             {
-                WriteVirtualMachineGroup(vmg);
+                this.WriteVirtualMachineGroup(vmg);
             }
         }
 
         private void WriteVirtualMachineGroup(VirtualMachineGroup vmg)
         {
-            WriteObject(
+            this.WriteObject(
                 new ASRVirtualMachineGroup(
                     vmg.ID,
                     vmg.ServerId,

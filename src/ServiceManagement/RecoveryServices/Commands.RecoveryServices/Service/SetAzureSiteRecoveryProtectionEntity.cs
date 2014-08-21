@@ -15,20 +15,31 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
     using System.Management.Automation;
     using System.Threading;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Set Protection Entity protection state.
+    /// </summary>
     [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class SetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         #region Parameters
+        private string id;
+        private string protectionContainerId;
+        private ASRProtectionEntity protectionEntity;
+        private string protection;
+        private bool waitForCompletion;
+        private JobResponse jobResponse = null;
+        private bool stopProcessing = false;
+
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
@@ -39,7 +50,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
         /// ID of the ProtectionContainer containing the Virtual Machine.
@@ -51,7 +61,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionContainerId; }
             set { this.protectionContainerId = value; }
         }
-        private string protectionContainerId;
 
         /// <summary>
         /// Protection Entity Object.
@@ -63,10 +72,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionEntity; }
             set { this.protectionEntity = value; }
         }
-        private ASRProtectionEntity protectionEntity;
 
         /// <summary>
-        /// Bool value to either to say either enable or disable protection.
+        /// Protection to set, either enable or disable.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -78,10 +86,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protection; }
             set { this.protection = value; }
         }
-        private string protection;
 
         /// <summary>
-        /// Bool value to either to say either enable or disable protection.
+        /// On passing, command waits till completion.
         /// </summary>
         [Parameter]
         public SwitchParameter WaitForCompletion
@@ -89,45 +96,41 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
-        private bool waitForCompletion;
         #endregion Parameters
-
-        private JobResponse jobResponse = null;
-        private bool stopProcessing = false;
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByObject:
-                        id = protectionEntity.ID;
-                        protectionContainerId = protectionEntity.ProtectionContainerId;
+                        this.id = this.protectionEntity.ID;
+                        this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
                         break;
                     case ASRParameterSets.ByIDs:
                         break;
                 }
 
-                jobResponse =
+                this.jobResponse =
                     RecoveryServicesClient.SetProtectionOnProtectionEntity(
-                    protectionContainerId,
-                    id,
-                    protection);
+                    this.protectionContainerId,
+                    this.id,
+                    this.protection);
 
-                WriteJob(jobResponse.Job);
+                this.WriteJob(this.jobResponse.Job);
 
-                string jobId = jobResponse.Job.ID;
-                while (waitForCompletion)
+                string jobId = this.jobResponse.Job.ID;
+                while (this.waitForCompletion)
                 {
-                    if (jobResponse.Job.Completed || stopProcessing)
+                    if (this.jobResponse.Job.Completed || this.stopProcessing)
                     {
                         break;
                     }
 
                     Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                    jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobResponse.Job.ID);
-                    WriteObject("JobState: " + jobResponse.Job.State);
+                    this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                    this.WriteObject("JobState: " + this.jobResponse.Job.State);
                 }
             }
             catch (CloudException cloudException)
@@ -140,12 +143,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             // Ctrl + C and etc
             base.StopProcessing();
-            stopProcessing = true;
+            this.stopProcessing = true;
         }
 
         private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new ASRJob(job));
+            this.WriteObject(new ASRJob(job));
         }
     }
 }

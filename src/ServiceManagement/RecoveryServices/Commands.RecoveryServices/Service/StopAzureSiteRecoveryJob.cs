@@ -15,16 +15,20 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
     using System;
     using System.Management.Automation;
+    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Stops Azure Site Recovery Job.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Stop, "AzureSiteRecoveryJob")]
     public class StopAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
         #region Parameters
+        private string id;
 
         /// <summary>
         /// Job ID.
@@ -36,13 +40,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
-
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
-            RecoveryServicesClient.StopAzureSiteRecoveryJob(Id);
+            RecoveryServicesClient.StopAzureSiteRecoveryJob(this.id);
         }
     }
 }

@@ -23,32 +23,31 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public JobResponse GetAzureSiteRecoveryJobDetails(string jobId)
         {
-            return GetSiteRecoveryClient().Jobs.Get(jobId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Jobs.Get(jobId, this.GetRequestHeaders());
         }
 
         public JobListResponse GetAzureSiteRecoveryJob()
         {
-            return GetSiteRecoveryClient().Jobs.List(GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Jobs.List(this.GetRequestHeaders());
         }
 
         public void StopAzureSiteRecoveryJob(
-            string jobId
-            )
+            string jobId)
         {
-            GetSiteRecoveryClient().Jobs.Cancel(jobId, GetRequestHeaders());
+            this.GetSiteRecoveryClient().Jobs.Cancel(jobId, this.GetRequestHeaders());
         }
 
         public JobResponse RestartAzureSiteRecoveryJob(
             string jobId)
         {
-            return GetSiteRecoveryClient().Jobs.Restart(jobId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Jobs.Restart(jobId, this.GetRequestHeaders());
         }
 
         public JobResponse ResumeAzureSiteRecoveryJob(
             string jobId,
             ResumeJobParams resumeJobParams)
         {
-            return GetSiteRecoveryClient().Jobs.Resume(jobId, resumeJobParams, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Jobs.Resume(jobId, resumeJobParams, this.GetRequestHeaders());
         }
     }
 }

@@ -15,10 +15,10 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using System;
     #endregion
 
     public partial class PSRecoveryServicesClient
@@ -26,14 +26,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public VirtualMachineGroupListResponse GetAzureSiteRecoveryVirtualMachineGroup(
             string protectionContainerId)
         {
-            return GetSiteRecoveryClient().VmGroup.List(protectionContainerId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().VmGroup.List(protectionContainerId, this.GetRequestHeaders());
         }
 
         public VirtualMachineGroupResponse GetAzureSiteRecoveryVirtualMachineGroup(
             string protectionContainerId,
             string virtualMachineGroupId)
         {
-            return GetSiteRecoveryClient().VmGroup.Get(protectionContainerId, virtualMachineGroupId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().VmGroup.Get(protectionContainerId, virtualMachineGroupId, this.GetRequestHeaders());
         }
     }
 }

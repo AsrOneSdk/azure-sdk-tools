@@ -15,8 +15,8 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure;
     using System;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
@@ -25,13 +25,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         public ProtectionContainerListResponse GetAzureSiteRecoveryProtectionContainer()
         {
-            return GetSiteRecoveryClient().ProtectionContainer.List(GetRequestHeaders());
+            return this.GetSiteRecoveryClient().ProtectionContainer.List(this.GetRequestHeaders());
         }
 
         public ProtectionContainerResponse GetAzureSiteRecoveryProtectionContainer(
             string protectionContainerId)
         {
-            return GetSiteRecoveryClient().ProtectionContainer.Get(protectionContainerId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().ProtectionContainer.Get(protectionContainerId, this.GetRequestHeaders());
         }
     }
 }

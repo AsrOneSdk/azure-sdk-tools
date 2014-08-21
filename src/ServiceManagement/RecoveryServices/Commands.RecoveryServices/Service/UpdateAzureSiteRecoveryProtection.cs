@@ -15,17 +15,17 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
     using System.Management.Automation;
     using System.Threading;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
-    /// Used to initiate a reprotect operation.
+    /// Used to initiate a recovery protection operation.
     /// </summary>
     [Cmdlet(VerbsData.Update, "AzureSiteRecoveryProtection")]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
@@ -35,6 +35,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         protected const string ByVmId = "ByVmId";
 
         #region Parameters
+        private string recoveryPlanId;
+        private bool waitForCompletion;
+        private JobResponse jobResponse = null;
+        private bool stopProcessing = false;
+
         /// <summary>
         /// ID of the Recovery Plan.
         /// </summary>
@@ -42,10 +47,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [ValidateNotNullOrEmpty]
         public string RpId
         {
-            get { return this.rpId; }
-            set { this.rpId = value; }
+            get { return this.recoveryPlanId; }
+            set { this.recoveryPlanId = value; }
         }
-        private string rpId;
 
         /// <summary>
         /// This is required to wait for job completion.
@@ -56,20 +60,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
-        private bool waitForCompletion;
         #endregion Parameters
-
-        private JobResponse jobResponse = null;
-        private bool stopProcessing = false;
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ByRpId:
-                        SetRpReprotect();
+                        this.SetRpReprotect();
                         break;
                 }
             }
@@ -83,32 +83,32 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             // Ctrl + C and etc
             base.StopProcessing();
-            stopProcessing = true;
+            this.stopProcessing = true;
         }
 
         private void SetRpReprotect()
         {
-            jobResponse = RecoveryServicesClient.UpdateAzureSiteRecoveryProtection(this.RpId);
+            this.jobResponse = RecoveryServicesClient.UpdateAzureSiteRecoveryProtection(this.RpId);
 
-            WriteJob(jobResponse.Job);
+            this.WriteJob(this.jobResponse.Job);
 
-            string jobId = jobResponse.Job.ID;
-            while (waitForCompletion)
+            string jobId = this.jobResponse.Job.ID;
+            while (this.waitForCompletion)
             {
-                if (jobResponse.Job.Completed || stopProcessing)
+                if (this.jobResponse.Job.Completed || this.stopProcessing)
                 {
                     break;
                 }
 
                 Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobResponse.Job.ID);
-                WriteObject("JobState: " + jobResponse.Job.State);
+                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                this.WriteObject("JobState: " + this.jobResponse.Job.State);
             }
         }
 
         private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new ASRJob(job));
+            this.WriteObject(new ASRJob(job));
         }
     }
 }

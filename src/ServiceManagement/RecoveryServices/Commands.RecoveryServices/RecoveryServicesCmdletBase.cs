@@ -19,20 +19,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     /// <summary>
-    /// The base class for all Windows Azure Recovery Service Cmdlets
+    /// The base class for all Windows Azure Recovery Services commands
     /// </summary>
     public abstract class RecoveryServicesCmdletBase : CmdletWithSubscriptionBase
     {
         private PSRecoveryServicesClient recoveryServicesClient;
+
         internal PSRecoveryServicesClient RecoveryServicesClient
         {
             get
             {
-                if (recoveryServicesClient == null)
+                if (this.recoveryServicesClient == null)
                 {
-                    recoveryServicesClient = new PSRecoveryServicesClient(CurrentSubscription);
+                    this.recoveryServicesClient = new PSRecoveryServicesClient(CurrentSubscription);
                 }
-                return recoveryServicesClient;
+
+                return this.recoveryServicesClient;
             }
         }
     }

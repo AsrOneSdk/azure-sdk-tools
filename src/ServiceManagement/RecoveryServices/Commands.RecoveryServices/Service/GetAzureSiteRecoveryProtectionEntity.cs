@@ -15,20 +15,27 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure Site Recovery Protection Entity.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(IEnumerable<ASRProtectionEntity>))]
     public class GetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         #region Parameters
+        private string id;
+        private string name;
+        private string protectionContainerId;
+        private ASRProtectionContainer protectionContainer;
+
         /// <summary>
         /// ID of the Virtual Machine.
         /// </summary>
@@ -40,7 +47,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
         /// Name of the Virtual Machine.
@@ -53,7 +59,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.name; }
             set { this.name = value; }
         }
-        private string name;
 
         /// <summary>
         /// ID of the ProtectionContainer containing the Virtual Machine.
@@ -67,7 +72,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionContainerId; }
             set { this.protectionContainerId = value; }
         }
-        private string protectionContainerId;
 
         /// <summary>
         /// Server Object.
@@ -81,19 +85,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionContainer; }
             set { this.protectionContainer = value; }
         }
-        private ASRProtectionContainer protectionContainer;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
-                        protectionContainerId = ProtectionContainer.ProtectionContainerId;
+                        this.protectionContainerId = this.ProtectionContainer.ProtectionContainerId;
                         break;
                     case ASRParameterSets.ByIDs:
                     case ASRParameterSets.ByIDsWithId:
@@ -101,17 +104,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         break;
                 }
 
-                if (id != null)
+                if (this.id != null)
                 {
-                    GetById();
+                    this.GetById();
                 }
-                else if (name != null)
+                else if (this.name != null)
                 {
-                    GetByName();
+                    this.GetByName();
                 }
                 else
                 {
-                    GetAll();
+                    this.GetAll();
                 }
             }
             catch (CloudException cloudException)
@@ -122,16 +125,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         private void GetByName()
         {
-            ProtectionEntityListResponse peListResponse =
+            ProtectionEntityListResponse protectionEntityListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
-                protectionContainerId);
+                this.protectionContainerId);
 
             bool found = false;
-            foreach (ProtectionEntity pe in peListResponse.ProtectionEntities)
+            foreach (ProtectionEntity pe in protectionEntityListResponse.ProtectionEntities)
             {
-                if (0 == string.Compare(name, pe.Name, true))
+                if (0 == string.Compare(this.name, pe.Name, true))
                 {
-                    WriteProtectionEntity(pe);
+                    this.WriteProtectionEntity(pe);
                     found = true;
                 }
             }
@@ -141,41 +144,41 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.VirtualMachineNotFound,
-                    name,
-                    protectionContainerId));
+                    this.name,
+                    this.protectionContainerId));
             }
         }
 
         private void GetById()
         {
-            ProtectionEntityResponse peResponse =
+            ProtectionEntityResponse protectionEntityResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
-                protectionContainerId, 
-                id);
+                this.protectionContainerId,
+                this.id);
 
-            WriteProtectionEntity(peResponse.ProtectionEntity);
+            this.WriteProtectionEntity(protectionEntityResponse.ProtectionEntity);
         }
 
         private void GetAll()
         {
-            ProtectionEntityListResponse peListResponse =
+            ProtectionEntityListResponse protectionEntityListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
-                protectionContainerId);
+                this.protectionContainerId);
 
-            WriteProtectionEntities(peListResponse.ProtectionEntities);
+            this.WriteProtectionEntities(protectionEntityListResponse.ProtectionEntities);
         }
 
         private void WriteProtectionEntities(IList<ProtectionEntity> protectionEntities)
         {
             foreach (ProtectionEntity pe in protectionEntities)
             {
-                WriteProtectionEntity(pe);
+                this.WriteProtectionEntity(pe);
             }
         }
 
         private void WriteProtectionEntity(ProtectionEntity pe)
         {
-            WriteObject(
+            this.WriteObject(
                 new ASRProtectionEntity(
                     pe.ID,
                     pe.ServerId,

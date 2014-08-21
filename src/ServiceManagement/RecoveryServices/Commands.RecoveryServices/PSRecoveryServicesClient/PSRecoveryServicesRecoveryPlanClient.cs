@@ -15,10 +15,10 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
-    using System;
     #endregion
 
     public partial class PSRecoveryServicesClient
@@ -28,51 +28,52 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         public RecoveryPlanListResponse GetAzureSiteRecoveryRecoveryPlan()
         {
-            return GetSiteRecoveryClient().RecoveryPlan.List(GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.List(this.GetRequestHeaders());
         }
 
         public RecoveryPlanResponse GetAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId, this.GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryCommitFailover(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId, this.GetRequestHeaders());
         }
 
         public JobResponse UpdateAzureSiteRecoveryProtection(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId, this.GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryPlannedFailover(
             string recoveryPlanId, 
-            RpPlannedFailoverRequest rpPlannedFailoverRequest)
+            RpPlannedFailoverRequest recoveryPlanPlannedFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanPlannedFailover(
+            return this.GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanPlannedFailover(
                 recoveryPlanId,
-                rpPlannedFailoverRequest, GetRequestHeaders());
+                recoveryPlanPlannedFailoverRequest, 
+                this.GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryUnplannedFailover(
             string recoveryPlanId,
-            RpUnplannedFailoverRequest rpUnPlannedFailoverRequest)
+            RpUnplannedFailoverRequest recoveryPlanUnPlannedFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnplannedFailover(
+            return this.GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnplannedFailover(
                 recoveryPlanId,
-                rpUnPlannedFailoverRequest, 
-                GetRequestHeaders());
+                recoveryPlanUnPlannedFailoverRequest, 
+                this.GetRequestHeaders());
         }
 
         public JobResponse StartAzureSiteRecoveryTestFailover(
             string recoveryPlanId,
-            RpTestFailoverRequest rpTestFailoverRequest)
+            RpTestFailoverRequest recoveryPlanTestFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanTestFailover(
+            return this.GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanTestFailover(
                 recoveryPlanId,
-                rpTestFailoverRequest, 
-                GetRequestHeaders());
+                recoveryPlanTestFailoverRequest, 
+                this.GetRequestHeaders());
         }
     }
 }

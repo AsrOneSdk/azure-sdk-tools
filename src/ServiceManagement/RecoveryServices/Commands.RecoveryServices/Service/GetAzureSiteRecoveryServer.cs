@@ -15,19 +15,25 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure Site Recovery Server.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = ASRParameterSets.Default)]
     [OutputType(typeof(IEnumerable<ASRServer>))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
         #region Parameters
+        private string id;
+        private string name;
+
         /// <summary>
         /// ID of the Server.
         /// </summary>
@@ -38,7 +44,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
         /// Name of the Server.
@@ -50,23 +55,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.name; }
             set { this.name = value; }
         }
-        private string name;
         #endregion Parameters
 
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByName:
-                        GetByName();
+                        this.GetByName();
                         break;
                     case ASRParameterSets.ById:
-                        GetById();
+                        this.GetById();
                         break;
                     case ASRParameterSets.Default:
-                        GetAll();
+                        this.GetAll();
                         break;
                 }
             }
@@ -84,9 +88,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             bool found = false;
             foreach (Server server in serverListResponse.Servers)
             {
-                if(0 == string.Compare(name, server.Name, true))
+                if (0 == string.Compare(this.name, server.Name, true))
                 {
-                    WriteServer(server);
+                    this.WriteServer(server);
                     found = true;
                 }
             }
@@ -96,17 +100,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.ServerNotFound,
-                    name,
-                    PSRecoveryServicesClient.resourceCredentials.ResourceName));
+                    this.name,
+                    PSRecoveryServicesClient.ResourceCreds.ResourceName));
             }
         }
 
         private void GetById()
         {
-            ServerResponse serverResponse = 
-                RecoveryServicesClient.GetAzureSiteRecoveryServer(id);
+            ServerResponse serverResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryServer(this.id);
 
-            WriteServer(serverResponse.Server);
+            this.WriteServer(serverResponse.Server);
         }
 
         private void GetAll()
@@ -114,20 +118,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             ServerListResponse serverListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryServer();
 
-            WriteServers(serverListResponse.Servers);
+            this.WriteServers(serverListResponse.Servers);
         }
 
         private void WriteServers(IList<Server> servers)
         {
             foreach (Server server in servers)
             {
-                WriteServer(server);
+                this.WriteServer(server);
             }
         }
 
         private void WriteServer(Server server)
         {
-            WriteObject(
+            this.WriteObject(
                 new ASRServer(
                     server.ID,
                     server.Name,
