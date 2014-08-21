@@ -190,6 +190,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     pe.IsRelationshipReversed,
                     pe.ProtectionState,
                     pe.TestFailoverState,
+                    pe.ReplicationHealth,
                     pe.ReplicationProvider),
                 true);
         }

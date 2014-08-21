@@ -112,6 +112,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool isRelationshipReversed,
             string protectionState,
             string testFailoverState,
+            string replicationHealth,
             string replicationProvider,
             string replicationProviderSettings)
             : base(
@@ -128,6 +129,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 isRelationshipReversed,
                 protectionState,
                 testFailoverState,
+                replicationHealth,
                 replicationProvider)
         {
             this.ReplicationProviderSettings = replicationProviderSettings;
@@ -154,6 +156,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool isRelationshipReversed,
             string protectionState,
             string testFailoverState,
+            string replicationHealth,
             string replicationProvider,
             string replicationProviderSettings,
             IList<VirtualMachine> virtualMachineList)
@@ -171,6 +174,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 isRelationshipReversed,
                 protectionState,
                 testFailoverState,
+                replicationHealth,
                 replicationProvider)
         {
             this.ReplicationProviderSettings = replicationProviderSettings;
@@ -192,6 +196,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                     vm.IsRelationshipReversed,
                     vm.ProtectionState,
                     vm.TestFailoverState,
+                    vm.ReplicationHealth,
                     vm.ReplicationProvider,
                     vm.ReplicationProviderSettings));
             }
@@ -213,6 +218,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public bool IsRelationshipReversed { get; set; }
         public string ProtectionState { get; set; }
         public string TestFailoverState { get; set; }
+        public string ReplicationHealth { get; set; }
         public string ReplicationProvider { get; set; }
 
         public ASRProtectionEntity() { }
@@ -230,6 +236,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool isRelationshipReversed,
             string protectionState,
             string testFailoverState,
+            string replicationHealth,
             string replicationProvider)
         {
             this.ID = protectionEntityId;
@@ -245,6 +252,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.CanReverseReplicate = canReverseReplicate;
             this.ReplicationProvider = replicationProvider;
             this.IsRelationshipReversed = isRelationshipReversed;
+            this.ReplicationHealth = replicationHealth;
             this.TestFailoverState = testFailoverState;
         }
     }
