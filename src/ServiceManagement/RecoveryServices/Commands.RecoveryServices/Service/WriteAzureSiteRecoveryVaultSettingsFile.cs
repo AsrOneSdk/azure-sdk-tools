@@ -173,10 +173,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Azure Site Recovery Vault settings file path.
         /// </summary>
         [SuppressMessage(
-        "Microsoft.StyleCop.CSharp.NamingRules",
-        "SA1306:FieldNamesMustBeginWithLowerCaseLetter",
-        Justification = "Starting with Capital as we write this object to terminal.")]
-        private string AzureSiteRecoveryVaultSettingsFile;
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1401:FieldsMustBePrivate",
+        Justification = "To write to terminal.")]
+        public string AzureSiteRecoveryVaultSettingsFile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilePath" /> class.
