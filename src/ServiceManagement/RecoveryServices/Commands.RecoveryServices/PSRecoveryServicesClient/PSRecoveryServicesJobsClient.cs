@@ -19,30 +19,57 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Gets Azure Site Recovery Job details.
+        /// </summary>
+        /// <param name="jobId">Job ID</param>
+        /// <returns>Job response</returns>
         public JobResponse GetAzureSiteRecoveryJobDetails(string jobId)
         {
             return this.GetSiteRecoveryClient().Jobs.Get(jobId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Get Azure Site Recovery Job.
+        /// </summary>
+        /// <returns>Job list response</returns>
         public JobListResponse GetAzureSiteRecoveryJob()
         {
             return this.GetSiteRecoveryClient().Jobs.List(this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Stops Azure Site Recovery Job.
+        /// </summary>
+        /// <param name="jobId">Job ID</param>
         public void StopAzureSiteRecoveryJob(
             string jobId)
         {
             this.GetSiteRecoveryClient().Jobs.Cancel(jobId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Restarts Azure Site Recovery Job.
+        /// </summary>
+        /// <param name="jobId">Job ID</param>
+        /// <returns>Job response</returns>
         public JobResponse RestartAzureSiteRecoveryJob(
             string jobId)
         {
             return this.GetSiteRecoveryClient().Jobs.Restart(jobId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Resumes Azure Site Recovery Job.
+        /// </summary>
+        /// <param name="jobId">Job ID</param>
+        /// <param name="resumeJobParams">Resume Job parameters</param>
+        /// <returns>Job response</returns>
         public JobResponse ResumeAzureSiteRecoveryJob(
             string jobId,
             ResumeJobParams resumeJobParams)

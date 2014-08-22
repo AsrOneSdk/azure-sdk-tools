@@ -24,10 +24,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// </summary>
     public class ASRRecoveryPlan
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRRecoveryPlan" /> class.
+        /// </summary>
         public ASRRecoveryPlan()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRRecoveryPlan" /> class with required
+        /// parameters.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery plan ID</param>
+        /// <param name="name">Name of the Recovery plan</param>
+        /// <param name="serverId">Server ID</param>
+        /// <param name="targetServerId">Target Server ID</param>
         public ASRRecoveryPlan(
             string recoveryPlanId,
             string name,
@@ -41,14 +52,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         #region Properties
+        /// <summary>
+        /// Gets or sets Recovery plan ID.
+        /// </summary>
         public string RpId { get; set; }
 
+        /// <summary>
+        /// Gets or sets name of the Recovery Plan.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets type of the Recovery Plan.
+        /// </summary>
         public string Type { get; set; }
 
+        /// <summary>
+        /// Gets or sets to Server ID.
+        /// </summary>
         public string ServerId { get; set; }
 
+        /// <summary>
+        /// Gets or sets target Server ID.
+        /// </summary>
         public string TargetServerId { get; set; }
         #endregion
     }

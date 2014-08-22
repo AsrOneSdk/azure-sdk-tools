@@ -23,8 +23,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// </summary>
     public abstract class RecoveryServicesCmdletBase : CmdletWithSubscriptionBase
     {
+        /// <summary>
+        /// Recovery Services client.
+        /// </summary>
         private PSRecoveryServicesClient recoveryServicesClient;
 
+        /// <summary>
+        /// Gets Recovery Services client.
+        /// </summary>
         internal PSRecoveryServicesClient RecoveryServicesClient
         {
             get

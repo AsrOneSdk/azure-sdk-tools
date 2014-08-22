@@ -21,14 +21,28 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Gets Azure Site Recovery Virtual Machines.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <returns>Virtual Machine list response</returns>
         public VirtualMachineListResponse GetAzureSiteRecoveryVirtualMachine(
             string protectionContainerId)
         {
             return this.GetSiteRecoveryClient().Vm.List(protectionContainerId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Gets Azure Site Recovery Virtual Machine.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="virtualMachineId">Virtual Machine ID</param>
+        /// <returns>Virtual Machine response</returns>
         public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
             string protectionContainerId,
             string virtualMachineId)

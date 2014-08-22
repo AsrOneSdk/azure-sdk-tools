@@ -35,11 +35,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class ImportAzureSiteRecoveryVaultSettingsFile : RecoveryServicesCmdletBase
     {
         #region Parameters
+        /// <summary>
+        /// Azure Site Recovery Vault settings file.
+        /// </summary>
         private string azureSiteRecoveryVaultSettingsFile;
 
         /// <summary>
-        /// Path to the Azure site Recovery Vault Settings file. This file can be downloaded from 
-        /// Azure site recovery Vault portal and stored locally.
+        /// Gets or sets path to the Azure site Recovery Vault Settings file. This file can be 
+        /// downloaded from Azure site recovery Vault portal and stored locally.
         /// </summary>
         [Parameter(
             Position = 0, 
@@ -54,6 +57,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             this.WriteVerbose("Vault Settings File path: " + this.azureSiteRecoveryVaultSettingsFile);
@@ -123,6 +129,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Imports Azure Site Recovery Vault settings.
+        /// </summary>
+        /// <param name="resourceCredentials">Resource credentials</param>
         public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
         {
             object updateVaultSettingsOneAtATime = new object();

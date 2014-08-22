@@ -28,10 +28,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class RestartAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
         #region Parameters
-        private string id;
 
         /// <summary>
         /// Job ID.
+        /// </summary>
+        private string id;
+
+        /// <summary>
+        /// Gets or sets Job ID.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -42,6 +46,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             RecoveryServicesClient.RestartAzureSiteRecoveryJob(this.id);

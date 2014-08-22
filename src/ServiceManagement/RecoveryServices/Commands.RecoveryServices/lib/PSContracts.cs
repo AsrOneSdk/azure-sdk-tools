@@ -29,10 +29,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// </summary>
     public enum CikSupportedHashFunctions
     {
+        /// <summary>
+        /// Represents a HMACSHA256 hash function.
+        /// </summary>
         HMACSHA256,
 
+        /// <summary>
+        /// Represents a HMACSHA384 hash function.
+        /// </summary>
         HMACSHA384,
 
+        /// <summary>
+        /// Represents a HMACSHA512 hash function.
+        /// </summary>
         HMACSHA512
     }
 
@@ -104,8 +113,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Error" /> class.
+        /// Initializes a new instance of the <see cref="Error" /> class with required parameters.
         /// </summary>
+        /// <param name="se">Service Error</param>
         public Error(ServiceError se)
         {
             this.ActivityId = se.ActivityId;
@@ -191,32 +201,32 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public DateTime NotAfterTimestamp { get; set; }
 
         /// <summary>
-        /// The client request Id for the operation linked with this CIK token.
+        /// Gets or sets the client request Id for the operation linked with this CIK token.
         /// </summary>
         [DataMember]
         public string ClientRequestId { get; set; }
 
         /// <summary>
-        /// Hash function used to calculate the HMAC.
+        /// Gets or sets Hash function used to calculate the HMAC.
         /// </summary>
         [DataMember]
         public string HashFunction { get; set; }
 
         /// <summary>
-        /// The HMAC generated using the CIK key.
+        /// Gets or sets the HMAC generated using the CIK key.
         /// </summary>
         [DataMember]
         public string Hmac { get; set; }
 
         /// <summary>
-        /// Data contract version.
+        /// Gets or sets Data contract version.
         /// </summary>
         [DataMember(Name = "Version")]
         public Version Version { get; set; }
 
         /// <summary>
-        /// This property bag is introduced to support addition of any new 
-        /// property in data contract without breaking the existing clients.
+        /// Gets or sets property bag. This property bag is introduced to support addition of any 
+        /// new property in data contract without breaking the existing clients.
         /// If any new property needs to be introduced in the contract, 
         /// add a key value pair for it in this dictionary. 
         /// </summary>

@@ -28,10 +28,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class StopAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
         #region Parameters
+        /// <summary>
+        /// Job ID.
+        /// </summary>
         private string id;
 
         /// <summary>
-        /// Job ID.
+        /// Gets or sets Job ID.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -42,6 +45,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             RecoveryServicesClient.StopAzureSiteRecoveryJob(this.id);

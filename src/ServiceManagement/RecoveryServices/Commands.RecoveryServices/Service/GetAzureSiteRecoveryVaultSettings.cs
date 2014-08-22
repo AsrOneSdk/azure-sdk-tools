@@ -30,6 +30,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     [OutputType(typeof(ASRVaultSettings))]
     public class GetAzureSiteRecoveryVaultSettings : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             this.WriteObject(new ASRVaultSettings(

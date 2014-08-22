@@ -30,16 +30,35 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     [OutputType(typeof(IEnumerable<ASRProtectionContainer>))]
     public class GetAzureSiteRecoveryProtectionContainer : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// When nothing is passed to the command.
+        /// </summary>
         protected const string Default = "Default";
+
+        /// <summary>
+        /// When only Name is passed to the command.
+        /// </summary>
         protected const string ByName = "ByName";
+
+        /// <summary>
+        /// When only ID is passed to the command.
+        /// </summary>
         protected const string ById = "ById";
 
         #region Parameters
+
+        /// <summary>
+        /// Protection container ID.
+        /// </summary>
         private string id;
+
+        /// <summary>
+        /// Name of the Protection container.
+        /// </summary>
         private string name;
 
         /// <summary>
-        /// ID of the Protection Container.
+        /// Gets or sets ID of the Protection Container.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -50,7 +69,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Name of the Protection Container.
+        /// Gets or sets name of the Protection Container.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -61,6 +80,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -84,6 +106,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             ProtectionContainerListResponse protectionContainerListResponse =
@@ -110,6 +135,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
             ProtectionContainerResponse protectionContainerResponse =
@@ -118,6 +146,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteProtectionContainer(protectionContainerResponse.ProtectionContainer);
         }
 
+        /// <summary>
+        /// Queries all, by default.
+        /// </summary>
         private void GetByDefault()
         {
             ProtectionContainerListResponse protectionContainerListResponse =
@@ -126,6 +157,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteProtectionContainers(protectionContainerListResponse.ProtectionContainers);
         }
 
+        /// <summary>
+        /// Writes Protection Containers.
+        /// </summary>
+        /// <param name="protectionContainers">List of Protection Containers</param>
         private void WriteProtectionContainers(IList<ProtectionContainer> protectionContainers)
         {
             foreach (ProtectionContainer protectionContainer in protectionContainers)
@@ -134,6 +169,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Write Protection Container.
+        /// </summary>
+        /// <param name="protectionContainer">Protection Container</param>
         private void WriteProtectionContainer(ProtectionContainer protectionContainer)
         {
             this.WriteObject(

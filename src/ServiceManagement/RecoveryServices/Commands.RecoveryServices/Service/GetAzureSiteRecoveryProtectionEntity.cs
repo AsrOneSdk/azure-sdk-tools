@@ -31,13 +31,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class GetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         #region Parameters
+
+        /// <summary>
+        /// Protection entity ID.
+        /// </summary>
         private string id;
+
+        /// <summary>
+        /// Name of the Protection entity.
+        /// </summary>
         private string name;
+
+        /// <summary>
+        /// Protection container ID.
+        /// </summary>
         private string protectionContainerId;
+
+        /// <summary>
+        /// Protection container object.
+        /// </summary>
         private ASRProtectionContainer protectionContainer;
 
         /// <summary>
-        /// ID of the Virtual Machine.
+        /// Gets or sets ID of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
@@ -49,7 +65,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// Gets or sets name of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
@@ -61,7 +77,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// ID of the ProtectionContainer containing the Virtual Machine.
+        /// Gets or sets ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
@@ -74,7 +90,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Server Object.
+        /// Gets or sets Server Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
@@ -87,6 +103,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -123,6 +142,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             ProtectionEntityListResponse protectionEntityListResponse =
@@ -149,6 +171,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by Id.
+        /// </summary>
         private void GetById()
         {
             ProtectionEntityResponse protectionEntityResponse =
@@ -159,6 +184,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteProtectionEntity(protectionEntityResponse.ProtectionEntity);
         }
 
+        /// <summary>
+        /// Queries all.
+        /// </summary>
         private void GetAll()
         {
             ProtectionEntityListResponse protectionEntityListResponse =
@@ -168,6 +196,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteProtectionEntities(protectionEntityListResponse.ProtectionEntities);
         }
 
+        /// <summary>
+        /// Writes Protection Entities.
+        /// </summary>
+        /// <param name="protectionEntities">Protection Entities</param>
         private void WriteProtectionEntities(IList<ProtectionEntity> protectionEntities)
         {
             foreach (ProtectionEntity pe in protectionEntities)
@@ -176,6 +208,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Writes Protection Entity.
+        /// </summary>
+        /// <param name="pe">Protection Entity</param>
         private void WriteProtectionEntity(ProtectionEntity pe)
         {
             this.WriteObject(

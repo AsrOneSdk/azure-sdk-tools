@@ -17,6 +17,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #region Using directives
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Net;
     using System.Runtime.Serialization;
@@ -33,21 +34,59 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Amount of time to sleep before fetching job details again.
+        /// </summary>
         public const int TimeToSleepBeforeFetchingJobDetailsAgain = 5000;
+
+        /// <summary>
+        /// Resource credentials holds vault, cloud service name, vault key and other details.
+        /// </summary>
+        [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1401:FieldsMustBePrivate",
+        Justification = "For Resource Credentials.")]
         public static ResourceCredentials ResourceCreds = new ResourceCredentials();
 
+        /// <summary>
+        /// Recovery Services client.
+        /// </summary>
         private RecoveryServicesManagementClient recoveryServicesClient;
+
+        /// <summary>
+        /// Subscription ID.
+        /// </summary>
         private string subscriptionId;
+
+        /// <summary>
+        /// Represents an X.509 certificate.
+        /// </summary>
         private X509Certificate2 certificate;
+
+        /// <summary>
+        /// Service end point.
+        /// </summary>
         private Uri serviceEndPoint;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class.
+        /// </summary>
+        public PSRecoveryServicesClient()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class with 
+        /// required current subscription.
+        /// </summary>
+        /// <param name="currentSubscription">Current Subscription</param>
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
-            // Temp code.
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
             this.recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             this.subscriptionId = currentSubscription.SubscriptionId;
@@ -55,15 +94,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.serviceEndPoint = currentSubscription.ServiceEndpoint;
         }
 
-        public PSRecoveryServicesClient()
-        {
-        }
-
+        /// <summary>
+        /// Retrieves Azure Cloud services.
+        /// </summary>
+        /// <returns>Cloud service list response</returns>
         public CloudServiceListResponse GetAzureCloudServicesSyncInt()
         {
             return this.recoveryServicesClient.CloudServices.List();
         }
 
+        /// <summary>
+        /// Validates current in-memory Vault Settings.
+        /// </summary>
+        /// <param name="resourceName">Resource Name</param>
+        /// <param name="cloudServiceName">Cloud Service Name</param>
+        /// <param name="services">Cloud Services</param>
+        /// <returns>Whether Vault settings are valid or not</returns>
         public bool ValidateVaultSettings(
             string resourceName,
             string cloudServiceName,
@@ -113,6 +159,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return true;
         }
 
+        /// <summary>
+        /// Throws meaningful exception details extracted from Cloud exception.
+        /// </summary>
+        /// <param name="cloudException">Cloud exception thrown by service</param>
         public void ThrowCloudExceptionDetails(CloudException cloudException)
         {
             Error error = null;
@@ -184,6 +234,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return new JavaScriptSerializer().Serialize(cikTokenDetails);
         }
 
+        /// <summary>
+        /// Gets request headers.
+        /// </summary>
+        /// <returns>Custom request headers</returns>
         public CustomRequestHeaders GetRequestHeaders()
         {
             return new CustomRequestHeaders()
@@ -194,6 +248,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             };
         }
 
+        /// <summary>
+        /// Gets Site Recovery client.
+        /// </summary>
+        /// <returns>Site Recovery Management client</returns>
         private SiteRecoveryManagementClient GetSiteRecoveryClient()
         {
             CloudServiceListResponse services = this.recoveryServicesClient.CloudServices.List();

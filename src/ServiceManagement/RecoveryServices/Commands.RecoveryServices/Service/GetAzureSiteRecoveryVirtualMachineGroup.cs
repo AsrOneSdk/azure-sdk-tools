@@ -31,13 +31,28 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class GetAzureSiteRecoveryVirtualMachineGroup : RecoveryServicesCmdletBase
     {
         #region Parameters
+        /// <summary>
+        /// Virtual Machine ID.
+        /// </summary>
         private string id;
+
+        /// <summary>
+        /// Name of the Virtual Machine.
+        /// </summary>
         private string name;
+
+        /// <summary>
+        /// Protection container ID.
+        /// </summary>
         private string protectionContainerId;
+
+        /// <summary>
+        /// Protection container object.
+        /// </summary>
         private ASRProtectionContainer protectionContainer;
 
         /// <summary>
-        /// ID of the Virtual Machine.
+        /// Gets or sets ID of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
@@ -49,7 +64,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// Gets or sets name of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
@@ -61,7 +76,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// ID of the ProtectionContainer containing the Virtual Machine.
+        /// Gets or sets ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
@@ -74,7 +89,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Protection Container Object.
+        /// Gets or sets Protection Container Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
@@ -88,6 +103,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -124,6 +142,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             VirtualMachineGroupListResponse virtualMachineListResponse =
@@ -150,6 +171,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
             var vmgResponse =
@@ -160,6 +184,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteVirtualMachineGroup(vmgResponse.VmGroup);
         }
 
+        /// <summary>
+        /// Queries all.
+        /// </summary>
         private void GetAll()
         {
             VirtualMachineGroupListResponse vmgListResponse =
@@ -169,6 +196,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteVirtualMachineGroups(vmgListResponse.VmGroups);
         }
 
+        /// <summary>
+        /// Writes Virtual Machine groups.
+        /// </summary>
+        /// <param name="vmgs">List of Virtual Machine group</param>
         private void WriteVirtualMachineGroups(IList<VirtualMachineGroup> vmgs)
         {
             foreach (var vmg in vmgs)
@@ -177,6 +208,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Writes Virtual Machine group.
+        /// </summary>
+        /// <param name="vmg">Virtual Machine group</param>
         private void WriteVirtualMachineGroup(VirtualMachineGroup vmg)
         {
             this.WriteObject(

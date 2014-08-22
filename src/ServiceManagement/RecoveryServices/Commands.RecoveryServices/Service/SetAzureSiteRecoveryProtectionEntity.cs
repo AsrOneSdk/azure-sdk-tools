@@ -32,16 +32,44 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class SetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         #region Parameters
+
+        /// <summary>
+        /// Virtual Machine ID.
+        /// </summary>
         private string id;
+
+        /// <summary>
+        /// Protection container ID.
+        /// </summary>
         private string protectionContainerId;
+
+        /// <summary>
+        /// Protection entity object.
+        /// </summary>
         private ASRProtectionEntity protectionEntity;
+
+        /// <summary>
+        /// Protection state to set.
+        /// </summary>
         private string protection;
+
+        /// <summary>
+        /// Switch parameter to wait for completion.
+        /// </summary>
         private bool waitForCompletion;
+
+        /// <summary>
+        /// Job response.
+        /// </summary>
         private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Stop processing, enables on pressing Ctrl-C.
+        /// </summary>
         private bool stopProcessing = false;
 
         /// <summary>
-        /// ID of the Virtual Machine.
+        /// Gets or sets ID of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -52,7 +80,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// ID of the ProtectionContainer containing the Virtual Machine.
+        /// Gets or sets ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -63,7 +91,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Protection Entity Object.
+        /// Gets or sets Protection Entity Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
@@ -74,7 +102,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Protection to set, either enable or disable.
+        /// Gets or sets Protection to set, either enable or disable.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -88,7 +116,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// On passing, command waits till completion.
+        /// Gets or sets switch parameter. On passing, command waits till completion.
         /// </summary>
         [Parameter]
         public SwitchParameter WaitForCompletion
@@ -98,6 +126,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -139,6 +170,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Handles interrupts.
+        /// </summary>
         protected override void StopProcessing()
         {
             // Ctrl + C and etc
@@ -146,6 +180,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.stopProcessing = true;
         }
 
+        /// <summary>
+        /// Writes Job.
+        /// </summary>
+        /// <param name="job">JOB object</param>
         private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
             this.WriteObject(new ASRJob(job));

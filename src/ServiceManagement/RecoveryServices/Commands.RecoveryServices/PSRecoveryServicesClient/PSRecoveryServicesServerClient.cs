@@ -21,13 +21,25 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Gets Azure Site Recovery Servers.
+        /// </summary>
+        /// <returns>Server list response</returns>
         public ServerListResponse GetAzureSiteRecoveryServer()
         {
             return this.GetSiteRecoveryClient().Servers.List(this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Gets Azure Site Recovery Server.
+        /// </summary>
+        /// <param name="serverId">Server ID</param>
+        /// <returns>Server response</returns>
         public ServerResponse GetAzureSiteRecoveryServer(string serverId)
         {
             return this.GetSiteRecoveryClient().Servers.Get(serverId, this.GetRequestHeaders());

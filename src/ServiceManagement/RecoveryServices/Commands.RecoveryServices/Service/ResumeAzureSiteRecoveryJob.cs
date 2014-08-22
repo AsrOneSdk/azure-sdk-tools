@@ -28,11 +28,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class ResumeAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
         #region Parameters
-        private string id;
-        private string comments;
 
         /// <summary>
         /// Job ID.
+        /// </summary>
+        private string id;
+
+        /// <summary>
+        /// Job comments.
+        /// </summary>
+        private string comments;
+
+        /// <summary>
+        /// Gets or sets Job ID.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -43,7 +51,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Resume job comments.
+        /// Gets or sets job comments.
         /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty]
@@ -54,6 +62,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             ResumeJobParams resumeJobParams = new ResumeJobParams();

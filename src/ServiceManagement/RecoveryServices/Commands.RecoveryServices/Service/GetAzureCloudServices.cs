@@ -29,6 +29,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     [Cmdlet(VerbsCommon.Get, "AzureCloudServices"), OutputType(typeof(string))]
     public class GetAzureCloudServices : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             CloudServiceListResponse services = RecoveryServicesClient.GetAzureCloudServicesSyncInt();

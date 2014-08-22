@@ -31,13 +31,28 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
         #region Parameters
+        /// <summary>
+        /// Virtual Machine ID.
+        /// </summary>
         private string id;
+
+        /// <summary>
+        /// Name of the Virtual Machine.
+        /// </summary>
         private string name;
+
+        /// <summary>
+        /// Protection Container ID.
+        /// </summary>
         private string protectionContainerId;
+
+        /// <summary>
+        /// Protection Container object.
+        /// </summary>
         private ASRProtectionContainer protectionContainer;
 
         /// <summary>
-        /// ID of the Virtual Machine.
+        /// Gets or sets ID of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
@@ -49,7 +64,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// Gets or sets name of the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithName, Mandatory = true)]
@@ -61,7 +76,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// ID of the ProtectionContainer containing the Virtual Machine.
+        /// Gets or sets ID of the ProtectionContainer containing the Virtual Machine.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByIDsWithId, Mandatory = true)]
@@ -74,7 +89,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Protection Container Object.
+        /// Gets or sets Protection Container Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
@@ -87,6 +102,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -123,6 +141,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             VirtualMachineListResponse virtualMachineListResponse =
@@ -149,6 +170,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
             VirtualMachineResponse virtualMachineResponse =
@@ -159,6 +183,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteVirtualMachine(virtualMachineResponse.Vm);
         }
 
+        /// <summary>
+        /// Queries all / by default.
+        /// </summary>
         private void GetAll()
         {
             VirtualMachineListResponse virtualMachineListResponse =
@@ -168,6 +195,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteVirtualMachines(virtualMachineListResponse.Vms);
         }
 
+        /// <summary>
+        /// Writes Virtual Machines.
+        /// </summary>
+        /// <param name="vms">List of Virtual Machines</param>
         private void WriteVirtualMachines(IList<VirtualMachine> vms)
         {
             foreach (VirtualMachine vm in vms)
@@ -176,6 +207,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Writes Virtual Machine.
+        /// </summary>
+        /// <param name="vm">Virtual Machine</param>
         private void WriteVirtualMachine(VirtualMachine vm)
         {
             this.WriteObject(

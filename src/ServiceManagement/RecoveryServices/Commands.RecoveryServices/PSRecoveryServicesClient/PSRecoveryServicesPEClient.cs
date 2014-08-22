@@ -21,24 +21,60 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Represents Enable protection.
+        /// </summary>
         public const string EnableProtection = "Enable";
+
+        /// <summary>
+        /// Represents Disable protection.
+        /// </summary>
         public const string DisableProtection = "Disable";
 
+        /// <summary>
+        /// Retrieves Protection Entity.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <returns>Protection entity list response</returns>
         public ProtectionEntityListResponse GetAzureSiteRecoveryProtectionEntity(
             string protectionContainerId)
         {
-            return this.GetSiteRecoveryClient().ProtectionEntity.List(protectionContainerId, this.GetRequestHeaders());
+            return 
+                this
+                .GetSiteRecoveryClient()
+                .ProtectionEntity
+                .List(protectionContainerId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Retrieves Protection Entity.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="virtualMachineId">Virtual Machine ID</param>
+        /// <returns>Protection entity response</returns>
         public ProtectionEntityResponse GetAzureSiteRecoveryProtectionEntity(
             string protectionContainerId,
             string virtualMachineId)
         {
-            return this.GetSiteRecoveryClient().ProtectionEntity.Get(protectionContainerId, virtualMachineId, this.GetRequestHeaders());
+            return 
+                this
+                .GetSiteRecoveryClient()
+                .ProtectionEntity
+                .Get(protectionContainerId, virtualMachineId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Sets protection on Protection entity.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="virtualMachineId">Virtual Machine ID</param>
+        /// <param name="protection">Protection state to set</param>
+        /// <returns>Job response</returns>
         public JobResponse SetProtectionOnProtectionEntity(
             string protectionContainerId,
             string virtualMachineId,

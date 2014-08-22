@@ -31,18 +31,39 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class StartAzureSiteRecoveryPlannedFailover : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// When Recovery plan ID is passed to the command.
+        /// </summary>
         protected const string ByRpId = "ByRpId";
-        protected const string ByVmId = "ByVmId";
 
         #region Parameters
+        /// <summary>
+        /// ID of the Recovery Plan.
+        /// </summary>
         private string recoveryPlanId;
+
+        /// <summary>
+        /// Failover direction for the recovery plan.
+        /// </summary>
         private string failoverDirection;
+
+        /// <summary>
+        /// This is required to wait for job completion.
+        /// </summary>
         private bool waitForCompletion;
+
+        /// <summary>
+        /// Job response.
+        /// </summary>
         private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Stop processing, enables on pressing Ctrl-C.
+        /// </summary>
         private bool stopProcessing = false;
 
         /// <summary>
-        /// ID of the Recovery Plan.
+        /// Gets or sets ID of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = true, ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -53,7 +74,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Failover direction for the recovery plan.
+        /// Gets or sets Failover direction for the recovery plan.
         /// </summary>
         [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
         [ValidateSet(
@@ -66,7 +87,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// This is required to wait for job completion.
+        /// Gets or sets switch parameter. This is required to wait for job completion.
         /// </summary>
         [Parameter]
         public SwitchParameter WaitForCompletion
@@ -76,6 +97,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -93,6 +117,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Handles interrupts.
+        /// </summary>
         protected override void StopProcessing()
         {
             // Ctrl + C and etc
@@ -100,6 +127,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.stopProcessing = true;
         }
 
+        /// <summary>
+        /// Starts RP Planned failover.
+        /// </summary>
         private void StartRpPlannedFailover()
         {
             RpPlannedFailoverRequest recoveryPlanPlannedFailoverRequest = new RpPlannedFailoverRequest();
@@ -124,6 +154,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Writes Job.
+        /// </summary>
+        /// <param name="job">JOB object</param>
         private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
             this.WriteObject(new ASRJob(job));

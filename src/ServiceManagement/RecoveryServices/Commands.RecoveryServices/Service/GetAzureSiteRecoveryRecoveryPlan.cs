@@ -29,16 +29,34 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     [OutputType(typeof(IEnumerable<ASRRecoveryPlan>))]
     public class GetAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// When nothing is passed to the command.
+        /// </summary>
         protected const string Default = "Default";
+
+        /// <summary>
+        /// When only Name is passed to the command.
+        /// </summary>
         protected const string ByName = "ByName";
+
+        /// <summary>
+        /// When only ID is passed to the command.
+        /// </summary>
         protected const string ById = "ById";
 
         #region Parameters
-        private string id; 
+        /// <summary>
+        /// Recovery Plan ID.
+        /// </summary>
+        private string id;
+
+        /// <summary>
+        /// Name of the Recovery Plan.
+        /// </summary>
         private string name;
 
         /// <summary>
-        /// ID of the Server.
+        /// Gets or sets Recovery Plan ID.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -49,7 +67,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Name of the Server.
+        /// Gets or sets name of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -60,6 +78,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -83,6 +104,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             RecoveryPlanListResponse recoveryPlanListResponse =
@@ -108,6 +132,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
             RecoveryPlanResponse recoveryPlanResponse =
@@ -116,6 +143,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteRecoveryPlan(recoveryPlanResponse.RecoveryPlan);
         }
 
+        /// <summary>
+        /// Queries all / by default.
+        /// </summary>
         private void GetByDefault()
         {
             RecoveryPlanListResponse recoveryPlanListResponse =
@@ -124,6 +154,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteRecoveryPlans(recoveryPlanListResponse.RecoveryPlans);
         }
 
+        /// <summary>
+        /// Writes Recovery Plans.
+        /// </summary>
+        /// <param name="recoveryPlans">List of Recovery Plans</param>
         private void WriteRecoveryPlans(IList<RecoveryPlan> recoveryPlans)
         {
             foreach (RecoveryPlan recoveryPlan in recoveryPlans)
@@ -132,6 +166,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Writes Recovery Plan.
+        /// </summary>
+        /// <param name="recoveryPlan">Recovery Plan</param>
         private void WriteRecoveryPlan(RecoveryPlan recoveryPlan)
         {
             this.WriteObject(

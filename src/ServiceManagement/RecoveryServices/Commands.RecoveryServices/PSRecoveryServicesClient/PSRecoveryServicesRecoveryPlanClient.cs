@@ -21,31 +21,66 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Represents direction primary to secondary.
+        /// </summary>
         public const string PrimaryToSecondary = "PrimaryToSecondary";
+
+        /// <summary>
+        /// Represents direction secondary to primary.
+        /// </summary>
         public const string SecondaryToPrimary = "SecondaryToPrimary";
 
+        /// <summary>
+        /// Gets Azure Site Recovery Plan.
+        /// </summary>
+        /// <returns>Recovery Plan list response</returns>
         public RecoveryPlanListResponse GetAzureSiteRecoveryRecoveryPlan()
         {
             return this.GetSiteRecoveryClient().RecoveryPlan.List(this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Gets Azure Site Recovery Recovery Plan.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <returns>Recovery Plan response</returns>
         public RecoveryPlanResponse GetAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
         {
             return this.GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery Commit failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryCommitFailover(string recoveryPlanId)
         {
             return this.GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Updates Azure Site Recovery protection.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <returns>Job response</returns>
         public JobResponse UpdateAzureSiteRecoveryProtection(string recoveryPlanId)
         {
             return this.GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery Planned failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <param name="recoveryPlanPlannedFailoverRequest">Recovery Plan Planned failover request</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryPlannedFailover(
             string recoveryPlanId, 
             RpPlannedFailoverRequest recoveryPlanPlannedFailoverRequest)
@@ -56,6 +91,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery Unplanned failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <param name="recoveryPlanUnPlannedFailoverRequest">Recovery Plan Unplanned failover request</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryUnplannedFailover(
             string recoveryPlanId,
             RpUnplannedFailoverRequest recoveryPlanUnPlannedFailoverRequest)
@@ -66,6 +107,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery test failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <param name="recoveryPlanTestFailoverRequest">Recovery Plan test failover request</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryTestFailover(
             string recoveryPlanId,
             RpTestFailoverRequest recoveryPlanTestFailoverRequest)

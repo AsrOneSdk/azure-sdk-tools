@@ -31,11 +31,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
         #region Parameters
+        /// <summary>
+        /// Server ID.
+        /// </summary>
         private string id;
+
+        /// <summary>
+        /// Name of the Server.
+        /// </summary>
         private string name;
 
         /// <summary>
-        /// ID of the Server.
+        /// Gets or sets ID of the Server.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -46,7 +53,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Name of the Server.
+        /// Gets or sets name of the Server.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -57,6 +64,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
@@ -80,6 +90,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             ServerListResponse serverListResponse =
@@ -105,6 +118,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
             ServerResponse serverResponse =
@@ -113,6 +129,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteServer(serverResponse.Server);
         }
 
+        /// <summary>
+        /// Queries all / by default.
+        /// </summary>
         private void GetAll()
         {
             ServerListResponse serverListResponse =
@@ -121,6 +140,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.WriteServers(serverListResponse.Servers);
         }
 
+        /// <summary>
+        /// Write Servers.
+        /// </summary>
+        /// <param name="servers">List of Servers</param>
         private void WriteServers(IList<Server> servers)
         {
             foreach (Server server in servers)
@@ -129,6 +152,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Write Server.
+        /// </summary>
+        /// <param name="server">Server object</param>
         private void WriteServer(Server server)
         {
             this.WriteObject(

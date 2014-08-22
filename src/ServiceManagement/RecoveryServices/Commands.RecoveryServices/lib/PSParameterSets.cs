@@ -19,14 +19,49 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
     /// </summary>
     internal static class ASRParameterSets
     {
+        /// <summary>
+        /// When only Object is passed to the command.
+        /// </summary>
         internal const string ByObject = "ByObject";
+
+        /// <summary>
+        /// When only ID is passed to the command.
+        /// </summary>
         internal const string ById = "ById";
+
+        /// <summary>
+        /// When only Name is passed to the command.
+        /// </summary>
         internal const string ByName = "ByName";
+
+        /// <summary>
+        /// When nothing is passed to the command.
+        /// </summary>
         internal const string Default = "Default";
+
+        /// <summary>
+        /// When group of IDs are passed to the command.
+        /// </summary>
         internal const string ByIDs = "ByIDs";
+
+        /// <summary>
+        /// When Object and ID are passed to the command.
+        /// </summary>
         internal const string ByObjectWithId = "ByObjectWithId";
+
+        /// <summary>
+        /// When Object and Name are passed to the command.
+        /// </summary>
         internal const string ByObjectWithName = "ByObjectWithName";
+
+        /// <summary>
+        /// When group of IDs and ID are passed to the command.
+        /// </summary>
         internal const string ByIDsWithId = "ByIDsWithId";
+
+        /// <summary>
+        /// When group of IDs and Name are passed to the command.
+        /// </summary>
         internal const string ByIDsWithName = "ByIDsWithName";
     }
 }

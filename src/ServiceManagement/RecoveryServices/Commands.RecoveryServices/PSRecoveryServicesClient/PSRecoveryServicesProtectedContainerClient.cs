@@ -21,13 +21,25 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Gets Azure Site Recovery Protection Container.
+        /// </summary>
+        /// <returns>Protection Container list response</returns>
         public ProtectionContainerListResponse GetAzureSiteRecoveryProtectionContainer()
         {
             return this.GetSiteRecoveryClient().ProtectionContainer.List(this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Gets Azure Site Recovery Protection Container.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <returns>Protection Container response</returns>
         public ProtectionContainerResponse GetAzureSiteRecoveryProtectionContainer(
             string protectionContainerId)
         {
