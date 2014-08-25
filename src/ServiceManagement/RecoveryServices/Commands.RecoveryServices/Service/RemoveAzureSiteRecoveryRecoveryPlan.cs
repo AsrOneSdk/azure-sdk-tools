@@ -27,25 +27,41 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Remove a Recovery Plan from the current Azure Site Recovery Vault.
     /// </summary>
-    [Cmdlet(VerbsCommon.Remove, "AzureSiteRecoveryRecoveryPlan")]
+    [Cmdlet(VerbsCommon.Remove, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class RemoveAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
         #region Parameters
         /// <summary>
-        /// ID of the recovery plan.
+        /// ID of the Recovery Plan.
         /// </summary>
-        private string id;
+        private string recoveryPlanId;
 
         /// <summary>
-        /// Gets or sets ID of the recovery plan.
+        /// Recovery Plan object.
         /// </summary>
-        [Parameter(Mandatory = true)]
+        private ASRRecoveryPlan recoveryPlan;
+
+        /// <summary>
+        /// Gets or sets ID of the Recovery Plan.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string Id
+        public string RpId
         {
-            get { return this.id; }
-            set { this.id = value; }
+            get { return this.recoveryPlanId; }
+            set { this.recoveryPlanId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets Recovery Plan object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRRecoveryPlan RecoveryPlan
+        {
+            get { return this.recoveryPlan; }
+            set { this.recoveryPlan = value; }
         }
         #endregion Parameters
 
@@ -56,6 +72,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             try
             {
+                switch (this.ParameterSetName)
+                {
+                    case ASRParameterSets.ByObject:
+                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        break;
+                    case ASRParameterSets.ById:
+                        break;
+                }
+
                 this.RemoveRecoveryPlanById();
             }
             catch (CloudException cloudException)
@@ -69,7 +94,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void RemoveRecoveryPlanById()
         {
-            RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(this.Id);
+            RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(this.recoveryPlanId);
         }
     }
 }
