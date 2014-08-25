@@ -15,22 +15,51 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure site Recovery Job.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryJob")]
     public class GetAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// When ID is passed to the command.
+        /// </summary>
         protected const string ById = "ById";
+
+        /// <summary>
+        /// When parameters are passed to the command.
+        /// </summary>
         protected const string ByParam = "ByParam";
 
         #region Parameters
-
         /// <summary>
         /// Job ID.
+        /// </summary>
+        private string id;
+
+        /// <summary>
+        /// Represents Start time for querying the jobs.
+        /// </summary>
+        private System.DateTime startTime;
+
+        /// <summary>
+        /// Represents End time for querying the jobs.
+        /// </summary>
+        private System.DateTime endTime;
+
+        /// <summary>
+        /// Represents State of the Job for querying.
+        /// </summary>
+        private string state;
+
+        /// <summary>
+        /// Gets or sets Job ID.
         /// </summary>
         [Parameter(ParameterSetName = ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -39,10 +68,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
-        /// Allows to filter the list of jobs started after the given starttime.
+        /// Gets or sets start time. Allows to filter the list of jobs started after the given 
+        /// start time.
         /// </summary>
         [Parameter(ParameterSetName = "ByParam", HelpMessage = "Start time of job should be greater than this.")]
         [ValidateNotNullOrEmpty]
@@ -51,10 +80,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.startTime; }
             set { this.startTime = value; }
         }
-        private System.DateTime startTime;
 
         /// <summary>
-        /// Allows to filter the list of jobs started after the given starttime.
+        /// Gets or sets end time. Allows to filter the list of jobs started after the given start 
+        /// time.
         /// </summary>
         [Parameter(ParameterSetName = "ByParam", HelpMessage = "End time of job should be less than this.")]
         [ValidateNotNullOrEmpty]
@@ -63,15 +92,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.endTime; }
             set { this.endTime = value; }
         }
-        private System.DateTime endTime;
-		
+
         /// <summary>
-        /// Take string input for possible States of ASR Job. Use this parameter to get filtered 
-        /// view of Jobs
+        /// Gets or sets state. Take string input for possible States of ASR Job. Use this parameter 
+        /// to get filtered view of Jobs
         /// </summary>
+        /// Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
         [Parameter(ParameterSetName = "ByParam", HelpMessage = "State of job to return.")]
         [ValidateNotNullOrEmpty]
-        // Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
         [ValidateSet(
             "Aborted", 
             "Cancelled", 
@@ -95,23 +123,24 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.state; }
             set { this.state = value; }
         }
-        private string state;
-
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
                     case ById:
-                        GetById();
+                        this.GetById();
                         break;
 
                     case ByParam:
                     default:
-                        GetByParam();
+                        this.GetByParam();
                         break;
                 }
             }
@@ -121,14 +150,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
-            WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(id).Job);
+            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.id).Job);
         }
 
+        /// <summary>
+        /// Queries by Parameters.
+        /// </summary>
         private void GetByParam()
         {
-            WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob().Jobs);
+            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob().Jobs);
         }
     }
 }

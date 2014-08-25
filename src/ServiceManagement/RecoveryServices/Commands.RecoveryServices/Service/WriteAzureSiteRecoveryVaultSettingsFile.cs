@@ -15,43 +15,64 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Management.Automation;
     using System.Runtime.Serialization;
     using System.Xml;
+    using Microsoft.WindowsAzure.Commands.Utilities.Common;
     #endregion
 
-    class FilePath
-    {
-        public string AzureSiteRecoveryVaultSettingsFile;
-
-        public FilePath (string filePath)
-        {
-            this.AzureSiteRecoveryVaultSettingsFile = filePath;
-        }
-    }
-
+    /// <summary>
+    /// Creates a vault settings file.
+    /// </summary>
     [Cmdlet(VerbsCommunications.Write, "AzureSiteRecoveryVaultSettingFile")]
     [OutputType(typeof(FilePath))]
     public class WriteAzureSiteRecoveryVaultSettingsFile : RecoveryServicesCmdletBase
     {
         #region Parameters
-
+        /// <summary>
+        /// Azure Site Recovery Vault settings file.
+        /// </summary>
         private string azureSiteRecoveryVaultSettingsFile = string.Empty;
 
-        [Parameter (Mandatory = true)]
+        /// <summary>
+        /// Resource name.
+        /// </summary>
+        private string resourceName;
+
+        /// <summary>
+        /// Cloud Service name.
+        /// </summary>
+        private string cloudSeriveName;
+
+        /// <summary>
+        /// Vault key.
+        /// </summary>
+        private string vaultKey;
+
+        /// <summary>
+        /// Azure Site Recovery Vault settings file path.
+        /// </summary>
+        private string filePath;
+
+        /// <summary>
+        /// Gets or sets Resource name.
+        /// </summary>
+        [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ResourceName
         {
             get { return this.resourceName; }
             set { this.resourceName = value; }
         }
-        private string resourceName;
 
+        /// <summary>
+        /// Gets or sets Cloud service name.
+        /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string CloudSeriveName
@@ -59,8 +80,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.cloudSeriveName; }
             set { this.cloudSeriveName = value; }
         }
-        private string cloudSeriveName;
 
+        /// <summary>
+        /// Gets or sets Vault key.
+        /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string VaultKey
@@ -68,53 +91,62 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.vaultKey; }
             set { this.vaultKey = value; }
         }
-        private string vaultKey;
 
+        /// <summary>
+        /// Gets or sets Azure Site Recovery Vault settings file path.
+        /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string FilePath
+        public string Filepath
         {
             get { return this.filePath; }
             set { this.filePath = value; }
         }
-        private string filePath;
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
-            azureSiteRecoveryVaultSettingsFile =
-                filePath + "\\RecoveryServicesVaultSettings.vaultsettings";
-            FileStream stream = new FileStream(azureSiteRecoveryVaultSettingsFile, FileMode.Create);
+            this.azureSiteRecoveryVaultSettingsFile =
+                this.filePath + "\\RecoveryServicesVaultSettings.vaultsettings";
+            FileStream stream = new FileStream(this.azureSiteRecoveryVaultSettingsFile, FileMode.Create);
             stream.Close();
 
             ResourceCredentials resourceCredentials = new ResourceCredentials();
-            resourceCredentials.ResourceName = resourceName;
-            resourceCredentials.CloudServiceName = cloudSeriveName;
-            resourceCredentials.Key = vaultKey;
+            resourceCredentials.ResourceName = this.resourceName;
+            resourceCredentials.CloudServiceName = this.cloudSeriveName;
+            resourceCredentials.Key = this.vaultKey;
 
             string tempFilePath;
             var settings = new XmlWriterSettings { Indent = true, CloseOutput = true };
 
-            using (var w = XmlWriter.Create(CreateTempFile(out tempFilePath), settings))
+            using (var w = XmlWriter.Create(this.CreateTempFile(out tempFilePath), settings))
             {
                 var serializer = new DataContractSerializer(typeof(ResourceCredentials));
                 serializer.WriteObject(w, resourceCredentials);
             }
 
-            File.Replace(tempFilePath, azureSiteRecoveryVaultSettingsFile, null);
+            File.Replace(tempFilePath, this.azureSiteRecoveryVaultSettingsFile, null);
 
-            FilePath fp = new FilePath(azureSiteRecoveryVaultSettingsFile);
-            WriteObject(fp);
+            FilePath fp = new FilePath(this.azureSiteRecoveryVaultSettingsFile);
+            this.WriteObject(fp);
         }
 
+        /// <summary>
+        /// Creates temporary file.
+        /// </summary>
+        /// <param name="finalFileName">File path name</param>
+        /// <returns>File Stream</returns>
         private FileStream CreateTempFile(out string finalFileName)
         {
             do
             {
                 try
                 {
-                    string fileName = 
-                        azureSiteRecoveryVaultSettingsFile + "." + Guid.NewGuid().ToString();
+                    string fileName =
+                        this.azureSiteRecoveryVaultSettingsFile + "." + Guid.NewGuid().ToString();
                     var stream = new FileStream(fileName, FileMode.CreateNew, FileAccess.Write);
                     finalFileName = fileName;
                     return stream;
@@ -123,7 +155,36 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 {
                     // If we got this, the file already existed. Try again.
                 }
-            } while (true);
+            }
+            while (true);
+        }
+    }
+
+    /// <summary>
+    /// Represent FILE path.
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "This Cmdlet is temporary.")]
+    public class FilePath
+    {
+        /// <summary>
+        /// Azure Site Recovery Vault settings file path.
+        /// </summary>
+        [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1401:FieldsMustBePrivate",
+        Justification = "To write to terminal.")]
+        public string AzureSiteRecoveryVaultSettingsFile;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilePath" /> class.
+        /// </summary>
+        /// <param name="filePath">Path to the file</param>
+        public FilePath(string filePath)
+        {
+            this.AzureSiteRecoveryVaultSettingsFile = filePath;
         }
     }
 }

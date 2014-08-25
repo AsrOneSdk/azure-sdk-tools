@@ -24,30 +24,31 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     /// <summary>
-    /// Retrieves Azure Site Recovery Virtual Machine.
+    /// Retrieves Azure Site Recovery Protection Entity.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByObject)]
-    [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
-    public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [OutputType(typeof(IEnumerable<ASRProtectionEntity>))]
+    public class GetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         #region Parameters
+
         /// <summary>
-        /// Virtual Machine ID.
+        /// Protection entity ID.
         /// </summary>
         private string id;
 
         /// <summary>
-        /// Name of the Virtual Machine.
+        /// Name of the Protection entity.
         /// </summary>
         private string name;
 
         /// <summary>
-        /// Protection Container ID.
+        /// Protection container ID.
         /// </summary>
         private string protectionContainerId;
 
         /// <summary>
-        /// Protection Container object.
+        /// Protection container object.
         /// </summary>
         private ASRProtectionContainer protectionContainer;
 
@@ -89,7 +90,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Gets or sets Protection Container Object.
+        /// Gets or sets Server Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
@@ -114,7 +115,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ASRParameterSets.ByObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
-                        this.protectionContainerId = this.protectionContainer.ProtectionContainerId;
+                        this.protectionContainerId = this.ProtectionContainer.ProtectionContainerId;
                         break;
                     case ASRParameterSets.ByIDs:
                     case ASRParameterSets.ByIDsWithId:
@@ -146,16 +147,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetByName()
         {
-            VirtualMachineListResponse virtualMachineListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
+            ProtectionEntityListResponse protectionEntityListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
                 this.protectionContainerId);
 
             bool found = false;
-            foreach (VirtualMachine vm in virtualMachineListResponse.Vms)
+            foreach (ProtectionEntity pe in protectionEntityListResponse.ProtectionEntities)
             {
-                if (0 == string.Compare(this.name, vm.Name, true))
+                if (0 == string.Compare(this.name, pe.Name, true))
                 {
-                    this.WriteVirtualMachine(vm);
+                    this.WriteProtectionEntity(pe);
                     found = true;
                 }
             }
@@ -171,66 +172,65 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Queries by ID.
+        /// Queries by Id.
         /// </summary>
         private void GetById()
         {
-            VirtualMachineResponse virtualMachineResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
+            ProtectionEntityResponse protectionEntityResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
                 this.protectionContainerId,
                 this.id);
 
-            this.WriteVirtualMachine(virtualMachineResponse.Vm);
+            this.WriteProtectionEntity(protectionEntityResponse.ProtectionEntity);
         }
 
         /// <summary>
-        /// Queries all / by default.
+        /// Queries all.
         /// </summary>
         private void GetAll()
         {
-            VirtualMachineListResponse virtualMachineListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
+            ProtectionEntityListResponse protectionEntityListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
                 this.protectionContainerId);
 
-            this.WriteVirtualMachines(virtualMachineListResponse.Vms);
+            this.WriteProtectionEntities(protectionEntityListResponse.ProtectionEntities);
         }
 
         /// <summary>
-        /// Writes Virtual Machines.
+        /// Writes Protection Entities.
         /// </summary>
-        /// <param name="vms">List of Virtual Machines</param>
-        private void WriteVirtualMachines(IList<VirtualMachine> vms)
+        /// <param name="protectionEntities">Protection Entities</param>
+        private void WriteProtectionEntities(IList<ProtectionEntity> protectionEntities)
         {
-            foreach (VirtualMachine vm in vms)
+            foreach (ProtectionEntity pe in protectionEntities)
             {
-                this.WriteVirtualMachine(vm);
+                this.WriteProtectionEntity(pe);
             }
         }
 
         /// <summary>
-        /// Writes Virtual Machine.
+        /// Writes Protection Entity.
         /// </summary>
-        /// <param name="vm">Virtual Machine</param>
-        private void WriteVirtualMachine(VirtualMachine vm)
+        /// <param name="pe">Protection Entity</param>
+        private void WriteProtectionEntity(ProtectionEntity pe)
         {
             this.WriteObject(
-                new ASRVirtualMachine(
-                    vm.ID,
-                    vm.ServerId,
-                    vm.ProtectionContainerId,
-                    vm.Name,
-                    vm.Type,
-                    vm.FabricObjectId,
-                    vm.Protected,
-                    vm.CanCommit,
-                    vm.CanFailover,
-                    vm.CanReverseReplicate,
-                    vm.IsRelationshipReversed,
-                    vm.ProtectionState,
-                    vm.TestFailoverState,
-                    vm.ReplicationHealth,
-                    vm.ReplicationProvider,
-                    vm.ReplicationProviderSettings),
+                new ASRProtectionEntity(
+                    pe.ID,
+                    pe.ServerId,
+                    pe.ProtectionContainerId,
+                    pe.Name,
+                    pe.Type,
+                    pe.FabricObjectId,
+                    pe.Protected,
+                    pe.CanCommit,
+                    pe.CanFailover,
+                    pe.CanReverseReplicate,
+                    pe.IsRelationshipReversed,
+                    pe.ProtectionState,
+                    pe.TestFailoverState,
+                    pe.ReplicationHealth,
+                    pe.ReplicationProvider),
                 true);
         }
     }

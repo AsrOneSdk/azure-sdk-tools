@@ -12,128 +12,109 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using System.Net;
-
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Net;
+    using System.Runtime.Serialization;
+    using System.Security.Cryptography;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Text;
+    using System.Web.Script.Serialization;
+    using System.Xml;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using Microsoft.WindowsAzure.Management.RecoveryServices;
     using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using System;
-    using System.IO;
-    using System.Runtime.Serialization;
-    using System.Security.Cryptography;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Text;
-    using System.Xml;
-    using System.Web.Script.Serialization;
-    using System.Collections.Generic;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
-        private RecoveryServicesManagementClient recoveryServicesClient;
-        private string subscriptionId;
-        private X509Certificate2 certificate;
-        private Uri serviceEndPoint;
-
-        public static ResourceCredentials resourceCredentials = new ResourceCredentials();
+        /// <summary>
+        /// Amount of time to sleep before fetching job details again.
+        /// </summary>
         public const int TimeToSleepBeforeFetchingJobDetailsAgain = 5000;
 
+        /// <summary>
+        /// Resource credentials holds vault, cloud service name, vault key and other details.
+        /// </summary>
+        [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1401:FieldsMustBePrivate",
+        Justification = "For Resource Credentials.")]
+        public static ResourceCredentials ResourceCreds = new ResourceCredentials();
+
+        /// <summary>
+        /// Recovery Services client.
+        /// </summary>
+        private RecoveryServicesManagementClient recoveryServicesClient;
+
+        /// <summary>
+        /// Subscription ID.
+        /// </summary>
+        private string subscriptionId;
+
+        /// <summary>
+        /// Represents an X.509 certificate.
+        /// </summary>
+        private X509Certificate2 certificate;
+
+        /// <summary>
+        /// Service end point.
+        /// </summary>
+        private Uri serviceEndPoint;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class.
+        /// </summary>
+        public PSRecoveryServicesClient()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class with 
+        /// required current subscription.
+        /// </summary>
+        /// <param name="currentSubscription">Current Subscription</param>
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
-            recoveryServicesClient = 
+            this.recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
-            subscriptionId = currentSubscription.SubscriptionId;
-            certificate = currentSubscription.Certificate;
-            serviceEndPoint = currentSubscription.ServiceEndpoint;
+            this.subscriptionId = currentSubscription.SubscriptionId;
+            this.certificate = currentSubscription.Certificate;
+            this.serviceEndPoint = currentSubscription.ServiceEndpoint;
         }
-        public PSRecoveryServicesClient() { }
 
+        /// <summary>
+        /// Retrieves Azure Cloud services.
+        /// </summary>
+        /// <returns>Cloud service list response</returns>
         public CloudServiceListResponse GetAzureCloudServicesSyncInt()
         {
-            return recoveryServicesClient.CloudServices.List();
+            return this.recoveryServicesClient.CloudServices.List();
         }
 
-        private SiteRecoveryManagementClient GetSiteRecoveryClient()
-        {
-            CloudServiceListResponse services = recoveryServicesClient.CloudServices.List();
-            this.ValidateVaultSettings(
-                resourceCredentials.ResourceName,
-                resourceCredentials.CloudServiceName,
-                services);
-
-            string stampId = string.Empty;
-            CloudService selectedCloudService = null;
-            Vault selectedResource = null;
-
-            foreach (CloudService cloudService in services)
-            {
-                if (cloudService.Name == resourceCredentials.CloudServiceName)
-                {
-                    selectedCloudService = cloudService;
-                }
-            }
-
-            if (null == selectedCloudService)
-            {
-                throw new ArgumentException(Properties.Resources.InvalidCloudService);
-            }
-
-            foreach (Vault vault in selectedCloudService.Resources)
-            {
-                if (vault.Name == resourceCredentials.ResourceName)
-                {
-                    selectedResource = vault;
-                }
-            }
-
-            if (null == selectedResource)
-            {
-                throw new ArgumentException(Properties.Resources.InvalidResource);
-            }
-
-            foreach (OutputItem item in selectedResource.OutputItems)
-            {
-                if (item.Key.Equals("BackendStampId"))
-                {
-                    stampId = item.Value;
-                }
-            }
-
-            if (string.IsNullOrEmpty(stampId))
-            {
-                throw new InvalidDataException(Properties.Resources.MissingBackendStampId);
-            }
-
-            SiteRecoveryManagementClient siteRecoveryClient = 
-                new SiteRecoveryManagementClient(
-                    resourceCredentials.CloudServiceName,
-                    resourceCredentials.ResourceName,
-                    stampId, 
-                    new CertificateCloudCredentials(
-                        subscriptionId, 
-                        certificate), 
-                    serviceEndPoint);
-
-            if (null == siteRecoveryClient)
-            {
-                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
-            }
-
-            return siteRecoveryClient;
-        }
-
+        /// <summary>
+        /// Validates current in-memory Vault Settings.
+        /// </summary>
+        /// <param name="resourceName">Resource Name</param>
+        /// <param name="cloudServiceName">Cloud Service Name</param>
+        /// <param name="services">Cloud Services</param>
+        /// <returns>Whether Vault settings are valid or not</returns>
         public bool ValidateVaultSettings(
             string resourceName,
             string cloudServiceName,
             CloudServiceListResponse services = null)
         {
-
             if (string.IsNullOrEmpty(resourceName) || string.IsNullOrEmpty(cloudServiceName))
             {
                 throw new InvalidOperationException(Properties.Resources.MissingVaultSettings);
@@ -141,7 +122,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             if (null == services)
             {
-                services = recoveryServicesClient.CloudServices.List();
+                services = this.recoveryServicesClient.CloudServices.List();
             }
 
             string stampId = string.Empty;
@@ -178,9 +159,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return true;
         }
 
+        /// <summary>
+        /// Throws meaningful exception details extracted from Cloud exception.
+        /// </summary>
+        /// <param name="cloudException">Cloud exception thrown by service</param>
         public void ThrowCloudExceptionDetails(CloudException cloudException)
         {
-            Error psError = null;
+            Error error = null;
             try
             {
                 using (Stream stream = new MemoryStream())
@@ -190,7 +175,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     stream.Position = 0;
 
                     var deserializer = new DataContractSerializer(typeof(Error));
-                    psError = (Error)deserializer.ReadObject(stream);
+                    error = (Error)deserializer.ReadObject(stream);
                 }
             }
             catch (XmlException)
@@ -210,10 +195,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             throw new InvalidOperationException(
                 string.Format(
-                Properties.Resources.CloudExceptionDetails, "\n",
-                psError.Message, "\n",
-                psError.PossibleCauses, "\n",
-                psError.RecommendedAction));
+                Properties.Resources.CloudExceptionDetails, 
+                "\n",
+                error.Message, 
+                "\n",
+                error.PossibleCauses, 
+                "\n",
+                error.RecommendedAction));
         }
 
         /// <summary>
@@ -238,7 +226,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             string shaInput = new JavaScriptSerializer().Serialize(cikTokenDetails);
 
-            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(resourceCredentials.Key));
+            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(ResourceCreds.Key));
             cikTokenDetails.Hmac =
                 Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(shaInput)));
             cikTokenDetails.HashFunction = CikSupportedHashFunctions.HMACSHA256.ToString();
@@ -246,14 +234,91 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return new JavaScriptSerializer().Serialize(cikTokenDetails);
         }
 
+        /// <summary>
+        /// Gets request headers.
+        /// </summary>
+        /// <returns>Custom request headers</returns>
         public CustomRequestHeaders GetRequestHeaders()
         {
             return new CustomRequestHeaders()
             {
                 // ClientRequestId is a unique ID for every request to Azure Site Recovery.
                 // It is useful when diagnosing failures in API calls.
-                ClientRequestId = "PS" + Guid.NewGuid().ToString()
+                ClientRequestId = Guid.NewGuid().ToString() + "_PS"
             };
+        }
+
+        /// <summary>
+        /// Gets Site Recovery client.
+        /// </summary>
+        /// <returns>Site Recovery Management client</returns>
+        private SiteRecoveryManagementClient GetSiteRecoveryClient()
+        {
+            CloudServiceListResponse services = this.recoveryServicesClient.CloudServices.List();
+            this.ValidateVaultSettings(
+                ResourceCreds.ResourceName,
+                ResourceCreds.CloudServiceName,
+                services);
+
+            string stampId = string.Empty;
+            CloudService selectedCloudService = null;
+            Vault selectedResource = null;
+
+            foreach (CloudService cloudService in services)
+            {
+                if (cloudService.Name == ResourceCreds.CloudServiceName)
+                {
+                    selectedCloudService = cloudService;
+                }
+            }
+
+            if (null == selectedCloudService)
+            {
+                throw new ArgumentException(Properties.Resources.InvalidCloudService);
+            }
+
+            foreach (Vault vault in selectedCloudService.Resources)
+            {
+                if (vault.Name == ResourceCreds.ResourceName)
+                {
+                    selectedResource = vault;
+                }
+            }
+
+            if (null == selectedResource)
+            {
+                throw new ArgumentException(Properties.Resources.InvalidResource);
+            }
+
+            foreach (OutputItem item in selectedResource.OutputItems)
+            {
+                if (item.Key.Equals("BackendStampId"))
+                {
+                    stampId = item.Value;
+                }
+            }
+
+            if (string.IsNullOrEmpty(stampId))
+            {
+                throw new InvalidDataException(Properties.Resources.MissingBackendStampId);
+            }
+
+            SiteRecoveryManagementClient siteRecoveryClient =
+                new SiteRecoveryManagementClient(
+                    ResourceCreds.CloudServiceName,
+                    ResourceCreds.ResourceName,
+                    stampId,
+                    new CertificateCloudCredentials(
+                        this.subscriptionId,
+                        this.certificate),
+                    this.serviceEndPoint);
+
+            if (null == siteRecoveryClient)
+            {
+                throw new InvalidOperationException(Properties.Resources.NullRecoveryServicesClient);
+            }
+
+            return siteRecoveryClient;
         }
     }
 }

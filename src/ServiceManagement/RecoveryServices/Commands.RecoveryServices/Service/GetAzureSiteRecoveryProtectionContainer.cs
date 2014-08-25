@@ -18,47 +18,34 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
-    /// Retrieves Azure Site Recovery Recovery Plan.
+    /// Retrieves Azure Site Recovery Protection Container.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = Default)]
-    [OutputType(typeof(IEnumerable<ASRRecoveryPlan>))]
-    public class GetAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionContainer", DefaultParameterSetName = ASRParameterSets.Default)]
+    [OutputType(typeof(IEnumerable<ASRProtectionContainer>))]
+    public class GetAzureSiteRecoveryProtectionContainer : RecoveryServicesCmdletBase
     {
-        /// <summary>
-        /// When nothing is passed to the command.
-        /// </summary>
-        protected const string Default = "Default";
-
-        /// <summary>
-        /// When only Name is passed to the command.
-        /// </summary>
-        protected const string ByName = "ByName";
-
-        /// <summary>
-        /// When only ID is passed to the command.
-        /// </summary>
-        protected const string ById = "ById";
-
         #region Parameters
+
         /// <summary>
-        /// Recovery Plan ID.
+        /// Protection container ID.
         /// </summary>
         private string id;
 
         /// <summary>
-        /// Name of the Recovery Plan.
+        /// Name of the Protection container.
         /// </summary>
         private string name;
 
         /// <summary>
-        /// Gets or sets Recovery Plan ID.
+        /// Gets or sets ID of the Protection Container.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -67,9 +54,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Gets or sets name of the Recovery Plan.
+        /// Gets or sets name of the Protection Container.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
@@ -87,13 +74,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ByName:
+                    case ASRParameterSets.ByName:
                         this.GetByName();
                         break;
-                    case ById:
+                    case ASRParameterSets.ById:
                         this.GetById();
                         break;
-                    case Default:
+                    case ASRParameterSets.Default:
                         this.GetByDefault();
                         break;
                 }
@@ -109,15 +96,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetByName()
         {
-            RecoveryPlanListResponse recoveryPlanListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan();
+            ProtectionContainerListResponse protectionContainerListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer();
 
             bool found = false;
-            foreach (RecoveryPlan recoveryPlan in recoveryPlanListResponse.RecoveryPlans)
+            foreach (
+                ProtectionContainer protectionContainer in 
+                protectionContainerListResponse.ProtectionContainers)
             {
-                if (0 == string.Compare(this.name, recoveryPlan.Name, true))
+                if (0 == string.Compare(this.name, protectionContainer.Name, true))
                 {
-                    this.WriteRecoveryPlan(recoveryPlan);
+                    this.WriteProtectionContainer(protectionContainer);
                     found = true;
                 }
             }
@@ -126,9 +115,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 throw new InvalidOperationException(
                     string.Format(
-                    Properties.Resources.RecoveryPlanNotFound,
-                    this.name,
-                    PSRecoveryServicesClient.ResourceCreds.ResourceName));
+                    Properties.Resources.ProtectionContainerNotFound,
+                    this.name));
             }
         }
 
@@ -137,47 +125,48 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetById()
         {
-            RecoveryPlanResponse recoveryPlanResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan(this.id);
+            ProtectionContainerResponse protectionContainerResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer(this.id);
 
-            this.WriteRecoveryPlan(recoveryPlanResponse.RecoveryPlan);
+            this.WriteProtectionContainer(protectionContainerResponse.ProtectionContainer);
         }
 
         /// <summary>
-        /// Queries all / by default.
+        /// Queries all, by default.
         /// </summary>
         private void GetByDefault()
         {
-            RecoveryPlanListResponse recoveryPlanListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlan();
+            ProtectionContainerListResponse protectionContainerListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryProtectionContainer();
 
-            this.WriteRecoveryPlans(recoveryPlanListResponse.RecoveryPlans);
+            this.WriteProtectionContainers(protectionContainerListResponse.ProtectionContainers);
         }
 
         /// <summary>
-        /// Writes Recovery Plans.
+        /// Writes Protection Containers.
         /// </summary>
-        /// <param name="recoveryPlans">List of Recovery Plans</param>
-        private void WriteRecoveryPlans(IList<RecoveryPlan> recoveryPlans)
+        /// <param name="protectionContainers">List of Protection Containers</param>
+        private void WriteProtectionContainers(IList<ProtectionContainer> protectionContainers)
         {
-            foreach (RecoveryPlan recoveryPlan in recoveryPlans)
+            foreach (ProtectionContainer protectionContainer in protectionContainers)
             {
-                this.WriteRecoveryPlan(recoveryPlan);
+                this.WriteProtectionContainer(protectionContainer);
             }
         }
 
         /// <summary>
-        /// Writes Recovery Plan.
+        /// Write Protection Container.
         /// </summary>
-        /// <param name="recoveryPlan">Recovery Plan</param>
-        private void WriteRecoveryPlan(RecoveryPlan recoveryPlan)
+        /// <param name="protectionContainer">Protection Container</param>
+        private void WriteProtectionContainer(ProtectionContainer protectionContainer)
         {
             this.WriteObject(
-                new ASRRecoveryPlan(
-                    recoveryPlan.ID,
-                    recoveryPlan.Name,
-                    recoveryPlan.ServerId,
-                    recoveryPlan.TargetServerId),
+                new ASRProtectionContainer(
+                    protectionContainer.ID,
+                    protectionContainer.Name,
+                    protectionContainer.ConfigurationStatus,
+                    protectionContainer.ReplicationProviderSettings,
+                    protectionContainer.ServerId),
                 true);
         }
     }

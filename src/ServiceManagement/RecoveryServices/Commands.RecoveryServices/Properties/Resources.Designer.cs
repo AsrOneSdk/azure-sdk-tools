@@ -142,11 +142,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Protected Container {0} is not associated with the Server {1}.
+        ///   Looks up a localized string similar to Protection Container {0} is not associated with the Server {1}.
         /// </summary>
-        internal static string ProtectedContainerNotFound {
+        internal static string ProtectionContainerNotFound {
             get {
-                return ResourceManager.GetString("ProtectedContainerNotFound", resourceCulture);
+                return ResourceManager.GetString("ProtectionContainerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protection Entity {0} is not associated with Protection Container {1}.
+        /// </summary>
+        internal static string ProtectionEntityNotFound {
+            get {
+                return ResourceManager.GetString("ProtectionEntityNotFound", resourceCulture);
             }
         }
         
@@ -187,7 +196,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual Machine {0} is not associated with Protected Container {1}.
+        ///   Looks up a localized string similar to Virtual Machine Group {0} is not associated with Protection Container {1}.
+        /// </summary>
+        internal static string VirtualMachineGroupNotFound {
+            get {
+                return ResourceManager.GetString("VirtualMachineGroupNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual Machine {0} is not associated with Protection Container {1}.
         /// </summary>
         internal static string VirtualMachineNotFound {
             get {

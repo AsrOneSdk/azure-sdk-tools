@@ -19,29 +19,63 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Runtime.Serialization;
     #endregion
 
+    /// <summary>
+    /// Azure Site Recovery Recovery Plan.
+    /// </summary>
     public class ASRRecoveryPlan
     {
-         #region Properties
-        public string RpId { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string ServerId { get; set; }
-        public string TargetServerId { get; set; }
-        #endregion
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRRecoveryPlan" /> class.
+        /// </summary>
+        public ASRRecoveryPlan()
+        {
+        }
 
-        public ASRRecoveryPlan() { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRRecoveryPlan" /> class with required
+        /// parameters.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery plan ID</param>
+        /// <param name="name">Name of the Recovery plan</param>
+        /// <param name="serverId">Server ID</param>
+        /// <param name="targetServerId">Target Server ID</param>
         public ASRRecoveryPlan(
-            string rpId,
+            string recoveryPlanId,
             string name,
-            string type,
             string serverId,
             string targetServerId)
         {
-            this.RpId = rpId;
+            this.RpId = recoveryPlanId;
             this.Name = name;
-            this.Type = type;
             this.ServerId = serverId;
             this.TargetServerId = targetServerId;
         }
+
+        #region Properties
+        /// <summary>
+        /// Gets or sets Recovery plan ID.
+        /// </summary>
+        public string RpId { get; set; }
+
+        /// <summary>
+        /// Gets or sets name of the Recovery Plan.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets type of the Recovery Plan.
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets to Server ID.
+        /// </summary>
+        public string ServerId { get; set; }
+
+        /// <summary>
+        /// Gets or sets target Server ID.
+        /// </summary>
+        public string TargetServerId { get; set; }
+        #endregion
     }
 }

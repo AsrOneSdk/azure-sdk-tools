@@ -15,12 +15,15 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
     using System;
     using System.Management.Automation;
+    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Restarts Azure Site Recovery Job.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Restart, "AzureSiteRecoveryJob")]
     public class RestartAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
@@ -29,6 +32,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Job ID.
         /// </summary>
+        private string id;
+
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
@@ -36,13 +44,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
-
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
-            RecoveryServicesClient.RestartAzureSiteRecoveryJob(Id);
+            RecoveryServicesClient.RestartAzureSiteRecoveryJob(this.id);
         }
     }
 }

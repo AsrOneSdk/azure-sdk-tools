@@ -15,9 +15,6 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -25,16 +22,27 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     using System.Runtime.Serialization;
     using System.Xml;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Commands.Utilities.Common;
     #endregion
 
+    /// <summary>
+    /// Imports Azure Site Recovery Vault Settings.
+    /// </summary>
     [Cmdlet(VerbsData.Import, "AzureSiteRecoveryVaultSettingsFile")]
     [OutputType(typeof(ASRVaultSettings))]
     public class ImportAzureSiteRecoveryVaultSettingsFile : RecoveryServicesCmdletBase
     {
         #region Parameters
         /// <summary>
-        /// Path to the Azure site Recovery Vault Settings file. This file can be downloaded from 
-        /// Azure site recovery Vault portal and stored locally.
+        /// Azure Site Recovery Vault settings file.
+        /// </summary>
+        private string azureSiteRecoveryVaultSettingsFile;
+
+        /// <summary>
+        /// Gets or sets path to the Azure site Recovery Vault Settings file. This file can be 
+        /// downloaded from Azure site recovery Vault portal and stored locally.
         /// </summary>
         [Parameter(
             Position = 0, 
@@ -47,21 +55,26 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.azureSiteRecoveryVaultSettingsFile; }
             set { this.azureSiteRecoveryVaultSettingsFile = value; }
         }
-        private string azureSiteRecoveryVaultSettingsFile;
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
-            WriteVerbose("File path: " + azureSiteRecoveryVaultSettingsFile);
+            this.WriteVerbose("Vault Settings File path: " + this.azureSiteRecoveryVaultSettingsFile);
 
             ResourceCredentials resourceCredentials = null;
-            if (File.Exists(azureSiteRecoveryVaultSettingsFile))
+            if (File.Exists(this.azureSiteRecoveryVaultSettingsFile))
             {
                 try
                 {
                     var serializer = new DataContractSerializer(typeof(ResourceCredentials));
-                    using (var s = new FileStream(azureSiteRecoveryVaultSettingsFile, FileMode.Open,
-                        FileAccess.Read, FileShare.Read))
+                    using (var s = new FileStream(
+                        this.azureSiteRecoveryVaultSettingsFile, 
+                        FileMode.Open,
+                        FileAccess.Read, 
+                        FileShare.Read))
                     {
                         resourceCredentials = (ResourceCredentials)serializer.ReadObject(s);
                     }
@@ -80,8 +93,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             else
             {
                 throw new FileNotFoundException(
-                    Properties.Resources.VaultSettingFileNotFound, 
-                    azureSiteRecoveryVaultSettingsFile);
+                    Properties.Resources.VaultSettingFileNotFound,
+                    this.azureSiteRecoveryVaultSettingsFile);
             }
 
             // Validate required parameters taken from the Vault settings file.
@@ -98,6 +111,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     Properties.Resources.CloudServiceNameNullOrEmpty,
                     resourceCredentials.CloudServiceName);
             }
+
             try
             {
                 RecoveryServicesClient.ValidateVaultSettings(
@@ -105,7 +119,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     resourceCredentials.CloudServiceName);
 
                 this.ImportAzureSiteRecoveryVaultSettings(resourceCredentials);
-                WriteObject(new ASRVaultSettings(
+                this.WriteObject(new ASRVaultSettings(
                     resourceCredentials.ResourceName, 
                     resourceCredentials.CloudServiceName));
             }
@@ -115,16 +129,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Imports Azure Site Recovery Vault settings.
+        /// </summary>
+        /// <param name="resourceCredentials">Resource credentials</param>
         public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
         {
-            Object updateVaultSettingsOneAtATime = new Object();
+            object updateVaultSettingsOneAtATime = new object();
             lock (updateVaultSettingsOneAtATime)
             {
-                PSRecoveryServicesClient.resourceCredentials.ResourceName =
+                PSRecoveryServicesClient.ResourceCreds.ResourceName =
                     resourceCredentials.ResourceName;
-                PSRecoveryServicesClient.resourceCredentials.CloudServiceName =
+                PSRecoveryServicesClient.ResourceCreds.CloudServiceName =
                     resourceCredentials.CloudServiceName;
-                PSRecoveryServicesClient.resourceCredentials.Key =
+                PSRecoveryServicesClient.ResourceCreds.Key =
                     resourceCredentials.Key;
             }
         }

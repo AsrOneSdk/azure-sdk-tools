@@ -15,62 +15,72 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = Default)]
+    /// <summary>
+    /// Retrieves Azure Site Recovery Server.
+    /// </summary>
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryServer", DefaultParameterSetName = ASRParameterSets.Default)]
     [OutputType(typeof(IEnumerable<ASRServer>))]
     public class GetAzureSiteRecoveryServer : RecoveryServicesCmdletBase
     {
-        protected const string Default = "Default";
-        protected const string ByName = "ByName";
-        protected const string ById = "ById";
-
         #region Parameters
         /// <summary>
-        /// ID of the Server.
+        /// Server ID.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        private string id;
+
+        /// <summary>
+        /// Name of the Server.
+        /// </summary>
+        private string name;
+
+        /// <summary>
+        /// Gets or sets ID of the Server.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
 
         /// <summary>
-        /// Name of the Server.
+        /// Gets or sets name of the Server.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
             get { return this.name; }
             set { this.name = value; }
         }
-        private string name;
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
-                    case ByName:
-                        GetByName();
+                    case ASRParameterSets.ByName:
+                        this.GetByName();
                         break;
-                    case ById:
-                        GetById();
+                    case ASRParameterSets.ById:
+                        this.GetById();
                         break;
-                    case Default:
-                        GetByDefault();
+                    case ASRParameterSets.Default:
+                        this.GetAll();
                         break;
                 }
             }
@@ -80,6 +90,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Queries by name.
+        /// </summary>
         private void GetByName()
         {
             ServerListResponse serverListResponse =
@@ -88,9 +101,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             bool found = false;
             foreach (Server server in serverListResponse.Servers)
             {
-                if(0 == string.Compare(name, server.Name, true))
+                if (0 == string.Compare(this.name, server.Name, true))
                 {
-                    WriteServer(server);
+                    this.WriteServer(server);
                     found = true;
                 }
             }
@@ -100,42 +113,55 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.ServerNotFound,
-                    name,
-                    PSRecoveryServicesClient.resourceCredentials.ResourceName));
+                    this.name,
+                    PSRecoveryServicesClient.ResourceCreds.ResourceName));
             }
         }
 
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
         private void GetById()
         {
-            ServerResponse serverResponse = 
-                RecoveryServicesClient.GetAzureSiteRecoveryServer(id);
+            ServerResponse serverResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryServer(this.id);
 
-            WriteServer(serverResponse.Server);
+            this.WriteServer(serverResponse.Server);
         }
 
-        private void GetByDefault()
+        /// <summary>
+        /// Queries all / by default.
+        /// </summary>
+        private void GetAll()
         {
             ServerListResponse serverListResponse =
                 RecoveryServicesClient.GetAzureSiteRecoveryServer();
 
-            WriteServers(serverListResponse.Servers);
+            this.WriteServers(serverListResponse.Servers);
         }
 
+        /// <summary>
+        /// Write Servers.
+        /// </summary>
+        /// <param name="servers">List of Servers</param>
         private void WriteServers(IList<Server> servers)
         {
             foreach (Server server in servers)
             {
-                WriteServer(server);
+                this.WriteServer(server);
             }
         }
 
+        /// <summary>
+        /// Write Server.
+        /// </summary>
+        /// <param name="server">Server object</param>
         private void WriteServer(Server server)
         {
-            WriteObject(
+            this.WriteObject(
                 new ASRServer(
                     server.ID,
                     server.Name,
-                    server.Type,
                     server.LastHeartbeat,
                     server.ProviderVersion,
                     server.ServerVersion),

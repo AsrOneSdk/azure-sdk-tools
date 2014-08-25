@@ -15,14 +15,43 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Runtime.Serialization;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Text;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
     #endregion
 
+    /// <summary>
+    /// Hash functions which can be used to calculate CIK HMAC.
+    /// </summary>
+    public enum CikSupportedHashFunctions
+    {
+        /// <summary>
+        /// Represents a HMACSHA256 hash function.
+        /// </summary>
+        HMACSHA256,
+
+        /// <summary>
+        /// Represents a HMACSHA384 hash function.
+        /// </summary>
+        HMACSHA384,
+
+        /// <summary>
+        /// Represents a HMACSHA512 hash function.
+        /// </summary>
+        HMACSHA512
+    }
+
+    /// <summary>
+    /// Represents resource / vault credentials.
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "Keeping all contracts together.")]
     public class ResourceCredentials
     {
         /// <summary>
@@ -67,8 +96,12 @@ using System.Text;
     }
 
     /// <summary>
-    /// Error contract returned when some excption occurs in AsrRestApi.
+    /// Error contract returned when some exception occurs in ASR REST API.
     /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "Keeping all contracts together.")]
     [DataContract(Namespace = "http://schemas.microsoft.com/windowsazure")]
     public class Error
     {
@@ -80,8 +113,9 @@ using System.Text;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Error" /> class.
+        /// Initializes a new instance of the <see cref="Error" /> class with required parameters.
         /// </summary>
+        /// <param name="se">Service Error</param>
         public Error(ServiceError se)
         {
             this.ActivityId = se.ActivityId;
@@ -97,8 +131,8 @@ using System.Text;
         /// <param name="errorCode">Service generated error code.</param>
         /// <param name="message">Error message.</param>
         /// <param name="possibleCauses">Possible causes of the error.</param>
-        /// <param name="recommendedAction">Reccomended action to resolve the error.</param>
-        /// <param name="activityId">ActivityId in which error occured.</param>
+        /// <param name="recommendedAction">Recommended action to resolve the error.</param>
+        /// <param name="activityId">ActivityId in which error occurred.</param>
         public Error(
             string errorCode,
             string message,
@@ -147,10 +181,13 @@ using System.Text;
     /// <summary>
     /// CIK token details.
     /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "Keeping all contracts together.")]
     [DataContract]
     public class CikTokenDetails
     {
-
         /// <summary>
         /// Gets or sets the timestamp before which the token is not valid.
         /// </summary>
@@ -164,32 +201,32 @@ using System.Text;
         public DateTime NotAfterTimestamp { get; set; }
 
         /// <summary>
-        /// The client request Id for the operation linked with this CIK token.
+        /// Gets or sets the client request Id for the operation linked with this CIK token.
         /// </summary>
         [DataMember]
         public string ClientRequestId { get; set; }
 
         /// <summary>
-        /// Hash function used to calculate the Hmac.
+        /// Gets or sets Hash function used to calculate the HMAC.
         /// </summary>
         [DataMember]
         public string HashFunction { get; set; }
 
         /// <summary>
-        /// The Hmac generated using the CIK key.
+        /// Gets or sets the HMAC generated using the CIK key.
         /// </summary>
         [DataMember]
         public string Hmac { get; set; }
 
         /// <summary>
-        /// Data contract version.
+        /// Gets or sets Data contract version.
         /// </summary>
         [DataMember(Name = "Version")]
         public Version Version { get; set; }
 
         /// <summary>
-        /// This property bag is introduced to support addition of any new 
-        /// property in data contract without breaking the existing clients.
+        /// Gets or sets property bag. This property bag is introduced to support addition of any 
+        /// new property in data contract without breaking the existing clients.
         /// If any new property needs to be introduced in the contract, 
         /// add a key value pair for it in this dictionary. 
         /// </summary>
@@ -203,23 +240,11 @@ using System.Text;
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("NotBeforeTimestamp: " + NotBeforeTimestamp);
-            sb.AppendLine("NotAfterTimestamp: " + NotAfterTimestamp);
-            sb.AppendLine("ClientRequestId: " + ClientRequestId);
-            sb.AppendLine("Hmac: " + Hmac);
+            sb.AppendLine("NotBeforeTimestamp: " + this.NotBeforeTimestamp);
+            sb.AppendLine("NotAfterTimestamp: " + this.NotAfterTimestamp);
+            sb.AppendLine("ClientRequestId: " + this.ClientRequestId);
+            sb.AppendLine("Hmac: " + this.Hmac);
             return sb.ToString();
         }
-    }
-
-    /// <summary>
-    /// Hash functions which can be used to calculate CIK hmac.
-    /// </summary>
-    public enum CikSupportedHashFunctions
-    {
-        HMACSHA256,
-
-        HMACSHA384,
-
-        HMACSHA512
     }
 }

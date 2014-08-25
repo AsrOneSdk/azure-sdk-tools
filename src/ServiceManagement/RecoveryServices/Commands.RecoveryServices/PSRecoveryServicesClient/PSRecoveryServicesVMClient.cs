@@ -15,72 +15,39 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using System;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
-        public const string EnableProtection = "Enable";
-        public const string DisableProtection = "Disable";
-
+        /// <summary>
+        /// Gets Azure Site Recovery Virtual Machines.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <returns>Virtual Machine list response</returns>
         public VirtualMachineListResponse GetAzureSiteRecoveryVirtualMachine(
-            string serverId,
-            string protectedContainerId)
+            string protectionContainerId)
         {
-            return GetSiteRecoveryClient().Vm.List(
-                serverId,
-                protectedContainerId,
-                GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Vm.List(protectionContainerId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Gets Azure Site Recovery Virtual Machine.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="virtualMachineId">Virtual Machine ID</param>
+        /// <returns>Virtual Machine response</returns>
         public VirtualMachineResponse GetAzureSiteRecoveryVirtualMachine(
-            string serverId,
-            string protectedContainerId,
+            string protectionContainerId,
             string virtualMachineId)
         {
-            return GetSiteRecoveryClient().Vm.Get(
-                serverId,
-                protectedContainerId,
-                virtualMachineId,
-                GetRequestHeaders());
-        }
-
-        public JobResponse SetProtectionOnVirtualMachine(
-            string serverId,
-            string protectedContainerId,
-            string virtualMachineId,
-            string protection)
-        {
-
-            var requestHeaders = GetRequestHeaders();
-            requestHeaders.AgentAuthenticationHeader =
-                GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
-            
-            JobResponse jobResponse = null;
-
-            if(0 == String.Compare(EnableProtection, protection, StringComparison.OrdinalIgnoreCase))
-            {
-                jobResponse =
-                    GetSiteRecoveryClient().Vm.EnableProtection(
-                    serverId,
-                    protectedContainerId,
-                    virtualMachineId,
-                    requestHeaders);
-            }
-            else if(0 == String.Compare(DisableProtection, protection, StringComparison.OrdinalIgnoreCase))
-            {
-                jobResponse =
-                    GetSiteRecoveryClient().Vm.DisableProtection(
-                    serverId,
-                    protectedContainerId,
-                    virtualMachineId,
-                    requestHeaders);
-            }
-
-            return jobResponse;
+            return this.GetSiteRecoveryClient().Vm.Get(protectionContainerId, virtualMachineId, this.GetRequestHeaders());
         }
     }
 }

@@ -15,21 +15,27 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
+    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Retrieves Azure Cloud Services.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "AzureCloudServices"), OutputType(typeof(string))]
     public class GetAzureCloudServices : RecoveryServicesCmdletBase
     {
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             CloudServiceListResponse services = RecoveryServicesClient.GetAzureCloudServicesSyncInt();
-            WriteObject(services.CloudServices.ToList());
+            this.WriteObject(services.CloudServices.ToList());
         }
     }
 }

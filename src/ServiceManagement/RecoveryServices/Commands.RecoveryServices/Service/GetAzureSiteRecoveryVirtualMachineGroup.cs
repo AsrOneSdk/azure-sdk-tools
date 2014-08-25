@@ -24,11 +24,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     /// <summary>
-    /// Retrieves Azure Site Recovery Virtual Machine.
+    /// Retrieves Azure Site Recovery Virtual Machine group.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByObject)]
-    [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
-    public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachineGroup", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [OutputType(typeof(IEnumerable<ASRVirtualMachineGroup>))]
+    public class GetAzureSiteRecoveryVirtualMachineGroup : RecoveryServicesCmdletBase
     {
         #region Parameters
         /// <summary>
@@ -42,12 +42,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string name;
 
         /// <summary>
-        /// Protection Container ID.
+        /// Protection container ID.
         /// </summary>
         private string protectionContainerId;
 
         /// <summary>
-        /// Protection Container object.
+        /// Protection container object.
         /// </summary>
         private ASRProtectionContainer protectionContainer;
 
@@ -100,6 +100,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.protectionContainer; }
             set { this.protectionContainer = value; }
         }
+
         #endregion Parameters
 
         /// <summary>
@@ -146,16 +147,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetByName()
         {
-            VirtualMachineListResponse virtualMachineListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
+            VirtualMachineGroupListResponse virtualMachineListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachineGroup(
                 this.protectionContainerId);
 
             bool found = false;
-            foreach (VirtualMachine vm in virtualMachineListResponse.Vms)
+            foreach (var virtualMachineGroup in virtualMachineListResponse.VmGroups)
             {
-                if (0 == string.Compare(this.name, vm.Name, true))
+                if (0 == string.Compare(this.name, virtualMachineGroup.Name, true))
                 {
-                    this.WriteVirtualMachine(vm);
+                    this.WriteVirtualMachineGroup(virtualMachineGroup);
                     found = true;
                 }
             }
@@ -164,7 +165,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 throw new InvalidOperationException(
                     string.Format(
-                    Properties.Resources.VirtualMachineNotFound,
+                    Properties.Resources.VirtualMachineGroupNotFound,
                     this.name,
                     this.protectionContainerId));
             }
@@ -175,62 +176,63 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetById()
         {
-            VirtualMachineResponse virtualMachineResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
+            var vmgResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachineGroup(
                 this.protectionContainerId,
                 this.id);
 
-            this.WriteVirtualMachine(virtualMachineResponse.Vm);
+            this.WriteVirtualMachineGroup(vmgResponse.VmGroup);
         }
 
         /// <summary>
-        /// Queries all / by default.
+        /// Queries all.
         /// </summary>
         private void GetAll()
         {
-            VirtualMachineListResponse virtualMachineListResponse =
-                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachine(
+            VirtualMachineGroupListResponse vmgListResponse =
+                RecoveryServicesClient.GetAzureSiteRecoveryVirtualMachineGroup(
                 this.protectionContainerId);
 
-            this.WriteVirtualMachines(virtualMachineListResponse.Vms);
+            this.WriteVirtualMachineGroups(vmgListResponse.VmGroups);
         }
 
         /// <summary>
-        /// Writes Virtual Machines.
+        /// Writes Virtual Machine groups.
         /// </summary>
-        /// <param name="vms">List of Virtual Machines</param>
-        private void WriteVirtualMachines(IList<VirtualMachine> vms)
+        /// <param name="vmgs">List of Virtual Machine group</param>
+        private void WriteVirtualMachineGroups(IList<VirtualMachineGroup> vmgs)
         {
-            foreach (VirtualMachine vm in vms)
+            foreach (var vmg in vmgs)
             {
-                this.WriteVirtualMachine(vm);
+                this.WriteVirtualMachineGroup(vmg);
             }
         }
 
         /// <summary>
-        /// Writes Virtual Machine.
+        /// Writes Virtual Machine group.
         /// </summary>
-        /// <param name="vm">Virtual Machine</param>
-        private void WriteVirtualMachine(VirtualMachine vm)
+        /// <param name="vmg">Virtual Machine group</param>
+        private void WriteVirtualMachineGroup(VirtualMachineGroup vmg)
         {
             this.WriteObject(
-                new ASRVirtualMachine(
-                    vm.ID,
-                    vm.ServerId,
-                    vm.ProtectionContainerId,
-                    vm.Name,
-                    vm.Type,
-                    vm.FabricObjectId,
-                    vm.Protected,
-                    vm.CanCommit,
-                    vm.CanFailover,
-                    vm.CanReverseReplicate,
-                    vm.IsRelationshipReversed,
-                    vm.ProtectionState,
-                    vm.TestFailoverState,
-                    vm.ReplicationHealth,
-                    vm.ReplicationProvider,
-                    vm.ReplicationProviderSettings),
+                new ASRVirtualMachineGroup(
+                    vmg.ID,
+                    vmg.ServerId,
+                    vmg.ProtectionContainerId,
+                    vmg.Name,
+                    vmg.Type,
+                    vmg.FabricObjectId,
+                    vmg.Protected,
+                    vmg.CanCommit,
+                    vmg.CanFailover,
+                    vmg.CanReverseReplicate,
+                    vmg.IsRelationshipReversed,
+                    vmg.ProtectionState,
+                    vmg.TestFailoverState,
+                    vmg.ReplicationHealth,
+                    vmg.ReplicationProvider,
+                    vmg.ReplicationProviderSettings,
+                    vmg.VirtualMachineList),
                 true);
         }
     }

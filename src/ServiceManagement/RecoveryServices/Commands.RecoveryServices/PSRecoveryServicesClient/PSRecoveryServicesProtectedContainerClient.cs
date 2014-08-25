@@ -15,28 +15,35 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.WindowsAzure;
     using System;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
-        public ProtectedContainerListResponse GetAzureSiteRecoveryProtectedContainer(
-            string serverId)
+        /// <summary>
+        /// Gets Azure Site Recovery Protection Container.
+        /// </summary>
+        /// <returns>Protection Container list response</returns>
+        public ProtectionContainerListResponse GetAzureSiteRecoveryProtectionContainer()
         {
-            return GetSiteRecoveryClient().ProtectedContainers.List(serverId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().ProtectionContainer.List(this.GetRequestHeaders());
         }
 
-        public ProtectedContainerResponse GetAzureSiteRecoveryProtectedContainer(
-            string serverId,
-            string protectedContainerId)
+        /// <summary>
+        /// Gets Azure Site Recovery Protection Container.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <returns>Protection Container response</returns>
+        public ProtectionContainerResponse GetAzureSiteRecoveryProtectionContainer(
+            string protectionContainerId)
         {
-            return GetSiteRecoveryClient().ProtectedContainers.Get(
-                serverId,
-                protectedContainerId,
-                GetRequestHeaders());
+            return this.GetSiteRecoveryClient().ProtectionContainer.Get(protectionContainerId, this.GetRequestHeaders());
         }
     }
 }

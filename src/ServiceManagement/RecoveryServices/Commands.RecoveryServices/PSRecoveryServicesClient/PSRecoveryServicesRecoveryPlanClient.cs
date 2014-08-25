@@ -15,66 +15,119 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
-    using System;
     #endregion
 
+    /// <summary>
+    /// Recovery services convenience client.
+    /// </summary>
     public partial class PSRecoveryServicesClient
     {
+        /// <summary>
+        /// Represents direction primary to secondary.
+        /// </summary>
         public const string PrimaryToSecondary = "PrimaryToSecondary";
+
+        /// <summary>
+        /// Represents direction secondary to primary.
+        /// </summary>
         public const string SecondaryToPrimary = "SecondaryToPrimary";
 
+        /// <summary>
+        /// Gets Azure Site Recovery Plan.
+        /// </summary>
+        /// <returns>Recovery Plan list response</returns>
         public RecoveryPlanListResponse GetAzureSiteRecoveryRecoveryPlan()
         {
-            return GetSiteRecoveryClient().RecoveryPlan.List(GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.List(this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Gets Azure Site Recovery Recovery Plan.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <returns>Recovery Plan response</returns>
         public RecoveryPlanResponse GetAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Get(recoveryPlanId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery Commit failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryCommitFailover(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Commit(recoveryPlanId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Updates Azure Site Recovery protection.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <returns>Job response</returns>
         public JobResponse UpdateAzureSiteRecoveryProtection(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Reprotect(recoveryPlanId, this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery Planned failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <param name="recoveryPlanPlannedFailoverRequest">Recovery Plan Planned failover request</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryPlannedFailover(
             string recoveryPlanId, 
-            RpPlannedFailoverRequest rpPlannedFailoverRequest)
+            RpPlannedFailoverRequest recoveryPlanPlannedFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanPlannedFailover(
+            return this.GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanPlannedFailover(
                 recoveryPlanId,
-                rpPlannedFailoverRequest, GetRequestHeaders());
+                recoveryPlanPlannedFailoverRequest, 
+                this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery Unplanned failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <param name="recoveryPlanUnPlannedFailoverRequest">Recovery Plan Unplanned failover request</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryUnplannedFailover(
             string recoveryPlanId,
-            RpUnplannedFailoverRequest rpUnPlannedFailoverRequest)
+            RpUnplannedFailoverRequest recoveryPlanUnPlannedFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnplannedFailover(
+            return this.GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanUnplannedFailover(
                 recoveryPlanId,
-                rpUnPlannedFailoverRequest, 
-                GetRequestHeaders());
+                recoveryPlanUnPlannedFailoverRequest, 
+                this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Starts Azure Site Recovery test failover.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery Plan ID</param>
+        /// <param name="recoveryPlanTestFailoverRequest">Recovery Plan test failover request</param>
+        /// <returns>Job response</returns>
         public JobResponse StartAzureSiteRecoveryTestFailover(
             string recoveryPlanId,
-            RpTestFailoverRequest rpTestFailoverRequest)
+            RpTestFailoverRequest recoveryPlanTestFailoverRequest)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanTestFailover(
+            return this.GetSiteRecoveryClient().RecoveryPlan.RecoveryPlanTestFailover(
                 recoveryPlanId,
-                rpTestFailoverRequest, 
-                GetRequestHeaders());
+                recoveryPlanTestFailoverRequest, 
+                this.GetRequestHeaders());
         }
 
+        /// <summary>
+        /// Remove Azure Site Recovery recovery plan.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery plan id.</param>
+        /// <returns>Job response</returns>
         public JobResponse RemoveAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
         {
             return GetSiteRecoveryClient().RecoveryPlan.Delete(recoveryPlanId, GetRequestHeaders());

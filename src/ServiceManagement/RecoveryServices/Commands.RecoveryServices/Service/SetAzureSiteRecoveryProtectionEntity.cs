@@ -25,30 +25,36 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #endregion
 
     /// <summary>
-    /// Used to initiate a commit operation.
+    /// Set Protection Entity protection state.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryPlannedFailover", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
-    public class StartAzureSiteRecoveryPlannedFailover : RecoveryServicesCmdletBase
+    public class SetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
         #region Parameters
-        /// <summary>
-        /// ID of the Recovery Plan.
-        /// </summary>
-        private string recoveryPlanId;
 
         /// <summary>
-        /// Recovery Plan object.
+        /// Virtual Machine ID.
         /// </summary>
-        private ASRRecoveryPlan recoveryPlan;
+        private string id;
 
         /// <summary>
-        /// Failover direction for the recovery plan.
+        /// Protection container ID.
         /// </summary>
-        private string failoverDirection;
+        private string protectionContainerId;
 
         /// <summary>
-        /// This is required to wait for job completion.
+        /// Protection entity object.
+        /// </summary>
+        private ASRProtectionEntity protectionEntity;
+
+        /// <summary>
+        /// Protection state to set.
+        /// </summary>
+        private string protection;
+
+        /// <summary>
+        /// Switch parameter to wait for completion.
         /// </summary>
         private bool waitForCompletion;
 
@@ -63,42 +69,54 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private bool stopProcessing = false;
 
         /// <summary>
-        /// Gets or sets ID of the Recovery Plan.
+        /// Gets or sets ID of the Virtual Machine.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string RpId
+        public string Id
         {
-            get { return this.recoveryPlanId; }
-            set { this.recoveryPlanId = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
 
         /// <summary>
-        /// Gets or sets Recovery Plan object.
+        /// Gets or sets ID of the ProtectionContainer containing the Virtual Machine.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByIDs, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string ProtectionContianerId
+        {
+            get { return this.protectionContainerId; }
+            set { this.protectionContainerId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets Protection Entity Object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
-        public ASRRecoveryPlan RecoveryPlan
+        public ASRProtectionEntity ProtectionEntity
         {
-            get { return this.recoveryPlan; }
-            set { this.recoveryPlan = value; }
+            get { return this.protectionEntity; }
+            set { this.protectionEntity = value; }
         }
 
         /// <summary>
-        /// Gets or sets Failover direction for the recovery plan.
+        /// Gets or sets Protection to set, either enable or disable.
         /// </summary>
         [Parameter(Mandatory = true)]
+        [ValidateNotNullOrEmpty]
         [ValidateSet(
-            PSRecoveryServicesClient.PrimaryToSecondary,
-            PSRecoveryServicesClient.SecondaryToPrimary)]
-        public string FailoverDirection
+            PSRecoveryServicesClient.EnableProtection,
+            PSRecoveryServicesClient.DisableProtection)]
+        public string Protection
         {
-            get { return this.failoverDirection; }
-            set { this.failoverDirection = value; }
+            get { return this.protection; }
+            set { this.protection = value; }
         }
 
         /// <summary>
-        /// Gets or sets switch parameter. This is required to wait for job completion.
+        /// Gets or sets switch parameter. On passing, command waits till completion.
         /// </summary>
         [Parameter]
         public SwitchParameter WaitForCompletion
@@ -118,13 +136,33 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByObject:
-                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        this.id = this.protectionEntity.ID;
+                        this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
                         break;
-                    case ASRParameterSets.ById:
+                    case ASRParameterSets.ByIDs:
                         break;
                 }
 
-                this.StartRpPlannedFailover();
+                this.jobResponse =
+                    RecoveryServicesClient.SetProtectionOnProtectionEntity(
+                    this.protectionContainerId,
+                    this.id,
+                    this.protection);
+
+                this.WriteJob(this.jobResponse.Job);
+
+                string jobId = this.jobResponse.Job.ID;
+                while (this.waitForCompletion)
+                {
+                    if (this.jobResponse.Job.Completed || this.stopProcessing)
+                    {
+                        break;
+                    }
+
+                    Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                    this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                    this.WriteObject("JobState: " + this.jobResponse.Job.State);
+                }
             }
             catch (CloudException cloudException)
             {
@@ -140,33 +178,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             // Ctrl + C and etc
             base.StopProcessing();
             this.stopProcessing = true;
-        }
-
-        /// <summary>
-        /// Starts RP Planned failover.
-        /// </summary>
-        private void StartRpPlannedFailover()
-        {
-            RpPlannedFailoverRequest recoveryPlanPlannedFailoverRequest = new RpPlannedFailoverRequest();
-            recoveryPlanPlannedFailoverRequest.FailoverDirection = this.FailoverDirection;
-            this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryPlannedFailover(
-                this.RpId, 
-                recoveryPlanPlannedFailoverRequest);
-
-            this.WriteJob(this.jobResponse.Job);
-
-            string jobId = this.jobResponse.Job.ID;
-            while (this.waitForCompletion)
-            {
-                if (this.jobResponse.Job.Completed || this.stopProcessing)
-                {
-                    break;
-                }
-
-                Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
-                this.WriteObject("JobState: " + this.jobResponse.Job.State);
-            }
         }
 
         /// <summary>

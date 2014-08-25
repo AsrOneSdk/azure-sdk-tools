@@ -27,22 +27,27 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public partial class PSRecoveryServicesClient
     {
         /// <summary>
-        /// Gets Azure Site Recovery Servers.
+        /// Retrieves Virtual Machine group.
         /// </summary>
-        /// <returns>Server list response</returns>
-        public ServerListResponse GetAzureSiteRecoveryServer()
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <returns>Virtual Machine group list response</returns>
+        public VirtualMachineGroupListResponse GetAzureSiteRecoveryVirtualMachineGroup(
+            string protectionContainerId)
         {
-            return this.GetSiteRecoveryClient().Servers.List(this.GetRequestHeaders());
+            return this.GetSiteRecoveryClient().VmGroup.List(protectionContainerId, this.GetRequestHeaders());
         }
 
         /// <summary>
-        /// Gets Azure Site Recovery Server.
+        /// Retrieves Virtual Machine group.
         /// </summary>
-        /// <param name="serverId">Server ID</param>
-        /// <returns>Server response</returns>
-        public ServerResponse GetAzureSiteRecoveryServer(string serverId)
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="virtualMachineGroupId">Virtual Machine group ID</param>
+        /// <returns>Virtual Machine group response</returns>
+        public VirtualMachineGroupResponse GetAzureSiteRecoveryVirtualMachineGroup(
+            string protectionContainerId,
+            string virtualMachineGroupId)
         {
-            return this.GetSiteRecoveryClient().Servers.Get(serverId, this.GetRequestHeaders());
+            return this.GetSiteRecoveryClient().VmGroup.Get(protectionContainerId, virtualMachineGroupId, this.GetRequestHeaders());
         }
     }
 }

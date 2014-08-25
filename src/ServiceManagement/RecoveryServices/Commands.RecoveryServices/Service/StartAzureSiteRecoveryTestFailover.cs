@@ -15,42 +15,79 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
     using System.Management.Automation;
     using System.Threading;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
     /// Used to initiate a commit operation.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryTestFailover")]
+    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryTestFailover", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class StartAzureSiteRecoveryTestFailover : RecoveryServicesCmdletBase
     {
-        protected const string ByRpId = "ByRpId";
-        protected const string ByVmId = "ByVmId";
-
         #region Parameters
         /// <summary>
         /// ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true, ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string RpId
-        {
-            get { return this.rpId; }
-            set { this.rpId = value; }
-        }
-        private string rpId;
+        private string recoveryPlanId;
+
+        /// <summary>
+        /// Recovery Plan object.
+        /// </summary>
+        private ASRRecoveryPlan recoveryPlan;
 
         /// <summary>
         /// Failover direction for the recovery plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
+        private string failoverDirection;
+
+        /// <summary>
+        /// This is required to wait for job completion.
+        /// </summary>
+        private bool waitForCompletion;
+
+        /// <summary>
+        /// Job response.
+        /// </summary>
+        private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Stop processing, enables on pressing Ctrl-C.
+        /// </summary>
+        private bool stopProcessing = false;
+
+        /// <summary>
+        /// Gets or sets ID of the Recovery Plan.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string RpId
+        {
+            get { return this.recoveryPlanId; }
+            set { this.recoveryPlanId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets Recovery Plan object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRRecoveryPlan RecoveryPlan
+        {
+            get { return this.recoveryPlan; }
+            set { this.recoveryPlan = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets failover direction for the recovery plan.
+        /// </summary>
+        [Parameter(Mandatory = true)]
         [ValidateSet(
           PSRecoveryServicesClient.PrimaryToSecondary,
           PSRecoveryServicesClient.SecondaryToPrimary)]
@@ -59,10 +96,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.failoverDirection; }
             set { this.failoverDirection = value; }
         }
-        private string failoverDirection;
 
         /// <summary>
-        /// This is required to wait for job completion.
+        /// Gets or sets switch parameter. This is required to wait for job completion.
         /// </summary>
         [Parameter]
         public SwitchParameter WaitForCompletion
@@ -70,22 +106,25 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
-        private bool waitForCompletion;
         #endregion Parameters
 
-        private JobResponse jobResponse = null;
-        private bool stopProcessing = false;
-
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
             {
-                switch (ParameterSetName)
+                switch (this.ParameterSetName)
                 {
-                    case ByRpId:
-                        StartRpTestFailover();
+                    case ASRParameterSets.ByObject:
+                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        break;
+                    case ASRParameterSets.ById:
                         break;
                 }
+
+                this.StartRpTestFailover();
             }
             catch (CloudException cloudException)
             {
@@ -93,40 +132,50 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Handles interrupts.
+        /// </summary>
         protected override void StopProcessing()
         {
             // Ctrl + C and etc
             base.StopProcessing();
-            stopProcessing = true;
+            this.stopProcessing = true;
         }
 
+        /// <summary>
+        /// Starts RP test failover.
+        /// </summary>
         private void StartRpTestFailover()
         {
-            RpTestFailoverRequest rpTestFailoverRequest = new RpTestFailoverRequest();
-            rpTestFailoverRequest.FailoverDirection = this.FailoverDirection;
-            jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
+            RpTestFailoverRequest recoveryPlanTestFailoverRequest = new RpTestFailoverRequest();
+            recoveryPlanTestFailoverRequest.FailoverDirection = this.FailoverDirection;
+            this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
                 this.RpId, 
-                rpTestFailoverRequest);
+                recoveryPlanTestFailoverRequest);
 
-            WriteJob(jobResponse.Job);
+            this.WriteJob(this.jobResponse.Job);
 
-            string jobId = jobResponse.Job.ID;
-            while (waitForCompletion)
+            string jobId = this.jobResponse.Job.ID;
+            while (this.waitForCompletion)
             {
-                if (jobResponse.Job.Completed || stopProcessing)
+                if (this.jobResponse.Job.Completed || this.stopProcessing)
                 {
                     break;
                 }
 
                 Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobResponse.Job.ID);
-                WriteObject("JobState: " + jobResponse.Job.State);
+                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                this.WriteObject("JobState: " + this.jobResponse.Job.State);
             }
         }
 
+        /// <summary>
+        /// Writes Job.
+        /// </summary>
+        /// <param name="job">JOB object</param>
         private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
         {
-            WriteObject(new ASRJob(job));
+            this.WriteObject(new ASRJob(job));
         }
     }
 }

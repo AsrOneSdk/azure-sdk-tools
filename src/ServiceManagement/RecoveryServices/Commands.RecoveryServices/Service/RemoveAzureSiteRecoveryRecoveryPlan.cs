@@ -15,13 +15,13 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
-    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
-    using Microsoft.WindowsAzure;
     using System;
     using System.Diagnostics;
     using System.Management.Automation;
     using System.Threading;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
@@ -33,7 +33,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     {
         #region Parameters
         /// <summary>
-        /// ID of the Server.
+        /// ID of the recovery plan.
+        /// </summary>
+        private string id;
+
+        /// <summary>
+        /// Gets or sets ID of the recovery plan.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -42,14 +47,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.id; }
             set { this.id = value; }
         }
-        private string id;
         #endregion Parameters
 
+        /// <summary>
+        /// ProcessRecord of the command.
+        /// </summary>
         public override void ExecuteCmdlet()
         {
             try
             {
-                RemoveRecoveryPlanById();
+                this.RemoveRecoveryPlanById();
             }
             catch (CloudException cloudException)
             {
@@ -57,6 +64,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
         }
 
+        /// <summary>
+        /// Invoke remove Azure Site Recovery recovery plan.
+        /// </summary>
         private void RemoveRecoveryPlanById()
         {
             RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(this.Id);
