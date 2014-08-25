@@ -26,25 +26,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Retrieves Azure Site Recovery Protection Container.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionContainer", DefaultParameterSetName = Default)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryProtectionContainer", DefaultParameterSetName = ASRParameterSets.Default)]
     [OutputType(typeof(IEnumerable<ASRProtectionContainer>))]
     public class GetAzureSiteRecoveryProtectionContainer : RecoveryServicesCmdletBase
     {
-        /// <summary>
-        /// When nothing is passed to the command.
-        /// </summary>
-        protected const string Default = "Default";
-
-        /// <summary>
-        /// When only Name is passed to the command.
-        /// </summary>
-        protected const string ByName = "ByName";
-
-        /// <summary>
-        /// When only ID is passed to the command.
-        /// </summary>
-        protected const string ById = "ById";
-
         #region Parameters
 
         /// <summary>
@@ -60,7 +45,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets ID of the Protection Container.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -71,7 +56,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets name of the Protection Container.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
@@ -89,13 +74,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ByName:
+                    case ASRParameterSets.ByName:
                         this.GetByName();
                         break;
-                    case ById:
+                    case ASRParameterSets.ById:
                         this.GetById();
                         break;
-                    case Default:
+                    case ASRParameterSets.Default:
                         this.GetByDefault();
                         break;
                 }

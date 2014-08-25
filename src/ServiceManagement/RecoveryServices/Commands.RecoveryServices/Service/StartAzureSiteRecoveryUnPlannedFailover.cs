@@ -27,20 +27,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Used to initiate a commit operation.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryUnplannedFailover")]
+    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryUnplannedFailover", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class StartAzureSiteRecoveryUnplannedFailover : RecoveryServicesCmdletBase
     {
-        /// <summary>
-        /// When Recovery plan ID is passed to the command.
-        /// </summary>
-        protected const string ByRpId = "ByRpId";
-
         #region Parameters
         /// <summary>
         /// ID of the Recovery Plan.
         /// </summary>
         private string recoveryPlanId;
+
+        /// <summary>
+        /// Recovery Plan object.
+        /// </summary>
+        private ASRRecoveryPlan recoveryPlan;
 
         /// <summary>
         /// Failover direction for the recovery plan.
@@ -70,7 +70,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string RpId
         {
@@ -79,9 +79,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
+        /// Gets or sets Recovery Plan object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRRecoveryPlan RecoveryPlan
+        {
+            get { return this.recoveryPlan; }
+            set { this.recoveryPlan = value; }
+        }
+
+        /// <summary>
         /// Gets or sets failover direction for the recovery plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true)]
+        [Parameter(Mandatory = true)]
         [ValidateSet(
           PSRecoveryServicesClient.PrimaryToSecondary,
           PSRecoveryServicesClient.SecondaryToPrimary)]
@@ -94,7 +105,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets a value indicating whether primary site actions are required or not.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = false)]
+        [Parameter]
         public bool PrimaryAction
         {
             get { return this.primaryAction; }
@@ -121,10 +132,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ByRpId:
-                        this.StartRpUnPlannedFailover();
+                    case ASRParameterSets.ByObject:
+                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        break;
+                    case ASRParameterSets.ById:
                         break;
                 }
+
+                this.StartRpUnPlannedFailover();
             }
             catch (CloudException cloudException)
             {

@@ -27,21 +27,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Used to initiate a commit operation.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryCommitFailover")]
+    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryCommitFailover", DefaultParameterSetName = ASRParameterSets.ByObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class StartAzureSiteRecoveryCommitFailover : RecoveryServicesCmdletBase
     {
-        /// <summary>
-        /// When Recovery plan ID is passed to the command.
-        /// </summary>
-        protected const string ByRpId = "ByRpId";
-
         #region Parameters
-
         /// <summary>
         /// Recovery plan ID.
         /// </summary>
         private string recoveryPlanId;
+
+        /// <summary>
+        /// Recovery Plan object.
+        /// </summary>
+        private ASRRecoveryPlan recoveryPlan;
 
         /// <summary>
         /// Wait / hold prompt till the Job completes.
@@ -61,12 +60,23 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByRpId, Mandatory = true, ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string RpId
         {
             get { return this.recoveryPlanId; }
             set { this.recoveryPlanId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets Recovery Plan object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRRecoveryPlan RecoveryPlan
+        {
+            get { return this.recoveryPlan; }
+            set { this.recoveryPlan = value; }
         }
 
         /// <summary>
@@ -89,10 +99,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ByRpId:
-                        this.SetRpCommit();
+                    case ASRParameterSets.ByObject:
+                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        break;
+                    case ASRParameterSets.ById:
                         break;
                 }
+
+                this.SetRpCommit();
             }
             catch (CloudException cloudException)
             {
