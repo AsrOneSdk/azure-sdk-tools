@@ -130,7 +130,43 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <returns>Job response</returns>
         public JobResponse RemoveAzureSiteRecoveryRecoveryPlan(string recoveryPlanId)
         {
-            return GetSiteRecoveryClient().RecoveryPlan.Delete(recoveryPlanId, GetRequestHeaders());
+            return this.GetSiteRecoveryClient().RecoveryPlan.Delete(
+                recoveryPlanId, 
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
+        /// Create Azure Site Recovery Recovery Plan.
+        /// </summary>
+        /// <param name="recoveryPlanXml">Recovery Plan Xml.</param>
+        /// <returns>Job response</returns>
+        public JobResponse CreateAzureSiteRecoveryRecoveryPlan(string recoveryPlanXml)
+        {
+            RecoveryPlanXmlData recoveryPlanXmlData = new RecoveryPlanXmlData
+            {
+                RecoveryPlanXml = recoveryPlanXml
+            };
+
+            return this.GetSiteRecoveryClient().RecoveryPlan.CreateRecoveryPlan(
+                recoveryPlanXmlData,
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
+        /// Update Azure Site Recovery Recovery Plan.
+        /// </summary>
+        /// <param name="recoveryPlanXml">Recovery Plan Xml.</param>
+        /// <returns>Job response</returns>
+        public JobResponse UpdateAzureSiteRecoveryRecoveryPlan(string recoveryPlanXml)
+        {
+            RecoveryPlanXmlData recoveryPlanXmlData = new RecoveryPlanXmlData
+            {
+                RecoveryPlanXml = recoveryPlanXml
+            };
+
+            return this.GetSiteRecoveryClient().RecoveryPlan.UpdateRecoveryPlan(
+                recoveryPlanXmlData,
+                this.GetRequestHeaders());
         }
     }
 }
