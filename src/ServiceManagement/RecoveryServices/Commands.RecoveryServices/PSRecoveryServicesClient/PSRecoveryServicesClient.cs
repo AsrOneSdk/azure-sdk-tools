@@ -42,7 +42,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Amount of time to sleep before fetching job details again.
         /// </summary>
-        public const int TimeToSleepBeforeFetchingJobDetailsAgain = 5000;
+        public const int TimeToSleepBeforeFetchingJobDetailsAgain = 30000;
 
         /// <summary>
         /// Resource credentials holds vault, cloud service name, vault key and other details.
