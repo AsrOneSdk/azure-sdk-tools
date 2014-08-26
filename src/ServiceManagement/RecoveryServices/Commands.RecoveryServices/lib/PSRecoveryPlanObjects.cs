@@ -81,8 +81,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string TargetServerId { get; set; }
 
         /// <summary>
-        /// Gets or sets recovery plan xml. This will be set only if we fetch the recovery plan 
-        /// using the ID.
+        /// Gets or sets recovery plan xml. The value for RecoveryPlanXml will be set only if we 
+        /// use the powershell cmdlet with id parameter 'Get-AzureSiteRecoveryRecoveryPlan -id'.
         /// </summary>
         public string RecoveryPlanXml { get; set; }
         
