@@ -38,6 +38,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string file;
 
         /// <summary>
+        /// Wait / hold prompt till the Job completes.
+        /// </summary>
+        private bool waitForCompletion;
+
+        /// <summary>
+        /// Job response.
+        /// </summary>
+        private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Stop processing, enables on pressing Ctrl-C.
+        /// </summary>
+        private bool stopProcessing = false;
+
+        /// <summary>
         /// Gets or sets XML file path of the Recovery Plan.
         /// </summary>
         [Parameter(Mandatory = true)]
@@ -58,12 +73,46 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 string recoveryPlanXml = System.IO.File.ReadAllText(this.File);
 
-                RecoveryServicesClient.UpdateAzureSiteRecoveryRecoveryPlan(recoveryPlanXml);
+                this.jobResponse = RecoveryServicesClient.UpdateAzureSiteRecoveryRecoveryPlan(
+                    recoveryPlanXml);
+                this.WriteJob(this.jobResponse.Job);
+
+                string jobId = this.jobResponse.Job.ID;
+                while (this.waitForCompletion)
+                {
+                    if (this.jobResponse.Job.Completed || this.stopProcessing)
+                    {
+                        break;
+                    }
+
+                    Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                    this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                    this.WriteObject("JobState: " + this.jobResponse.Job.State);
+                }
             }
             catch (CloudException cloudException)
             {
                 RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
             }
+        }
+
+        /// <summary>
+        /// Handles interrupts.
+        /// </summary>
+        protected override void StopProcessing()
+        {
+            // Ctrl + C and etc
+            base.StopProcessing();
+            this.stopProcessing = true;
+        }
+
+        /// <summary>
+        /// Writes Job
+        /// </summary>
+        /// <param name="job">Job object</param>
+        private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
+        {
+            this.WriteObject(new ASRJob(job));
         }
     }
 }
