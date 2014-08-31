@@ -137,8 +137,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 services = this.recoveryServicesClient.CloudServices.List();
             }
 
-            string stampId = string.Empty;
-
             CloudService selectedCloudService = null;
             Vault selectedResource = null;
 
@@ -272,7 +270,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 ResourceCreds.CloudServiceName,
                 services);
 
-            string stampId = string.Empty;
             CloudService selectedCloudService = null;
             Vault selectedResource = null;
 
@@ -302,24 +299,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new ArgumentException(Properties.Resources.InvalidResource);
             }
 
-            foreach (OutputItem item in selectedResource.OutputItems)
-            {
-                if (item.Key.Equals("BackendStampId"))
-                {
-                    stampId = item.Value;
-                }
-            }
-
-            if (string.IsNullOrEmpty(stampId))
-            {
-                throw new InvalidDataException(Properties.Resources.MissingBackendStampId);
-            }
-
             SiteRecoveryManagementClient siteRecoveryClient =
                 new SiteRecoveryManagementClient(
                     ResourceCreds.CloudServiceName,
                     ResourceCreds.ResourceName,
-                    stampId,
                     new CertificateCloudCredentials(
                         this.subscriptionId,
                         this.certificate),
