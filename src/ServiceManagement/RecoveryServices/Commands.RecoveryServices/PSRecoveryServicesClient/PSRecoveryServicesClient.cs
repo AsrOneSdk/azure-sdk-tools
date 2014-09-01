@@ -87,11 +87,23 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="currentSubscription">Current Subscription</param>
         public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
         {
+            ServicePointManager.ServerCertificateValidationCallback =
+                IgnoreCertificateErrorHandler;
+
             this.recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
             this.subscriptionId = currentSubscription.SubscriptionId;
             this.certificate = currentSubscription.Certificate;
             this.serviceEndPoint = currentSubscription.ServiceEndpoint;
+        }
+
+        private static bool IgnoreCertificateErrorHandler
+           (object sender,
+           System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+           System.Security.Cryptography.X509Certificates.X509Chain chain,
+           System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
 
         /// <summary>

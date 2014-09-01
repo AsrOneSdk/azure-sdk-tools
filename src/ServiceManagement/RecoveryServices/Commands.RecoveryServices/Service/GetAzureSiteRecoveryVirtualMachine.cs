@@ -26,7 +26,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Retrieves Azure Site Recovery Virtual Machine.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachine", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
     [OutputType(typeof(IEnumerable<ASRVirtualMachine>))]
     public class GetAzureSiteRecoveryVirtualMachine : RecoveryServicesCmdletBase
     {
@@ -91,7 +91,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets Protection Container Object.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -111,7 +111,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ASRParameterSets.ByObject:
+                    case ASRParameterSets.ByRPObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
                         this.protectionContainerId = this.protectionContainer.ProtectionContainerId;
@@ -226,8 +226,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vm.CanFailover,
                     vm.CanReverseReplicate,
                     vm.IsRelationshipReversed,
-                    vm.ProtectionState,
-                    vm.TestFailoverState,
+                    vm.ProtectionStateDescription,
+                    vm.TestFailoverStateDescription,
                     vm.ReplicationHealth,
                     vm.ReplicationProvider,
                     vm.ReplicationProviderSettings),

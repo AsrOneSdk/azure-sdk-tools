@@ -108,7 +108,9 @@
     </Compile>
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMGroupClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesPEClient.cs" />
-    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesClient.cs" />
+    <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesClient.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesJobsClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesProtectedContainerClient.cs" />
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesRecoveryPlanClient.cs" />

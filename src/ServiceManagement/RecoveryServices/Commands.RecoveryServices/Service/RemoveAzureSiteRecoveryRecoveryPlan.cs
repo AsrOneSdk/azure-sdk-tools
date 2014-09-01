@@ -27,7 +27,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Remove a Recovery Plan from the current Azure Site Recovery Vault.
     /// </summary>
-    [Cmdlet(VerbsCommon.Remove, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [Cmdlet(VerbsCommon.Remove, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class RemoveAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
@@ -56,7 +56,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets Recovery Plan object.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true, ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
         public ASRRecoveryPlan RecoveryPlan
         {
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ASRParameterSets.ByObject:
+                    case ASRParameterSets.ByRPObject:
                         this.recoveryPlanId = this.recoveryPlan.RpId;
                         break;
                     case ASRParameterSets.ById:

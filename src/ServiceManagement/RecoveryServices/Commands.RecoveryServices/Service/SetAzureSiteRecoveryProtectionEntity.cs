@@ -27,7 +27,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Set Protection Entity protection state.
     /// </summary>
-    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
     public class SetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
@@ -93,7 +93,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets Protection Entity Object.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true, ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
         public ASRProtectionEntity ProtectionEntity
         {
@@ -135,7 +135,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ASRParameterSets.ByObject:
+                    case ASRParameterSets.ByRPObject:
                         this.id = this.protectionEntity.ID;
                         this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
                         break;

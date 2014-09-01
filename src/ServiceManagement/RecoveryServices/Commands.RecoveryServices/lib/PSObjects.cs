@@ -228,8 +228,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="canFailover">Can failover or not</param>
         /// <param name="canReverseReplicate">Can reverse replicate or not</param>
         /// <param name="isRelationshipReversed">Relationship reversed or not</param>
-        /// <param name="protectionState">Protection state</param>
-        /// <param name="testFailoverState">Test fail over state</param>
+        /// <param name="protectionStateDescription">Protection state</param>
+        /// <param name="testFailoverStateDescription">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
         /// <param name="replicationProvider">Replication provider</param>
         /// <param name="replicationProviderSettings">Replication provider Settings</param>
@@ -245,8 +245,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool canFailover,
             bool canReverseReplicate,
             bool isRelationshipReversed,
-            string protectionState,
-            string testFailoverState,
+            string protectionStateDescription,
+            string testFailoverStateDescription,
             string replicationHealth,
             string replicationProvider,
             string replicationProviderSettings)
@@ -262,8 +262,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 canFailover,
                 canReverseReplicate,
                 isRelationshipReversed,
-                protectionState,
-                testFailoverState,
+                protectionStateDescription,
+                testFailoverStateDescription,
                 replicationHealth,
                 replicationProvider)
         {
@@ -365,8 +365,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                     vm.CanFailover,
                     vm.CanReverseReplicate,
                     vm.IsRelationshipReversed,
-                    vm.ProtectionState,
-                    vm.TestFailoverState,
+                    vm.ProtectionStateDescription,
+                    vm.TestFailoverStateDescription,
                     vm.ReplicationHealth,
                     vm.ReplicationProvider,
                     vm.ReplicationProviderSettings));
@@ -415,8 +415,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="canFailover">Can failover or not</param>
         /// <param name="canReverseReplicate">Can reverse replicate or not</param>
         /// <param name="isRelationshipReversed">Relationship reversed or not</param>
-        /// <param name="protectionState">Protection state</param>
-        /// <param name="testFailoverState">Test fail over state</param>
+        /// <param name="protectionStateDescription">Protection state</param>
+        /// <param name="testFailoverStateDescription">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
         /// <param name="replicationProvider">Replication provider</param>
         public ASRProtectionEntity(
@@ -431,8 +431,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool canFailover,
             bool canReverseReplicate,
             bool isRelationshipReversed,
-            string protectionState,
-            string testFailoverState,
+            string protectionStateDescription,
+            string testFailoverStateDescription,
             string replicationHealth,
             string replicationProvider)
         {
@@ -443,14 +443,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.Type = type;
             this.FabricObjectId = fabricObjectId;
             this.Protected = protectedOrNot;
-            this.ProtectionState = protectionState;
+            this.ProtectionState = protectionStateDescription;
             this.CanCommit = canCommit;
             this.CanFailover = canFailover;
             this.CanReverseReplicate = canReverseReplicate;
             this.ReplicationProvider = replicationProvider;
             this.IsRelationshipReversed = isRelationshipReversed;
             this.ReplicationHealth = replicationHealth;
-            this.TestFailoverState = testFailoverState;
+            this.TestFailoverState = testFailoverStateDescription;
         }
 
         /// <summary>

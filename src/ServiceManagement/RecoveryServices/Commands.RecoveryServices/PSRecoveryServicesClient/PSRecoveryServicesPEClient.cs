@@ -104,5 +104,77 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             return jobResponse;
         }
+
+        /// <summary>
+        /// Starts Azure Site Recovery Planned failover.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="protectionEntityId">Protection entity ID</param>
+        /// <param name="plannedFailoverRequest">Planned failover request</param>
+        /// <returns>Job response</returns>
+        public JobResponse StartAzureSiteRecoveryPlannedFailover(
+            string protectionContainerId,
+            string protectionEntityId,
+            PlannedFailoverRequest plannedFailoverRequest)
+        {
+            return this.GetSiteRecoveryClient().ProtectionEntity.PlannedFailover(
+                protectionContainerId,
+                protectionEntityId,
+                plannedFailoverRequest,
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
+        /// Starts Azure Site Recovery Unplanned failover.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="protectionEntityId">Protection entity ID</param>
+        /// <param name="unplannedFailoverRequest">Unplanned failover request</param>
+        /// <returns>Job response</returns>
+        public JobResponse StartAzureSiteRecoveryUnplannedFailover(
+            string protectionContainerId,
+            string protectionEntityId,
+            UnplannedFailoverRequest unplannedFailoverRequest)
+        {
+            return this.GetSiteRecoveryClient().ProtectionEntity.UnplannedFailover(
+                protectionContainerId,
+                protectionEntityId,
+                unplannedFailoverRequest,
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
+        /// Starts Azure Site Recovery Commit failover.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="protectionEntityId">Recovery Plan ID</param>
+        /// <returns>Job response</returns>
+        public JobResponse StartAzureSiteRecoveryCommitFailover(
+            string protectionContainerId,
+            string protectionEntityId)
+        {
+            return this.GetSiteRecoveryClient().ProtectionEntity.CommitFailover(
+                protectionContainerId,
+                protectionEntityId,
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
+        /// Re-protects the Azure Site Recovery protection entity.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="protectionEntityId">Recovery Plan ID</param>
+        /// <returns>Job response</returns>
+        public JobResponse StartAzureSiteRecoveryReprotection(
+            string protectionContainerId,
+            string protectionEntityId)
+        {
+            var request = new ReprotectRequest();
+            return this.GetSiteRecoveryClient().ProtectionEntity.Reprotect(
+                protectionContainerId,
+                protectionEntityId,
+                request,
+                this.GetRequestHeaders());
+        }
     }
 }

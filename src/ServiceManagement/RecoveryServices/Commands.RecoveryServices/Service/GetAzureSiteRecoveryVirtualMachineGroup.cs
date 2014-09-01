@@ -26,7 +26,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Retrieves Azure Site Recovery Virtual Machine group.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachineGroup", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryVirtualMachineGroup", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
     [OutputType(typeof(IEnumerable<ASRVirtualMachineGroup>))]
     public class GetAzureSiteRecoveryVirtualMachineGroup : RecoveryServicesCmdletBase
     {
@@ -91,7 +91,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets Protection Container Object.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true, ValueFromPipeline = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithId, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByObjectWithName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
@@ -112,7 +112,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ASRParameterSets.ByObject:
+                    case ASRParameterSets.ByRPObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
                         this.protectionContainerId = this.protectionContainer.ProtectionContainerId;
@@ -227,8 +227,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vmg.CanFailover,
                     vmg.CanReverseReplicate,
                     vmg.IsRelationshipReversed,
-                    vmg.ProtectionState,
-                    vmg.TestFailoverState,
+                    vmg.ProtectionStateDescription,
+                    vmg.TestFailoverStateDescription,
                     vmg.ReplicationHealth,
                     vmg.ReplicationProvider,
                     vmg.ReplicationProviderSettings,

@@ -20,14 +20,34 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
     internal static class ASRParameterSets
     {
         /// <summary>
+        /// When only RP Object is passed to the command.
+        /// </summary>
+        internal const string ByRPObject = "ByRPObject";
+
+        /// <summary>
         /// When only Object is passed to the command.
         /// </summary>
         internal const string ByObject = "ByObject";
 
         /// <summary>
+        /// When only PE Object is passed to the command.
+        /// </summary>
+        internal const string ByPEObject = "ByPEObject";
+
+        /// <summary>
+        /// When only PC and PE ids are passed to the command.
+        /// </summary>
+        internal const string ByPCPEId = "ByPCPEId";
+
+        /// <summary>
         /// When only ID is passed to the command.
         /// </summary>
         internal const string ById = "ById";
+
+        /// <summary>
+        /// When only RP ID is passed to the command.
+        /// </summary>
+        internal const string ByRPId = "ByRPId";
 
         /// <summary>
         /// When only Name is passed to the command.
