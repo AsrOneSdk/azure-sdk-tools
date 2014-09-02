@@ -115,15 +115,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Backend Stamp Id is missing in the Resource.
-        /// </summary>
-        internal static string MissingBackendStampId {
-            get {
-                return ResourceManager.GetString("MissingBackendStampId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Vault Settings are missing. Please import Vault Settings and verify the same.
         /// </summary>
         internal static string MissingVaultSettings {
