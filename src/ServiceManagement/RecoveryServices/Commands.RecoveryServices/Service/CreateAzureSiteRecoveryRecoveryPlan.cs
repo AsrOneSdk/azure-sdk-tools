@@ -62,6 +62,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.file; }
             set { this.file = value; }
         }
+
+        /// <summary>
+        /// Gets or sets switch parameter. This is required to wait for job completion.
+        /// </summary>
+        [Parameter]
+        public SwitchParameter WaitForCompletion
+        {
+            get { return this.waitForCompletion; }
+            set { this.waitForCompletion = value; }
+        }
         #endregion Parameters
 
         /// <summary>
