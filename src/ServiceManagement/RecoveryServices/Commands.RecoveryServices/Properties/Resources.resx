@@ -127,7 +127,7 @@
     <value>Error Message sent from service is not in the correct format, dumping service error message: {0}</value>
   </data>
   <data name="InvalidCloudService" xml:space="preserve">
-    <value>Cloud Service is not associated the selected Subscription</value>
+    <value>Cloud Service is not associated with the selected Subscription</value>
   </data>
   <data name="InvalidResource" xml:space="preserve">
     <value>Resource is not associted with the selected Cloud Service</value>

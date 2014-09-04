@@ -37,7 +37,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// When only PC and PE ids are passed to the command.
         /// </summary>
-        internal const string ByPCPEId = "ByPCPEId";
+        internal const string ByPEId = "ByPEId";
 
         /// <summary>
         /// When only ID is passed to the command.

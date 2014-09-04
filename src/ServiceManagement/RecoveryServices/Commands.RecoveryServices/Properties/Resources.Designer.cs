@@ -88,7 +88,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cloud Service is not associated the selected Subscription.
+        ///   Looks up a localized string similar to Cloud Service is not associated with the selected Subscription.
         /// </summary>
         internal static string InvalidCloudService {
             get {

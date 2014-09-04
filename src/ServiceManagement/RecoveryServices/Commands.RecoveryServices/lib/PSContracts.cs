@@ -46,56 +46,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     }
 
     /// <summary>
-    /// Represents resource / vault credentials.
-    /// </summary>
-    [SuppressMessage(
-        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
-        "SA1402:FileMayOnlyContainASingleClass",
-        Justification = "Keeping all contracts together.")]
-    public class ResourceCredentials
-    {
-        /// <summary>
-        /// Gets or sets the version of the security configuration version.
-        /// </summary>
-        public string Version { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value for ACIK
-        /// </summary>
-        public string Key { get; set; }
-
-        /// <summary>
-        /// Gets or sets the resource certificate
-        /// </summary>
-        public X509Certificate ResourceCertificate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password for the resource certificate.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password for the resource certificate.
-        /// </summary>
-        public string CertificateThumbprint { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the resource name.
-        /// </summary>
-        public string ResourceName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the cloud service name.
-        /// </summary>
-        public string CloudServiceName { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the value for expiry date of the credential file.
-        /// </summary>
-        public DateTime NotAfter { get; set; }
-    }
-
-    /// <summary>
     /// Error contract returned when some exception occurs in ASR REST API.
     /// </summary>
     [SuppressMessage(
@@ -246,5 +196,111 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             sb.AppendLine("Hmac: " + this.Hmac);
             return sb.ToString();
         }
+    }
+}
+
+namespace Microsoft.Azure.Portal.RecoveryServices.Models.Common
+{
+    #region Using directives
+    using System.Diagnostics.CodeAnalysis;
+    using System.Runtime.Serialization;
+    #endregion
+
+    /// <summary>
+    /// Class to define Vault credentials
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "Keeping all contracts together.")]
+    [DataContract]
+    public class VaultCreds
+    {
+        #region Properties
+        /// <summary>
+        /// Gets or sets the key name for Namespace entry
+        /// </summary>
+        [DataMember(Order = 0)]
+        public string SubscriptionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key name for Namespace entry
+        /// </summary>
+        [DataMember(Order = 1)]
+        public string ResourceType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key name for Namespace entry
+        /// </summary>
+        [DataMember(Order = 2)]
+        public string ResourceName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key name for Namespace entry
+        /// </summary>
+        [DataMember(Order = 3)]
+        public string ManagementCert { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key name for HostName entry
+        /// </summary>
+        [DataMember(Order = 4)]
+        public AcsNamespace AcsNamespace { get; set; }
+        #endregion
+    }
+
+    /// <summary>
+    /// Class to define ASR Vault credentials
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "Keeping all contracts together.")]
+    public class ASRVaultCreds : VaultCreds
+    {
+        #region Properties
+        /// <summary>
+        /// Gets or sets the value for ACIK
+        /// </summary>
+        [DataMember(Order = 0)]
+        public string ChannelIntegrityKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value for cloud service name
+        /// </summary>
+        [DataMember(Order = 1)]
+        public string CloudServiceName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the values for the version of the credentials
+        /// </summary>
+        [DataMember(Order = 2)]
+        public string Version { get; set; }
+        #endregion
+    }
+
+    /// <summary>
+    /// Class to define ACS name space
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1402:FileMayOnlyContainASingleClass",
+        Justification = "Keeping all contracts together.")]
+    public class AcsNamespace
+    {
+        /// <summary>
+        /// Gets or sets Host name
+        /// </summary>
+        public string HostName { get; set; }
+
+        /// <summary>
+        /// Gets or sets Name space
+        /// </summary>
+        public string Namespace { get; set; }
+
+        /// <summary>
+        /// Gets or sets Resource provider realm
+        /// </summary>
+        public string ResourceProviderRealm { get; set; }
     }
 }

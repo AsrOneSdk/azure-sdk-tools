@@ -23,6 +23,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     using System.Runtime.Serialization;
     using System.Xml;
+    using Microsoft.Azure.Portal.RecoveryServices.Models.Common;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     #endregion
 
@@ -110,22 +111,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public override void ExecuteCmdlet()
         {
             this.azureSiteRecoveryVaultSettingsFile =
-                this.filePath + "\\RecoveryServicesVaultSettings.vaultsettings";
+                this.filePath + "\\RecoveryServicesVaultSettings.VaultCredentials";
             FileStream stream = new FileStream(this.azureSiteRecoveryVaultSettingsFile, FileMode.Create);
             stream.Close();
 
-            ResourceCredentials resourceCredentials = new ResourceCredentials();
-            resourceCredentials.ResourceName = this.resourceName;
-            resourceCredentials.CloudServiceName = this.cloudSeriveName;
-            resourceCredentials.Key = this.vaultKey;
+            ASRVaultCreds asrVaultCreds = new ASRVaultCreds();
+            asrVaultCreds.ResourceName = this.resourceName;
+            asrVaultCreds.CloudServiceName = this.cloudSeriveName;
+            asrVaultCreds.ChannelIntegrityKey = this.vaultKey;
 
             string tempFilePath;
             var settings = new XmlWriterSettings { Indent = true, CloseOutput = true };
 
             using (var w = XmlWriter.Create(this.CreateTempFile(out tempFilePath), settings))
             {
-                var serializer = new DataContractSerializer(typeof(ResourceCredentials));
-                serializer.WriteObject(w, resourceCredentials);
+                var serializer = new DataContractSerializer(typeof(ASRVaultCreds));
+                serializer.WriteObject(w, asrVaultCreds);
             }
 
             File.Replace(tempFilePath, this.azureSiteRecoveryVaultSettingsFile, null);

@@ -144,6 +144,25 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
+        /// Starts Azure Site Recovery Unplanned failover.
+        /// </summary>
+        /// <param name="protectionContainerId">Protection Container ID</param>
+        /// <param name="protectionEntityId">Protection entity ID</param>
+        /// <param name="testFailoverRequest">Test failover request</param>
+        /// <returns>Job response</returns>
+        public JobResponse StartAzureSiteRecoveryTestFailover(
+            string protectionContainerId,
+            string protectionEntityId,
+            TestFailoverRequest testFailoverRequest)
+        {
+            return this.GetSiteRecoveryClient().ProtectionEntity.TestFailover(
+                protectionContainerId,
+                protectionEntityId,
+                testFailoverRequest,
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
         /// Starts Azure Site Recovery Commit failover.
         /// </summary>
         /// <param name="protectionContainerId">Protection Container ID</param>

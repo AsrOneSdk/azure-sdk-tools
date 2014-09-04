@@ -48,6 +48,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string failoverDirection;
 
         /// <summary>
+        /// ID of the PE object to start failover on.
+        /// </summary>
+        private string protectionEntityId;
+
+        /// <summary>
+        /// Protection container ID of the object to start failover on.
+        /// </summary>
+        private string protectionContainerId;
+
+        /// <summary>
+        /// Recovery Plan object.
+        /// </summary>
+        private ASRProtectionEntity protectionEntity;
+
+        /// <summary>
         /// This is required to wait for job completion.
         /// </summary>
         private bool waitForCompletion;
@@ -65,7 +80,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string RpId
         {
@@ -87,7 +102,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets failover direction for the recovery plan.
         /// </summary>
-        [Parameter(Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
         [ValidateSet(
           PSRecoveryServicesClient.PrimaryToSecondary,
           PSRecoveryServicesClient.SecondaryToPrimary)]
@@ -95,6 +111,39 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             get { return this.failoverDirection; }
             set { this.failoverDirection = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets ID of the PE.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string ProtectionEntityId
+        {
+            get { return this.protectionEntityId; }
+            set { this.protectionEntityId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets ID of the Recovery Plan.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
+        [ValidateNotNullOrEmpty]
+        public string ProtectionContainerId
+        {
+            get { return this.protectionContainerId; }
+            set { this.protectionContainerId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets Protection Entity object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRProtectionEntity ProtectionEntity
+        {
+            get { return this.protectionEntity; }
+            set { this.protectionEntity = value; }
         }
 
         /// <summary>
@@ -119,12 +168,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 {
                     case ASRParameterSets.ByRPObject:
                         this.recoveryPlanId = this.recoveryPlan.RpId;
+                        this.StartRpTestFailover();
                         break;
-                    case ASRParameterSets.ById:
+                    case ASRParameterSets.ByRPId:
+                        this.StartRpTestFailover();
+                        break;
+                    case ASRParameterSets.ByPEObject:
+                        // check for protection state - enable or not
+                        this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
+                        this.protectionEntityId = this.protectionEntity.ID;
+                        this.StartPETestFailover();
+                        break;
+                    case ASRParameterSets.ByPEId:
+                        this.StartPETestFailover();
                         break;
                 }
-
-                this.StartRpTestFailover();
             }
             catch (CloudException cloudException)
             {
@@ -153,6 +211,33 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 this.RpId, 
                 recoveryPlanTestFailoverRequest);
 
+            this.WriteJob(this.jobResponse.Job);
+
+            string jobId = this.jobResponse.Job.ID;
+            while (this.waitForCompletion)
+            {
+                if (this.jobResponse.Job.Completed || this.stopProcessing)
+                {
+                    break;
+                }
+
+                Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                this.WriteObject("JobState: " + this.jobResponse.Job.State);
+            }
+        }
+
+        /// <summary>
+        /// Starts PE Test failover.
+        /// </summary>
+        private void StartPETestFailover()
+        {
+            var tfoReqeust = new TestFailoverRequest();
+            this.jobResponse =
+                RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
+                this.protectionContainerId,
+                this.ProtectionEntityId,
+                tfoReqeust);
             this.WriteJob(this.jobResponse.Job);
 
             string jobId = this.jobResponse.Job.ID;

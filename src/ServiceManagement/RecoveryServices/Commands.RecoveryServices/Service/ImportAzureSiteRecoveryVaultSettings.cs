@@ -23,6 +23,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Runtime.Serialization;
     using System.Xml;
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.Azure.Portal.RecoveryServices.Models.Common;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     #endregion
@@ -64,19 +65,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             this.WriteVerbose("Vault Settings File path: " + this.azureSiteRecoveryVaultSettingsFile);
 
-            ResourceCredentials resourceCredentials = null;
+            ASRVaultCreds asrVaultCreds = null;
             if (File.Exists(this.azureSiteRecoveryVaultSettingsFile))
             {
                 try
                 {
-                    var serializer = new DataContractSerializer(typeof(ResourceCredentials));
+                    var serializer1 = new DataContractSerializer(typeof(ASRVaultCreds));
                     using (var s = new FileStream(
-                        this.azureSiteRecoveryVaultSettingsFile, 
+                        this.azureSiteRecoveryVaultSettingsFile,
                         FileMode.Open,
-                        FileAccess.Read, 
+                        FileAccess.Read,
                         FileShare.Read))
                     {
-                        resourceCredentials = (ResourceCredentials)serializer.ReadObject(s);
+                        asrVaultCreds = (ASRVaultCreds)serializer1.ReadObject(s);
                     }
                 }
                 catch (XmlException xmlException)
@@ -98,30 +99,30 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
 
             // Validate required parameters taken from the Vault settings file.
-            if (string.IsNullOrEmpty(resourceCredentials.ResourceName))
+            if (string.IsNullOrEmpty(asrVaultCreds.ResourceName))
             {
                 throw new ArgumentException(
-                    Properties.Resources.ResourceNameNullOrEmpty, 
-                    resourceCredentials.ResourceName);
+                    Properties.Resources.ResourceNameNullOrEmpty,
+                    asrVaultCreds.ResourceName);
             }
 
-            if (string.IsNullOrEmpty(resourceCredentials.CloudServiceName))
+            if (string.IsNullOrEmpty(asrVaultCreds.CloudServiceName))
             {
                 throw new ArgumentException(
                     Properties.Resources.CloudServiceNameNullOrEmpty,
-                    resourceCredentials.CloudServiceName);
+                    asrVaultCreds.CloudServiceName);
             }
 
             try
             {
                 RecoveryServicesClient.ValidateVaultSettings(
-                    resourceCredentials.ResourceName, 
-                    resourceCredentials.CloudServiceName);
+                    asrVaultCreds.ResourceName,
+                    asrVaultCreds.CloudServiceName);
 
-                this.ImportAzureSiteRecoveryVaultSettings(resourceCredentials);
+                this.ImportAzureSiteRecoveryVaultSettings(asrVaultCreds);
                 this.WriteObject(new ASRVaultSettings(
-                    resourceCredentials.ResourceName, 
-                    resourceCredentials.CloudServiceName));
+                    asrVaultCreds.ResourceName,
+                    asrVaultCreds.CloudServiceName));
             }
             catch (CloudException cloudException)
             {
@@ -132,18 +133,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Imports Azure Site Recovery Vault settings.
         /// </summary>
-        /// <param name="resourceCredentials">Resource credentials</param>
-        public void ImportAzureSiteRecoveryVaultSettings(ResourceCredentials resourceCredentials)
+        /// <param name="asrVaultCreds">ASR Vault credentials</param>
+        public void ImportAzureSiteRecoveryVaultSettings(ASRVaultCreds asrVaultCreds)
         {
             object updateVaultSettingsOneAtATime = new object();
             lock (updateVaultSettingsOneAtATime)
             {
-                PSRecoveryServicesClient.ResourceCreds.ResourceName =
-                    resourceCredentials.ResourceName;
-                PSRecoveryServicesClient.ResourceCreds.CloudServiceName =
-                    resourceCredentials.CloudServiceName;
-                PSRecoveryServicesClient.ResourceCreds.Key =
-                    resourceCredentials.Key;
+                PSRecoveryServicesClient.asrVaultCreds.ResourceName =
+                    asrVaultCreds.ResourceName;
+                PSRecoveryServicesClient.asrVaultCreds.CloudServiceName =
+                    asrVaultCreds.CloudServiceName;
+                PSRecoveryServicesClient.asrVaultCreds.ChannelIntegrityKey =
+                    asrVaultCreds.ChannelIntegrityKey;
             }
         }
     }

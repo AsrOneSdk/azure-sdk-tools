@@ -86,7 +86,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets ID of the PE.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByPCPEId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectionEntityId
         {
@@ -97,7 +97,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByPCPEId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectionContainerId
         {
@@ -157,7 +157,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         this.protectionContainerId = this.ProtectionEntity.ProtectionContainerId;
                         this.SetPECommit();
                         break;
-                    case ASRParameterSets.ByPCPEId:
+                    case ASRParameterSets.ByPEId:
                         this.SetPECommit();
                         break;
                     case ASRParameterSets.ByRPId:

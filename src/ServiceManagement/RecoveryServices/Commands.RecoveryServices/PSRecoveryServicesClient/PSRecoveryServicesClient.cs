@@ -26,6 +26,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Text;
     using System.Web.Script.Serialization;
     using System.Xml;
+    using Microsoft.Azure.Portal.RecoveryServices.Models.Common;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using Microsoft.WindowsAzure.Management.RecoveryServices;
@@ -51,7 +52,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         "Microsoft.StyleCop.CSharp.MaintainabilityRules",
         "SA1401:FieldsMustBePrivate",
         Justification = "For Resource Credentials.")]
-        public static ResourceCredentials ResourceCreds = new ResourceCredentials();
+        public static ASRVaultCreds asrVaultCreds = new ASRVaultCreds();
 
         /// <summary>
         /// Recovery Services client.
@@ -238,7 +239,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             string shaInput = new JavaScriptSerializer().Serialize(cikTokenDetails);
 
-            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(ResourceCreds.Key));
+            HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(asrVaultCreds.ChannelIntegrityKey));
             cikTokenDetails.Hmac =
                 Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(shaInput)));
             cikTokenDetails.HashFunction = CikSupportedHashFunctions.HMACSHA256.ToString();
@@ -268,17 +269,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             CloudServiceListResponse services = this.recoveryServicesClient.CloudServices.List();
             this.ValidateVaultSettings(
-                ResourceCreds.ResourceName,
-                ResourceCreds.CloudServiceName,
+                asrVaultCreds.ResourceName,
+                asrVaultCreds.CloudServiceName,
                 services);
 
-            string stampId = string.Empty;
             CloudService selectedCloudService = null;
             Vault selectedResource = null;
 
             foreach (CloudService cloudService in services)
             {
-                if (cloudService.Name == ResourceCreds.CloudServiceName)
+                if (cloudService.Name == asrVaultCreds.CloudServiceName)
                 {
                     selectedCloudService = cloudService;
                 }
@@ -291,7 +291,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             foreach (Vault vault in selectedCloudService.Resources)
             {
-                if (vault.Name == ResourceCreds.ResourceName)
+                if (vault.Name == asrVaultCreds.ResourceName)
                 {
                     selectedResource = vault;
                 }
@@ -302,24 +302,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new ArgumentException(Properties.Resources.InvalidResource);
             }
 
-            foreach (OutputItem item in selectedResource.OutputItems)
-            {
-                if (item.Key.Equals("BackendStampId"))
-                {
-                    stampId = item.Value;
-                }
-            }
-
-            if (string.IsNullOrEmpty(stampId))
-            {
-                throw new InvalidDataException(Properties.Resources.MissingBackendStampId);
-            }
-
             SiteRecoveryManagementClient siteRecoveryClient =
                 new SiteRecoveryManagementClient(
-                    ResourceCreds.CloudServiceName,
-                    ResourceCreds.ResourceName,
-                    stampId,
+                    asrVaultCreds.CloudServiceName,
+                    asrVaultCreds.ResourceName,
                     new CertificateCloudCredentials(
                         this.subscriptionId,
                         this.certificate),
