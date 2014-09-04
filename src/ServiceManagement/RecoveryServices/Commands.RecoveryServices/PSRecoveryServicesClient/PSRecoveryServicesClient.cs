@@ -138,8 +138,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 services = this.recoveryServicesClient.CloudServices.List();
             }
 
-            string stampId = string.Empty;
-
             CloudService selectedCloudService = null;
             Vault selectedResource = null;
 
