@@ -165,4 +165,7 @@
   <data name="ProtectionEntityNotFound" xml:space="preserve">
     <value>Protection Entity {0} is not associated with Protection Container {1}</value>
   </data>
+  <data name="ProtectionEntityNotProtected" xml:space="preserve">
+    <value>Protection Entity {0} is not protected.</value>
+  </data>
 </root>

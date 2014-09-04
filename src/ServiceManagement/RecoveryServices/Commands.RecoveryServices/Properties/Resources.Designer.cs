@@ -151,6 +151,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Protection Entity {0} is not protected..
+        /// </summary>
+        internal static string ProtectionEntityNotProtected {
+            get {
+                return ResourceManager.GetString("ProtectionEntityNotProtected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RecoveryPlan  {0} is not associated with the Vault {1}.
         /// </summary>
         internal static string RecoveryPlanNotFound {

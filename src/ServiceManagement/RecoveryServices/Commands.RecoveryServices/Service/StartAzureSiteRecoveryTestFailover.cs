@@ -78,6 +78,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private bool stopProcessing = false;
 
         /// <summary>
+        /// Network ID.
+        /// </summary>
+        private string networkId = string.Empty;
+
+        /// <summary>
+        /// Network Type (Logical network or VM network).
+        /// </summary>
+        private string networkType = string.Empty;
+
+        /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
@@ -117,6 +127,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets ID of the PE.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEIdWithLogicalNetworkID, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEIdWithVMNetworkID, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectionEntityId
         {
@@ -128,6 +140,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEIdWithLogicalNetworkID, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEIdWithVMNetworkID, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string ProtectionContainerId
         {
@@ -139,6 +153,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets Protection Entity object.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByPEObject, Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObjectWithLogicalNetworkID, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObjectWithVMNetworkID, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public ASRProtectionEntity ProtectionEntity
         {
@@ -155,6 +171,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
+
+        /// <summary>
+        /// Gets or sets Logical network ID.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObjectWithLogicalNetworkID, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEIdWithLogicalNetworkID, Mandatory = true)]
+        public string LogicalNetworkId
+        {
+            get { return this.networkId; }
+            set { this.networkId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets VM network ID.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObjectWithVMNetworkID, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEIdWithVMNetworkID, Mandatory = true)]
+        public string VmNetworkId
+        {
+            get { return this.networkId; }
+            set { this.networkId = value; }
+        }
+
         #endregion Parameters
 
         /// <summary>
@@ -174,12 +213,26 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         this.StartRpTestFailover();
                         break;
                     case ASRParameterSets.ByPEObject:
-                        // check for protection state - enable or not
-                        this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
-                        this.protectionEntityId = this.protectionEntity.ID;
-                        this.StartPETestFailover();
+                        this.networkType = "DisconnectedVMNetworkTypeForTestFailover";
+                        this.UpdateRequiredParametersAndStartFailover();
+                        break;
+                    case ASRParameterSets.ByPEObjectWithLogicalNetworkID:
+                        this.networkType = "CreateVMNetworkTypeForTestFailover";
+                        this.UpdateRequiredParametersAndStartFailover();
+                        break;
+                    case ASRParameterSets.ByPEObjectWithVMNetworkID:
+                        this.networkType = "UseVMNetworkTypeForTestFailover";
+                        this.UpdateRequiredParametersAndStartFailover();
                         break;
                     case ASRParameterSets.ByPEId:
+                        this.StartPETestFailover();
+                        break;
+                    case ASRParameterSets.ByPEIdWithLogicalNetworkID:
+                        this.networkType = "CreateVMNetworkTypeForTestFailover";
+                        this.StartPETestFailover();
+                        break;
+                    case ASRParameterSets.ByPEIdWithVMNetworkID:
+                        this.networkType = "UseVMNetworkTypeForTestFailover";
                         this.StartPETestFailover();
                         break;
                 }
@@ -233,6 +286,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartPETestFailover()
         {
             var tfoReqeust = new TestFailoverRequest();
+            tfoReqeust.NetworkID = this.networkId;
+            tfoReqeust.NetworkType = this.networkType;
+
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
                 this.protectionContainerId,
@@ -252,6 +308,24 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
                 this.WriteObject("JobState: " + this.jobResponse.Job.State);
             }
+        }
+
+        /// <summary>
+        /// Updates required parameters and starts test failover.
+        /// </summary>
+        private void UpdateRequiredParametersAndStartFailover()
+        {
+            if (!this.protectionEntity.Protected)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                    Properties.Resources.ProtectionEntityNotProtected,
+                    this.protectionEntity.Name));
+            }
+
+            this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
+            this.protectionEntityId = this.protectionEntity.ID;
+            this.StartPETestFailover();
         }
 
         /// <summary>

@@ -35,9 +35,29 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         internal const string ByPEObject = "ByPEObject";
 
         /// <summary>
+        /// When only PE Object is passed along with logical network ID to the command.
+        /// </summary>
+        internal const string ByPEObjectWithLogicalNetworkID = "ByPEObjectWithLogicalNetworkID";
+
+        /// <summary>
+        /// When only PE Object is passed along with VM network ID to the command.
+        /// </summary>
+        internal const string ByPEObjectWithVMNetworkID = "ByPEObjectWithVMNetworkID";
+
+        /// <summary>
         /// When only PC and PE ids are passed to the command.
         /// </summary>
         internal const string ByPEId = "ByPEId";
+
+        /// <summary>
+        /// When only PC and PE ids are passed along with logical network ID to the command.
+        /// </summary>
+        internal const string ByPEIdWithLogicalNetworkID = "ByPEIdWithLogicalNetworkID";
+
+        /// <summary>
+        /// When only PC and PE ids are passed along with VM network ID to the command.
+        /// </summary>
+        internal const string ByPEIdWithVMNetworkID = "ByPEIdWithVMNetworkID";
 
         /// <summary>
         /// When only ID is passed to the command.
