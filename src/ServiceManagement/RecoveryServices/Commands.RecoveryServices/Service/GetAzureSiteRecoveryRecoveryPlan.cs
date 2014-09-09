@@ -177,8 +177,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     recoveryPlan.ID,
                     recoveryPlan.Name,
                     recoveryPlan.ServerId,
-                    recoveryPlan.TargetServerId,
-                    recoveryPlan.RecoveryPlanXml),
+                    recoveryPlan.TargetServerId),
                 true);
         }
     }

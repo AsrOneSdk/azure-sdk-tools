@@ -39,19 +39,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="name">Name of the Recovery plan</param>
         /// <param name="serverId">Server ID</param>
         /// <param name="targetServerId">Target Server ID</param>
-        /// <param name="recoveryPlanXml">Recovery plan xml</param>
         public ASRRecoveryPlan(
             string recoveryPlanId,
             string name,
             string serverId,
-            string targetServerId,
-            string recoveryPlanXml)
+            string targetServerId)
         {
             this.RpId = recoveryPlanId;
             this.Name = name;
             this.ServerId = serverId;
             this.TargetServerId = targetServerId;
-            this.RecoveryPlanXml = recoveryPlanXml;
         }
 
         #region Properties
@@ -66,11 +63,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets type of the Recovery Plan.
-        /// </summary>
-        public string Type { get; set; }
-
-        /// <summary>
         /// Gets or sets to Server ID.
         /// </summary>
         public string ServerId { get; set; }
@@ -80,12 +72,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         public string TargetServerId { get; set; }
 
-        /// <summary>
-        /// Gets or sets recovery plan xml. The value for RecoveryPlanXml can get it 
-        /// by Get-AzureSiteRecoveryRecoveryPlan with 'id' parameter.
-        /// </summary>
-        public string RecoveryPlanXml { get; set; }
-        
         #endregion
     }
 }

@@ -46,6 +46,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
+        /// Get Azure Site Recovery recovery plan XML.
+        /// </summary>
+        /// <param name="recoveryPlanId">Recovery plan id.</param>
+        /// <returns>Recovery plan XML.</returns>
+        public RecoveryPlanXmlOuput GetAzureSiteRecoveryRecoveryPlanFile(string recoveryPlanId)
+        {
+            return this.GetSiteRecoveryClient().RecoveryPlan.GetRecoveryPlanXml(
+                recoveryPlanId,
+                this.GetRequestHeaders());
+        }
+
+        /// <summary>
         /// Gets Azure Site Recovery Recovery Plan.
         /// </summary>
         /// <param name="recoveryPlanId">Recovery Plan ID</param>
