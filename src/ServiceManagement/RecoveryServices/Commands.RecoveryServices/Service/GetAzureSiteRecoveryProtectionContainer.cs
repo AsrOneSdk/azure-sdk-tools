@@ -116,7 +116,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new InvalidOperationException(
                     string.Format(
                     Properties.Resources.ProtectionContainerNotFound,
-                    this.name));
+                    this.name,
+                    PSRecoveryServicesClient.asrVaultCreds.ResourceName));
             }
         }
 

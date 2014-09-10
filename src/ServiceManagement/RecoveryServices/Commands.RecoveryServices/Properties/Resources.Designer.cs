@@ -133,7 +133,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Protection Container {0} is not associated with the Server {1}.
+        ///   Looks up a localized string similar to Protection Container {0} is not associated with the Vault {1}.
         /// </summary>
         internal static string ProtectionContainerNotFound {
             get {

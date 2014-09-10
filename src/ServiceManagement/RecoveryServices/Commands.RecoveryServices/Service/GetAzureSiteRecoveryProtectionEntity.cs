@@ -165,7 +165,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 throw new InvalidOperationException(
                     string.Format(
-                    Properties.Resources.VirtualMachineNotFound,
+                    Properties.Resources.ProtectionEntityNotFound,
                     this.name,
                     this.protectionContainerId));
             }
