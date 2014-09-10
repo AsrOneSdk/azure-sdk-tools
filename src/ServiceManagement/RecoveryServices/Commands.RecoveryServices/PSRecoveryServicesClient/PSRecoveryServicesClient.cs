@@ -33,6 +33,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
     using Microsoft.WindowsAzure.Management.SiteRecovery;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
+    using Microsoft.WindowsAzure.Commands.Utilities.Common.Authentication;
     #endregion
 
     /// <summary>
@@ -60,19 +61,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private RecoveryServicesManagementClient recoveryServicesClient;
 
         /// <summary>
-        /// Subscription ID.
+        /// Windows Azure Subscription
         /// </summary>
-        private string subscriptionId;
-
-        /// <summary>
-        /// Represents an X.509 certificate.
-        /// </summary>
-        private X509Certificate2 certificate;
-
-        /// <summary>
-        /// Service end point.
-        /// </summary>
-        private Uri serviceEndPoint;
+        private WindowsAzureSubscription windowsAzureSubscription;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class.
@@ -91,11 +82,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             ServicePointManager.ServerCertificateValidationCallback =
                 IgnoreCertificateErrorHandler;
 
+            windowsAzureSubscription = currentSubscription;
+
             this.recoveryServicesClient = 
                 currentSubscription.CreateClient<RecoveryServicesManagementClient>();
-            this.subscriptionId = currentSubscription.SubscriptionId;
-            this.certificate = currentSubscription.Certificate;
-            this.serviceEndPoint = currentSubscription.ServiceEndpoint;
         }
 
         private static bool IgnoreCertificateErrorHandler
@@ -300,14 +290,31 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new ArgumentException(Properties.Resources.InvalidResource);
             }
 
+            SubscriptionCloudCredentials subscriptionCloudCredentials = null;
+
+            if (windowsAzureSubscription.ActiveDirectoryUserId == null)
+            {
+                subscriptionCloudCredentials =
+                    new CertificateCloudCredentials(
+                        windowsAzureSubscription.SubscriptionId,
+                        windowsAzureSubscription.Certificate);
+            }
+            else
+            {
+                IAccessToken accessToken =
+                    windowsAzureSubscription.TokenProvider.GetCachedToken(windowsAzureSubscription, windowsAzureSubscription.ActiveDirectoryUserId);
+                subscriptionCloudCredentials =
+                    new AccessTokenCredential(
+                        windowsAzureSubscription.SubscriptionId,
+                        accessToken);
+            }
+
             SiteRecoveryManagementClient siteRecoveryClient =
                 new SiteRecoveryManagementClient(
                     asrVaultCreds.CloudServiceName,
                     asrVaultCreds.ResourceName,
-                    new CertificateCloudCredentials(
-                        this.subscriptionId,
-                        this.certificate),
-                    this.serviceEndPoint);
+                    subscriptionCloudCredentials,
+                    this.windowsAzureSubscription.ServiceEndpoint);
 
             if (null == siteRecoveryClient)
             {
