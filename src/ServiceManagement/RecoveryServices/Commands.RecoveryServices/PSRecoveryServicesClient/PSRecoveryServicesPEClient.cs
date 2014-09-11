@@ -81,7 +81,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             string protection)
         {
             var requestHeaders = this.GetRequestHeaders();
-            requestHeaders.AgentAuthenticationHeader = this.GenerateAgentAuthenticationHeader(requestHeaders.ClientRequestId);
             
             JobResponse jobResponse = null;
 
