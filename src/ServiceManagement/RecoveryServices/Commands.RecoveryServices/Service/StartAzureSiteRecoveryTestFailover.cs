@@ -288,6 +288,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             var tfoReqeust = new TestFailoverRequest();
             tfoReqeust.NetworkID = this.networkId;
             tfoReqeust.NetworkType = this.networkType;
+            tfoReqeust.ReplicationProvider = string.Empty;
+            tfoReqeust.ReplicationProviderSettings = string.Empty;
 
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
