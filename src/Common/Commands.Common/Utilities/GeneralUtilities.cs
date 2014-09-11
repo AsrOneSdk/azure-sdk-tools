@@ -12,25 +12,25 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Permissions;
+using System.ServiceModel.Channels;
+using System.Text;
+using System.Xml;
+using Microsoft.WindowsAzure.Commands.Common.Properties;
+
 namespace Microsoft.WindowsAzure.Commands.Utilities.Common
 {
-    using Commands.Common.Properties;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Security.Permissions;
-    using System.ServiceModel.Channels;
-    using System.Text;
-    using System.Xml;
-
     public static class GeneralUtilities
     {
         private static Assembly assembly = Assembly.GetExecutingAssembly();
@@ -491,6 +491,13 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
             }
 
             return value;
+        }
+
+        public static string GenerateSeparator(int amount, string separator)
+        {
+            StringBuilder result = new StringBuilder();
+            while (amount-- != 0) result.Append(separator);
+            return result.ToString();
         }
     }
 }

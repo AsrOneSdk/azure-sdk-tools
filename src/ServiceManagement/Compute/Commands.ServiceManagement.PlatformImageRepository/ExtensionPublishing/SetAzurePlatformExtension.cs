@@ -12,15 +12,15 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Linq;
+using System.Management.Automation;
+using AutoMapper;
+using Microsoft.WindowsAzure.Commands.Utilities.Common;
+using Microsoft.WindowsAzure.Management.Compute.Models;
+
 namespace Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageRepository.ExtensionPublishing
 {
-    using System;
-    using System.Linq;
-    using System.Management.Automation;
-    using AutoMapper;
-    using Management.Compute.Models;
-    using Utilities.Common;
-
     /// <summary>
     /// Set a Platform Extension Image.
     /// </summary>
@@ -108,6 +108,13 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageReposit
         [ValidateNotNullOrEmpty]
         [ValidateSet(PublicModeStr, InternalModeStr)]
         public string ExtensionMode { get; set; }
+
+        [Parameter(
+            Position = 10,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "The Extension Publisher Name.")]
+        [ValidateNotNullOrEmpty]
+        public string CompanyName { get; set; }
 
         public bool? BlockRoleUponFailure { get; set; }
 

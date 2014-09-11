@@ -12,16 +12,16 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Text;
+
 namespace Microsoft.WindowsAzure.Commands.Utilities.Common
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using System.Security;
-    using System.Text;
-
     public static class ConversionUtilities
     {
         public static Dictionary<string, object> ToDictionary(this Hashtable hashtable, bool addValueLayer)
@@ -59,6 +59,23 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.Common
                             dictionary[(string)entry.Key] = value;
                         }
                     }
+                }
+                return dictionary;
+            }
+        }
+
+        public static Dictionary<string, string> ToStringDictionary(this Hashtable hashtable)
+        {
+            if (hashtable == null)
+            {
+                return null;
+            }
+            else
+            {
+                var dictionary = new Dictionary<string, string>();
+                foreach (var entry in hashtable.Cast<DictionaryEntry>())
+                {
+                    dictionary[entry.Key.ToString()] = entry.Value == null ? null : entry.Value.ToString();
                 }
                 return dictionary;
             }

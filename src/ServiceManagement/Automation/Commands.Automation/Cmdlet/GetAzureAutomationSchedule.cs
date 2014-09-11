@@ -12,15 +12,14 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Management.Automation;
+using System.Security.Permissions;
+using Microsoft.Azure.Commands.Automation.Model;
+
 namespace Microsoft.Azure.Commands.Automation.Cmdlet
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Management.Automation;
-    using System.Security.Permissions;
-
-    using Microsoft.Azure.Commands.Automation.Model;
-
     /// <summary>
     /// Gets azure automation schedules for a given account.
     /// </summary>
