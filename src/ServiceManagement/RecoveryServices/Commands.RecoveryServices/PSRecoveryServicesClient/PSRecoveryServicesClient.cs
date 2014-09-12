@@ -28,6 +28,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Xml;
     using Microsoft.Azure.Portal.RecoveryServices.Models.Common;
     using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Commands.Common;
+    using Microsoft.WindowsAzure.Commands.Common.Factories;
+    using Microsoft.WindowsAzure.Commands.Common.Models;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     using Microsoft.WindowsAzure.Management.RecoveryServices;
     using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
@@ -61,11 +64,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private RecoveryServicesManagementClient recoveryServicesClient;
 
         /// <summary>
-        /// Windows Azure Subscription
-        /// </summary>
-        private WindowsAzureSubscription windowsAzureSubscription;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class.
         /// </summary>
         public PSRecoveryServicesClient()
@@ -76,16 +74,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Initializes a new instance of the <see cref="PSRecoveryServicesClient" /> class with 
         /// required current subscription.
         /// </summary>
-        /// <param name="currentSubscription">Current Subscription</param>
-        public PSRecoveryServicesClient(WindowsAzureSubscription currentSubscription)
+        /// <param name="azureSubscription">Azure Subscription</param>
+        public PSRecoveryServicesClient(AzureSubscription azureSubscription)
         {
             ServicePointManager.ServerCertificateValidationCallback =
                 IgnoreCertificateErrorHandler;
 
-            windowsAzureSubscription = currentSubscription;
-
-            this.recoveryServicesClient = 
-                currentSubscription.CreateClient<RecoveryServicesManagementClient>();
+            this.recoveryServicesClient =
+                AzureSession.ClientFactory.CreateClient<RecoveryServicesManagementClient>(azureSubscription, AzureEnvironment.Endpoint.ServiceManagement);
         }
 
         private static bool IgnoreCertificateErrorHandler
@@ -290,31 +286,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 throw new ArgumentException(Properties.Resources.InvalidResource);
             }
 
-            SubscriptionCloudCredentials subscriptionCloudCredentials = null;
-
-            if (windowsAzureSubscription.ActiveDirectoryUserId == null)
-            {
-                subscriptionCloudCredentials =
-                    new CertificateCloudCredentials(
-                        windowsAzureSubscription.SubscriptionId,
-                        windowsAzureSubscription.Certificate);
-            }
-            else
-            {
-                IAccessToken accessToken =
-                    windowsAzureSubscription.TokenProvider.GetCachedToken(windowsAzureSubscription, windowsAzureSubscription.ActiveDirectoryUserId);
-                subscriptionCloudCredentials =
-                    new AccessTokenCredential(
-                        windowsAzureSubscription.SubscriptionId,
-                        accessToken);
-            }
-
             SiteRecoveryManagementClient siteRecoveryClient =
-                new SiteRecoveryManagementClient(
-                    asrVaultCreds.CloudServiceName,
-                    asrVaultCreds.ResourceName,
-                    subscriptionCloudCredentials,
-                    this.windowsAzureSubscription.ServiceEndpoint);
+                AzureSession.ClientFactory.CreateCustomClient<SiteRecoveryManagementClient>(asrVaultCreds.CloudServiceName, asrVaultCreds.ResourceName, recoveryServicesClient.Credentials, AzureSession.CurrentContext.Environment.GetEndpointAsUri(AzureEnvironment.Endpoint.ServiceManagement));
 
             if (null == siteRecoveryClient)
             {
