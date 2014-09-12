@@ -237,11 +237,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <returns>Custom request headers</returns>
         public CustomRequestHeaders GetRequestHeaders()
         {
+            string clientRequestId = Guid.NewGuid().ToString() + "_PS";
             return new CustomRequestHeaders()
             {
                 // ClientRequestId is a unique ID for every request to Azure Site Recovery.
                 // It is useful when diagnosing failures in API calls.
-                ClientRequestId = Guid.NewGuid().ToString() + "_PS"
+                ClientRequestId = clientRequestId,
+                AgentAuthenticationHeader = this.GenerateAgentAuthenticationHeader(clientRequestId)
             };
         }
 
