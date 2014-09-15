@@ -61,7 +61,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation Failed.{0}Message: {1}{2}Possible Causes: {3}{4}Recommended Action: {5}.
+        ///   Looks up a localized string similar to Operation Failed.
+        ///Message: {0}&amp;#13;Possible Causes: {1}&amp;#13;Recommended Action: {2}&amp;#13;ActivityId: {3}.
         /// </summary>
         internal static string CloudExceptionDetails {
             get {

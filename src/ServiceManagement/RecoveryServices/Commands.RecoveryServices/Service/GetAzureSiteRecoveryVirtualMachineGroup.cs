@@ -226,7 +226,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vmg.CanCommit,
                     vmg.CanFailover,
                     vmg.CanReverseReplicate,
-                    vmg.IsRelationshipReversed,
+                    vmg.ActiveLocation,
                     vmg.ProtectionStateDescription,
                     vmg.TestFailoverStateDescription,
                     vmg.ReplicationHealth,

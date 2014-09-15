@@ -169,6 +169,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.ServerId = serverId;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRProtectionContainer" /> class with 
+        /// required parameters.
+        /// </summary>
+        /// <param name="pc">Protection container object</param>
+        public ASRProtectionContainer(ProtectionContainer pc)
+        {
+            this.ProtectionContainerId = pc.ID;
+            this.Name = pc.Name;
+            this.ConfigurationStatus = pc.ConfigurationStatus;
+            this.Role = pc.Role;
+            this.PairedTo = pc.PairedTo;
+            this.ReplicationProviderSettings = pc.ReplicationProviderSettings;
+            this.ServerId = pc.ServerId;
+        }
+
         #region Properties
         /// <summary>
         /// Gets or sets Protection container ID.
@@ -184,6 +200,18 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// Gets or sets configuration status.
         /// </summary>
         public string ConfigurationStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets a PairedTo of protection container.
+        /// </summary>
+        [DataMember]
+        public string PairedTo { get; set; }
+
+        /// <summary>
+        /// Gets or sets a role of the protection container.
+        /// </summary>
+        [DataMember]
+        public string Role { get; set; }
 
         /// <summary>
         /// Gets or sets replication provider settings.
@@ -227,7 +255,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="canCommit">Can commit or not</param>
         /// <param name="canFailover">Can failover or not</param>
         /// <param name="canReverseReplicate">Can reverse replicate or not</param>
-        /// <param name="isRelationshipReversed">Relationship reversed or not</param>
+        /// <param name="activeLocation">Active location</param>
         /// <param name="protectionStateDescription">Protection state</param>
         /// <param name="testFailoverStateDescription">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
@@ -244,7 +272,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool canCommit,
             bool canFailover,
             bool canReverseReplicate,
-            bool isRelationshipReversed,
+            string activeLocation,
             string protectionStateDescription,
             string testFailoverStateDescription,
             string replicationHealth,
@@ -261,7 +289,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 canCommit,
                 canFailover,
                 canReverseReplicate,
-                isRelationshipReversed,
+                activeLocation,
                 protectionStateDescription,
                 testFailoverStateDescription,
                 replicationHealth,
@@ -306,7 +334,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="canCommit">Can commit or not</param>
         /// <param name="canFailover">Can failover or not</param>
         /// <param name="canReverseReplicate">Can reverse replicate or not</param>
-        /// <param name="isRelationshipReversed">Relationship reversed or not</param>
+        /// <param name="activeLocation">Active location</param>
         /// <param name="protectionState">Protection state</param>
         /// <param name="testFailoverState">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
@@ -324,7 +352,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool canCommit,
             bool canFailover,
             bool canReverseReplicate,
-            bool isRelationshipReversed,
+            string activeLocation,
             string protectionState,
             string testFailoverState,
             string replicationHealth,
@@ -342,7 +370,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 canCommit,
                 canFailover,
                 canReverseReplicate,
-                isRelationshipReversed,
+                activeLocation,
                 protectionState,
                 testFailoverState,
                 replicationHealth,
@@ -364,7 +392,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                     vm.CanCommit,
                     vm.CanFailover,
                     vm.CanReverseReplicate,
-                    vm.IsRelationshipReversed,
+                    vm.ActiveLocation,
                     vm.ProtectionStateDescription,
                     vm.TestFailoverStateDescription,
                     vm.ReplicationHealth,
@@ -414,7 +442,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="canCommit">Can commit or not</param>
         /// <param name="canFailover">Can failover or not</param>
         /// <param name="canReverseReplicate">Can reverse replicate or not</param>
-        /// <param name="isRelationshipReversed">Relationship reversed or not</param>
+        /// <param name="activeLocation">Active location</param>
         /// <param name="protectionStateDescription">Protection state</param>
         /// <param name="testFailoverStateDescription">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
@@ -430,7 +458,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             bool canCommit,
             bool canFailover,
             bool canReverseReplicate,
-            bool isRelationshipReversed,
+            string activeLocation,
             string protectionStateDescription,
             string testFailoverStateDescription,
             string replicationHealth,
@@ -448,7 +476,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.CanFailover = canFailover;
             this.CanReverseReplicate = canReverseReplicate;
             this.ReplicationProvider = replicationProvider;
-            this.IsRelationshipReversed = isRelationshipReversed;
+            this.ActiveLocation = activeLocation;
             this.ReplicationHealth = replicationHealth;
             this.TestFailoverState = testFailoverStateDescription;
         }
@@ -504,9 +532,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public bool CanReverseReplicate { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether relationship can be reversed or not.
+        /// Gets or sets a active location of protection entity.
         /// </summary>
-        public bool IsRelationshipReversed { get; set; }
+        public string ActiveLocation { get; set; }
 
         /// <summary>
         /// Gets or sets protection state.
@@ -583,12 +611,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets Start timestamp.
         /// </summary>
-        public DateTime StartTimestamp { get; set; }
+        public string StartTimestamp { get; set; }
 
         /// <summary>
         /// Gets or sets End timestamp.
         /// </summary>
-        public DateTime EndTimestamp { get; set; }
+        public string EndTimestamp { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether Job is completed or not.

@@ -37,10 +37,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Get Azure Site Recovery Job.
         /// </summary>
+        /// <param name="jqp">Job query parameter.</param>
         /// <returns>Job list response</returns>
-        public JobListResponse GetAzureSiteRecoveryJob()
+        public JobListResponse GetAzureSiteRecoveryJob(JobQueryParameter jqp)
         {
-            return this.GetSiteRecoveryClient().Jobs.List(this.GetRequestHeaders());
+            return this.GetSiteRecoveryClient().Jobs.List(jqp, this.GetRequestHeaders());
         }
 
         /// <summary>

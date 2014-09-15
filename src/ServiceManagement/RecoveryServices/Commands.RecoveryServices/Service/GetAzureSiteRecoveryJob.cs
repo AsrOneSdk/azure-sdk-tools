@@ -19,6 +19,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System.Management.Automation;
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
@@ -44,14 +45,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
-        /// Represents Start time for querying the jobs.
+        /// Represents from value of Start time stamp range for querying the jobs.
         /// </summary>
-        private System.DateTime startTime;
+        private string startTimestampFrom;
 
         /// <summary>
-        /// Represents End time for querying the jobs.
+        /// Represents End range of the startTimestamp for querying the jobs.
         /// </summary>
-        private System.DateTime endTime;
+        private string startTimestampTo;
 
         /// <summary>
         /// Represents State of the Job for querying.
@@ -73,24 +74,24 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets start time. Allows to filter the list of jobs started after the given 
         /// start time.
         /// </summary>
-        [Parameter(ParameterSetName = "ByParam", HelpMessage = "Start time of job should be greater than this.")]
+        [Parameter(ParameterSetName = "ByParam", HelpMessage = "From range value of the StartTimestamp value of job. It should be in the format similar to DateTime.ToString()")]
         [ValidateNotNullOrEmpty]
-        public System.DateTime StartTime
+        public string StartTimestampFrom
         {
-            get { return this.startTime; }
-            set { this.startTime = value; }
+            get { return this.startTimestampFrom; }
+            set { this.startTimestampFrom = value; }
         }
 
         /// <summary>
         /// Gets or sets end time. Allows to filter the list of jobs started after the given start 
         /// time.
         /// </summary>
-        [Parameter(ParameterSetName = "ByParam", HelpMessage = "End time of job should be less than this.")]
+        [Parameter(ParameterSetName = "ByParam", HelpMessage = "End range value of the StartTimestamp value. It should be in the format similar to DateTime.ToString()")]
         [ValidateNotNullOrEmpty]
-        public System.DateTime EndTime
+        public string StartTimestampTo
         {
-            get { return this.endTime; }
-            set { this.endTime = value; }
+            get { return this.startTimestampTo; }
+            set { this.startTimestampTo = value; }
         }
 
         /// <summary>
@@ -163,7 +164,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetByParam()
         {
-            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob().Jobs);
+            JobQueryParameter jqp = new JobQueryParameter();
+
+            if (!string.IsNullOrEmpty(this.StartTimestampFrom))
+            {
+                jqp.DateTimeFrom = DateTime.Parse(this.StartTimestampFrom).ToUniversalTime().ToString();
+            }
+
+            if (!string.IsNullOrEmpty(this.StartTimestampTo))
+            {
+                jqp.DateTimeTo = DateTime.Parse(this.StartTimestampTo).ToUniversalTime().ToString();
+            }
+
+            jqp.State = this.State;
+            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob(jqp).Jobs);
         }
     }
 }

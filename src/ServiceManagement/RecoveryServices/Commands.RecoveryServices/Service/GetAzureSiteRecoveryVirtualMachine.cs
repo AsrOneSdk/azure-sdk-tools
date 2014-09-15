@@ -225,7 +225,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     vm.CanCommit,
                     vm.CanFailover,
                     vm.CanReverseReplicate,
-                    vm.IsRelationshipReversed,
+                    vm.ActiveLocation,
                     vm.ProtectionStateDescription,
                     vm.TestFailoverStateDescription,
                     vm.ReplicationHealth,

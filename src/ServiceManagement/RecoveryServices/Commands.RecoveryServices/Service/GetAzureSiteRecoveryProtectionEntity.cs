@@ -226,7 +226,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     pe.CanCommit,
                     pe.CanFailover,
                     pe.CanReverseReplicate,
-                    pe.IsRelationshipReversed,
+                    pe.ActiveLocation,
                     pe.ProtectionStateDescription,
                     pe.TestFailoverStateDescription,
                     pe.ReplicationHealth,

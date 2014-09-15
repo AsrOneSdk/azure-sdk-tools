@@ -63,9 +63,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string failoverDirection;
 
         /// <summary>
+        /// Replication provider settings.
+        /// </summary>
+        private string replicationProviderSettings;
+
+        /// <summary>
         /// Indicates whether primary site actions are required or not.
         /// </summary>
         private bool primaryAction;
+
+        /// <summary>
+        /// Indicates whether primary site actions are required or not.
+        /// </summary>
+        private bool sourceSiteOperations;
 
         /// <summary>
         /// This is required to wait for job completion.
@@ -162,6 +172,26 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether can do source site operations.
+        /// </summary>
+        [Parameter]
+        public bool PerformSourceSiteOperations
+        {
+            get { return this.sourceSiteOperations; }
+            set { this.sourceSiteOperations = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the value of ReplicationProviderSettings.
+        /// </summary>
+        [Parameter]
+        public string ReplicationProviderSettings
+        {
+            get { return this.replicationProviderSettings; }
+            set { this.replicationProviderSettings = value; }
+        }
+
+        /// <summary>
         /// Gets or sets switch parameter. This is required to wait for job completion.
         /// </summary>
         [Parameter]
@@ -220,6 +250,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartPEUnplannedFailover()
         {
             var ufoReqeust = new UnplannedFailoverRequest();
+            ufoReqeust.FailoverDirection = this.FailoverDirection;
+            ufoReqeust.SourceSiteOperations = this.PerformSourceSiteOperations;
+            ufoReqeust.ReplicationProviderSettings = this.ReplicationProviderSettings;
+            ufoReqeust.SourceSiteOperations = this.PerformSourceSiteOperations;
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryUnplannedFailover(
                 this.protectionContainerId,

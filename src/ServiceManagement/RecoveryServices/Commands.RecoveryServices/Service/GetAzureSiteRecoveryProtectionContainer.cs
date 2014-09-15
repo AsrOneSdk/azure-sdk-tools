@@ -162,12 +162,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void WriteProtectionContainer(ProtectionContainer protectionContainer)
         {
             this.WriteObject(
-                new ASRProtectionContainer(
-                    protectionContainer.ID,
-                    protectionContainer.Name,
-                    protectionContainer.ConfigurationStatus,
-                    protectionContainer.ReplicationProviderSettings,
-                    protectionContainer.ServerId),
+                new ASRProtectionContainer(protectionContainer),
                 true);
         }
     }

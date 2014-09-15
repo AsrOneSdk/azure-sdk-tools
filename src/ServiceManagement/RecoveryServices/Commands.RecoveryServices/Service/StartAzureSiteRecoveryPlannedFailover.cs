@@ -206,6 +206,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartPEPlannedFailover()
         {
             var pfoReqeust = new PlannedFailoverRequest();
+            pfoReqeust.FailoverDirection = this.FailoverDirection;
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryPlannedFailover(
                 this.protectionContainerId,

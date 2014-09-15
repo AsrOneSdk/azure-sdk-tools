@@ -197,12 +197,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             throw new InvalidOperationException(
                 string.Format(
                 Properties.Resources.CloudExceptionDetails, 
-                "\n",
                 error.Message, 
-                "\n",
                 error.PossibleCauses, 
-                "\n",
-                error.RecommendedAction));
+                error.RecommendedAction,
+                error.ActivityId));
         }
 
         /// <summary>
