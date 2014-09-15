@@ -63,11 +63,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string failoverDirection;
 
         /// <summary>
-        /// Replication provider settings.
-        /// </summary>
-        private string replicationProviderSettings;
-
-        /// <summary>
         /// Indicates whether primary site actions are required or not.
         /// </summary>
         private bool primaryAction;
@@ -152,6 +147,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObject, Mandatory = true)]
         [ValidateSet(
             PSRecoveryServicesClient.PrimaryToSecondary,
             PSRecoveryServicesClient.SecondaryToPrimary)]
@@ -164,7 +161,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets a value indicating whether primary site actions are required or not.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
         public bool PrimaryAction
         {
             get { return this.primaryAction; }
@@ -174,21 +172,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets a value indicating whether can do source site operations.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = false)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObject, Mandatory = false)]
         public bool PerformSourceSiteOperations
         {
             get { return this.sourceSiteOperations; }
             set { this.sourceSiteOperations = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the value of ReplicationProviderSettings.
-        /// </summary>
-        [Parameter]
-        public string ReplicationProviderSettings
-        {
-            get { return this.replicationProviderSettings; }
-            set { this.replicationProviderSettings = value; }
         }
 
         /// <summary>
@@ -251,8 +240,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             var ufoReqeust = new UnplannedFailoverRequest();
             ufoReqeust.FailoverDirection = this.FailoverDirection;
-            ufoReqeust.SourceSiteOperations = this.PerformSourceSiteOperations;
-            ufoReqeust.ReplicationProviderSettings = this.ReplicationProviderSettings;
             ufoReqeust.SourceSiteOperations = this.PerformSourceSiteOperations;
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryUnplannedFailover(
