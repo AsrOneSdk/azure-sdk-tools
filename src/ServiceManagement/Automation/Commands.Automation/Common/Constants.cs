@@ -12,12 +12,11 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using Microsoft.Azure.Management.Automation.Models;
+
 namespace Microsoft.Azure.Commands.Automation.Common
 {
-    using System;
-
-    using Microsoft.Azure.Management.Automation.Models;
-
     public class Constants
     {
         public class JobOutputParameter

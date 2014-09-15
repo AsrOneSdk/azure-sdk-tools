@@ -12,15 +12,14 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using AutoMapper;
+using Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageRepository.ExtensionPublishing;
+using Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageRepository.Model;
+using Microsoft.WindowsAzure.Management.Compute.Models;
+
 namespace Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageRepository
 {
-    using System;
-    using System.Collections.Generic;
-    using AutoMapper;
-    using ExtensionPublishing;
-    using Management.Compute.Models;
-    using Model;
-
     public class ServiceManagementPlatformImageRepositoryProfile : Profile
     {
         private static readonly Lazy<bool> initialize;
@@ -63,7 +62,9 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageReposit
                   .ForMember(c => c.DisallowMajorVersionUpgrade, o => o.MapFrom(r => r.DisallowMajorVersionUpgrade.IsPresent))
                   .ForMember(c => c.Certificate, o => o.MapFrom(r => r.CertificateConfig))
                   .ForMember(c => c.ExtensionEndpoints, o => o.MapFrom(r => r.EndpointConfig))
-                  .ForMember(c => c.LocalResources, o => o.MapFrom(r => r.LocalResourceConfig == null ? null : r.LocalResourceConfig.LocalResources));
+                  .ForMember(c => c.LocalResources, o => o.MapFrom(r => r.LocalResourceConfig == null ? null : r.LocalResourceConfig.LocalResources))
+                  .ForMember(c => c.PublisherName, o => o.MapFrom(r => r != null ? (string)null : null))
+                  .ForMember(c => c.SupportedOS, o => o.MapFrom(r => r.SupportedOS ?? ExtensionImageSupportedOperatingSystemType.Windows));
 
             Mapper.CreateMap<PublishAzurePlatformExtensionCommand, ExtensionImageUpdateParameters>()
                   .ForMember(c => c.IsJsonExtension, o => o.MapFrom(r => !r.XmlExtension.IsPresent))
@@ -73,11 +74,14 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.PlatformImageReposit
                   .ForMember(c => c.DisallowMajorVersionUpgrade, o => o.MapFrom(r => r.DisallowMajorVersionUpgrade.IsPresent))
                   .ForMember(c => c.Certificate, o => o.MapFrom(r => r.CertificateConfig))
                   .ForMember(c => c.ExtensionEndpoints, o => o.MapFrom(r => r.EndpointConfig))
-                  .ForMember(c => c.LocalResources, o => o.MapFrom(r => r.LocalResourceConfig == null ? null : r.LocalResourceConfig.LocalResources));
+                  .ForMember(c => c.LocalResources, o => o.MapFrom(r => r.LocalResourceConfig == null ? null : r.LocalResourceConfig.LocalResources))
+                  .ForMember(c => c.PublisherName, o => o.MapFrom(r => r != null ? (string)null : null))
+                  .ForMember(c => c.SupportedOS, o => o.MapFrom(r => r.SupportedOS ?? ExtensionImageSupportedOperatingSystemType.Windows));
 
             Mapper.CreateMap<SetAzurePlatformExtensionCommand, ExtensionImageUpdateParameters>()
                   .ForMember(c => c.Type, o => o.MapFrom(r => r.ExtensionName))
-                  .ForMember(c => c.ProviderNameSpace, o => o.MapFrom(r => r.Publisher));
+                  .ForMember(c => c.ProviderNameSpace, o => o.MapFrom(r => r.Publisher))
+                  .ForMember(c => c.PublisherName, o => o.MapFrom(r => r != null ? (string)null : null));
         }
     }
 }

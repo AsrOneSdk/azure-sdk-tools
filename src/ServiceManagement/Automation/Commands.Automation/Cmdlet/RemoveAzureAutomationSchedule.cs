@@ -12,15 +12,14 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Globalization;
+using System.Management.Automation;
+using System.Security.Permissions;
+using Microsoft.Azure.Commands.Automation.Properties;
+
 namespace Microsoft.Azure.Commands.Automation.Cmdlet
 {
-    using System;
-    using System.Globalization;
-    using System.Management.Automation;
-    using System.Security.Permissions;
-
-    using Microsoft.Azure.Commands.Automation.Properties;
-
     /// <summary>
     /// Removes an azure automation Schedule.
     /// </summary>
