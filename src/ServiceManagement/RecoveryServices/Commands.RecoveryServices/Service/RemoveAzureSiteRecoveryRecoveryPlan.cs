@@ -43,6 +43,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private ASRRecoveryPlan recoveryPlan;
 
         /// <summary>
+        /// Wait / hold prompt till the Job completes.
+        /// </summary>
+        private bool waitForCompletion;
+
+        /// <summary>
+        /// Job response.
+        /// </summary>
+        private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Stop processing, enables on pressing Ctrl-C.
+        /// </summary>
+        private bool stopProcessing = false;
+
+        /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
@@ -63,6 +78,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.recoveryPlan; }
             set { this.recoveryPlan = value; }
         }
+
+        /// <summary>
+        /// Gets or sets switch parameter. This is required to wait for job completion.
+        /// </summary>
+        [Parameter]
+        public SwitchParameter WaitForCompletion
+        {
+            get { return this.waitForCompletion; }
+            set { this.waitForCompletion = value; }
+        }
         #endregion Parameters
 
         /// <summary>
@@ -81,7 +106,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         break;
                 }
 
-                this.RemoveRecoveryPlanById();
+                this.jobResponse = RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(
+                   this.recoveryPlanId);
+                this.WriteJob(this.jobResponse.Job);
+
+                string jobId = this.jobResponse.Job.ID;
+                while (this.waitForCompletion)
+                {
+                    if (this.jobResponse.Job.Completed || this.stopProcessing)
+                    {
+                        break;
+                    }
+
+                    Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                    this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
+                    this.WriteObject("JobState: " + this.jobResponse.Job.State);
+                }
             }
             catch (CloudException cloudException)
             {
@@ -90,11 +130,22 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Invoke remove Azure Site Recovery recovery plan.
+        /// Handles interrupts.
         /// </summary>
-        private void RemoveRecoveryPlanById()
+        protected override void StopProcessing()
         {
-            RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(this.recoveryPlanId);
+            // Ctrl + C and etc
+            base.StopProcessing();
+            this.stopProcessing = true;
+        }
+
+        /// <summary>
+        /// Writes Job
+        /// </summary>
+        /// <param name="job">Job object</param>
+        private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
+        {
+            this.WriteObject(new ASRJob(job));
         }
     }
 }
