@@ -118,29 +118,12 @@
     <Compile Include="PSRecoveryServicesClient\PSRecoveryServicesVMClient.cs" />
     <Compile Include="RecoveryServicesCmdletBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\CreateAzureSiteRecoveryRecoveryPlan.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryRecoveryPlanFile.cs" />
-    <Compile Include="Service\RemoveAzureSiteRecoveryRecoveryPlan.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryVirtualMachineGroup.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectionEntity.cs" />
-    <Compile Include="Service\RestartAzureSiteRecoveryJob.cs" />
-    <Compile Include="Service\ResumeAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\SetAzureSiteRecoveryProtectionEntity.cs" />
-    <Compile Include="Service\StartAzureSiteRecoveryCommitFailover.cs" />
-    <Compile Include="Service\StartAzureSiteRecoveryPlannedFailover.cs" />
     <Compile Include="Service\StartAzureSiteRecoveryTestFailover.cs" />
-    <Compile Include="Service\StartAzureSiteRecoveryUnPlannedFailover.cs" />
-    <Compile Include="Service\StopAzureSiteRecoveryJob.cs" />
-    <Compile Include="Service\UpdateAzureSiteRecoveryProtection.cs" />
-    <Compile Include="Service\UpdateAzureSiteRecoveryRecoveryPlan.cs" />
-    <Compile Include="Service\WriteAzureSiteRecoveryVaultSettingsFile.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectionContainer.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryRecoveryPlan.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryServer.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryVaultSettings.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryVirtualMachine.cs" />
-    <Compile Include="Service\GetAzureCloudServices.cs" />
     <Compile Include="Service\ImportAzureSiteRecoveryVaultSettings.cs" />
   </ItemGroup>
   <ItemGroup>
