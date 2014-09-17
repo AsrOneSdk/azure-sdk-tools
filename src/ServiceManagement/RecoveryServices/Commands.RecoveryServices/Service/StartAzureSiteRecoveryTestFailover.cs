@@ -115,8 +115,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
         [ValidateSet(
-          PSRecoveryServicesClient.PrimaryToSecondary,
-          PSRecoveryServicesClient.SecondaryToPrimary)]
+          PSRecoveryServicesClient.PrimaryToRecovery,
+          PSRecoveryServicesClient.RecoveryToPrimary)]
         public string FailoverDirection
         {
             get { return this.failoverDirection; }

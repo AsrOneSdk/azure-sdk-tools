@@ -29,12 +29,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Represents direction primary to secondary.
         /// </summary>
-        public const string PrimaryToSecondary = "PrimaryToSecondary";
+        public const string PrimaryToRecovery = "PrimaryToRecovery";
 
         /// <summary>
         /// Represents direction secondary to primary.
         /// </summary>
-        public const string SecondaryToPrimary = "SecondaryToPrimary";
+        public const string RecoveryToPrimary = "RecoveryToPrimary";
 
         /// <summary>
         /// Gets Azure Site Recovery Plan.
