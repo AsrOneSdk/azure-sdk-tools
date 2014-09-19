@@ -40,7 +40,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StyleCopTargets Condition="$(StyleCopTargets) == '' Or $(StyleCopTargets) == '*Undefined*'">.\StyleCop\v4.7\StyleCop.Targets</StyleCopTargets>
+    <StyleCopTargets>.\StyleCop\v4.7\StyleCop.Targets</StyleCopTargets>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Azure.RecoveryServices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d26855314ecc5ea6, processorArchitecture=MSIL">
