@@ -158,14 +158,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="server">Server object</param>
         private void WriteServer(Server server)
         {
-            this.WriteObject(
-                new ASRServer(
-                    server.ID,
-                    server.Name,
-                    server.LastHeartbeat,
-                    server.ProviderVersion,
-                    server.ServerVersion),
-                true);
+            this.WriteObject(new ASRServer(server), true);
         }
     }
 }

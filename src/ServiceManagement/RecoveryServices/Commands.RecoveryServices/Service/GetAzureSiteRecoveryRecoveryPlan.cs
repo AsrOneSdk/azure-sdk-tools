@@ -172,13 +172,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="recoveryPlan">Recovery Plan</param>
         private void WriteRecoveryPlan(RecoveryPlan recoveryPlan)
         {
-            this.WriteObject(
-                new ASRRecoveryPlan(
-                    recoveryPlan.ID,
-                    recoveryPlan.Name,
-                    recoveryPlan.ServerId,
-                    recoveryPlan.TargetServerId),
-                true);
+            this.WriteObject(new ASRRecoveryPlan(recoveryPlan), true);
         }
     }
 }

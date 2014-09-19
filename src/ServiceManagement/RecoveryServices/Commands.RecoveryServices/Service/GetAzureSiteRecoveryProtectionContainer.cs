@@ -161,9 +161,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="protectionContainer">Protection Container</param>
         private void WriteProtectionContainer(ProtectionContainer protectionContainer)
         {
-            this.WriteObject(
-                new ASRProtectionContainer(protectionContainer),
-                true);
+            this.WriteObject(new ASRProtectionContainer(protectionContainer), true);
         }
     }
 }

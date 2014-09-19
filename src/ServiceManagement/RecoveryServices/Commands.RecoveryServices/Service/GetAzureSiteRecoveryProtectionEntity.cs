@@ -115,7 +115,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     case ASRParameterSets.ByRPObject:
                     case ASRParameterSets.ByObjectWithId:
                     case ASRParameterSets.ByObjectWithName:
-                        this.protectionContainerId = this.ProtectionContainer.ProtectionContainerId;
+                        this.protectionContainerId = this.ProtectionContainer.ID;
                         break;
                     case ASRParameterSets.ByIDs:
                     case ASRParameterSets.ByIDsWithId:

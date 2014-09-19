@@ -83,30 +83,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// Initializes a new instance of the <see cref="ASRServer" /> class with required 
         /// parameters.
         /// </summary>
-        /// <param name="serverId">Server ID</param>
-        /// <param name="name">Name of the Server</param>
-        /// <param name="lastHeartbeat">Last communicated date time</param>
-        /// <param name="providerVersion">Provider Version</param>
-        /// <param name="serverVersion">Server version</param>
-        public ASRServer(
-            string serverId,
-            string name,
-            DateTime lastHeartbeat,
-            string providerVersion,
-            string serverVersion)
+        /// <param name="server">Server object</param>
+        public ASRServer(Server server)
         {
-            this.ServerId = serverId;
-            this.Name = name;
-            this.LastHeartbeat = lastHeartbeat;
-            this.ProviderVersion = providerVersion;
-            this.ServerVersion = serverVersion;
+            this.ID = server.ID;
+            this.Name = server.Name;
+            this.LastHeartbeat = server.LastHeartbeat;
+            this.ProviderVersion = server.ProviderVersion;
+            this.ServerVersion = server.ServerVersion;
         }
 
         #region Properties
         /// <summary>
         /// Gets or sets Server ID.
         /// </summary>
-        public string ServerId { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// Gets or sets Name of the Server.
@@ -150,33 +141,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// Initializes a new instance of the <see cref="ASRProtectionContainer" /> class with 
         /// required parameters.
         /// </summary>
-        /// <param name="protectionContainerId">Protection container ID</param>
-        /// <param name="name">Name of the Protection container</param>
-        /// <param name="configurationStatus">Configuration Status</param>
-        /// <param name="replicationProviderSettings">Replication provider settings</param>
-        /// <param name="serverId">Server ID</param>
-        public ASRProtectionContainer(
-            string protectionContainerId,
-            string name,
-            string configurationStatus,
-            string replicationProviderSettings,
-            string serverId)
-        {
-            this.ProtectionContainerId = protectionContainerId;
-            this.Name = name;
-            this.ConfigurationStatus = configurationStatus;
-            this.ReplicationProviderSettings = replicationProviderSettings;
-            this.ServerId = serverId;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ASRProtectionContainer" /> class with 
-        /// required parameters.
-        /// </summary>
         /// <param name="pc">Protection container object</param>
         public ASRProtectionContainer(ProtectionContainer pc)
         {
-            this.ProtectionContainerId = pc.ID;
+            this.ID = pc.ID;
             this.Name = pc.Name;
             this.ConfigurationStatus = pc.ConfigurationStatus;
             this.Role = pc.Role;
@@ -189,7 +157,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets Protection container ID.
         /// </summary>
-        public string ProtectionContainerId { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// Gets or sets name of the Protection container.
@@ -284,7 +252,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 protectionContainerId,
                 name,
                 type,
-                fabricObjectId.ToUpper(),
+                fabricObjectId,
                 protectedOrNot,
                 canCommit,
                 canFailover,
@@ -365,7 +333,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 protectionContainerId,
                 name,
                 type,
-                fabricObjectId.ToUpper(),
+                fabricObjectId,
                 protectedOrNot,
                 canCommit,
                 canFailover,
@@ -387,7 +355,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                     vm.ProtectionContainerId,
                     vm.Name,
                     vm.Type,
-                    vm.FabricObjectId.ToUpper(),
+                    vm.FabricObjectId,
                     vm.Protected,
                     vm.CanCommit,
                     vm.CanFailover,
@@ -469,7 +437,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.ProtectionContainerId = protectionContainerId;
             this.Name = name;
             this.Type = type;
-            this.FabricObjectId = fabricObjectId;
+            this.FabricObjectId =
+                (0 == string.Compare(this.Type, "VirtualMachine", StringComparison.OrdinalIgnoreCase)) ?
+                fabricObjectId.ToUpper() :
+                fabricObjectId;
             this.Protected = protectedOrNot;
             this.ProtectionState = protectionStateDescription;
             this.CanCommit = canCommit;

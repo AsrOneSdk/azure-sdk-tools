@@ -17,6 +17,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #region Using directives
     using System;
     using System.Runtime.Serialization;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
@@ -35,27 +36,20 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Initializes a new instance of the <see cref="ASRRecoveryPlan" /> class with required
         /// parameters.
         /// </summary>
-        /// <param name="recoveryPlanId">Recovery plan ID</param>
-        /// <param name="name">Name of the Recovery plan</param>
-        /// <param name="serverId">Server ID</param>
-        /// <param name="targetServerId">Target Server ID</param>
-        public ASRRecoveryPlan(
-            string recoveryPlanId,
-            string name,
-            string serverId,
-            string targetServerId)
+        /// <param name="recoveryPlan">Recovery plan object</param>
+        public ASRRecoveryPlan(RecoveryPlan recoveryPlan)
         {
-            this.RpId = recoveryPlanId;
-            this.Name = name;
-            this.ServerId = serverId;
-            this.TargetServerId = targetServerId;
+            this.ID = recoveryPlan.ID;
+            this.Name = recoveryPlan.Name;
+            this.ServerId = recoveryPlan.ServerId;
+            this.TargetServerId = recoveryPlan.TargetServerId;
         }
 
         #region Properties
         /// <summary>
         /// Gets or sets Recovery plan ID.
         /// </summary>
-        public string RpId { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// Gets or sets name of the Recovery Plan.

@@ -149,7 +149,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByRPObject:
-                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        this.recoveryPlanId = this.recoveryPlan.ID;
                         this.SetRpReprotect();
                         break;
                     case ASRParameterSets.ByPEObject:

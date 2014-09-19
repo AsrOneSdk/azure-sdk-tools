@@ -27,9 +27,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Used to initiate a commit operation.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryTestFailover", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
+    [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryTestFailoverJob", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
     [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
-    public class StartAzureSiteRecoveryTestFailover : RecoveryServicesCmdletBase
+    public class StartAzureSiteRecoveryTestFailoverJob : RecoveryServicesCmdletBase
     {
         #region Parameters
         /// <summary>
@@ -206,7 +206,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 switch (this.ParameterSetName)
                 {
                     case ASRParameterSets.ByRPObject:
-                        this.recoveryPlanId = this.recoveryPlan.RpId;
+                        this.recoveryPlanId = this.recoveryPlan.ID;
                         this.StartRpTestFailover();
                         break;
                     case ASRParameterSets.ByRPId:
