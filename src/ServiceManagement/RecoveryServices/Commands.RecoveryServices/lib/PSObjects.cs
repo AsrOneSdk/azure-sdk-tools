@@ -149,8 +149,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.ConfigurationStatus = pc.ConfigurationStatus;
             this.Role = pc.Role;
             this.PairedTo = pc.PairedTo;
-            this.ReplicationProviderSettings = pc.ReplicationProviderSettings;
             this.ServerId = pc.ServerId;
+            this.FabricObjectId = pc.FabricObjectId;
         }
 
         #region Properties
@@ -158,6 +158,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// Gets or sets Protection container ID.
         /// </summary>
         public string ID { get; set; }
+
+        /// <summary>
+        /// Gets or sets Protection container's FabricObjectId.
+        /// </summary>
+        public string FabricObjectId { get; set; }
 
         /// <summary>
         /// Gets or sets name of the Protection container.
@@ -180,11 +185,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// </summary>
         [DataMember]
         public string Role { get; set; }
-
-        /// <summary>
-        /// Gets or sets replication provider settings.
-        /// </summary>
-        public string ReplicationProviderSettings { get; set; }
 
         /// <summary>
         /// Gets or sets Server ID.

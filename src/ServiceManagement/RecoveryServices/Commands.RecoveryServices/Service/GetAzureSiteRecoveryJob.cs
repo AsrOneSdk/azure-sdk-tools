@@ -37,14 +37,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
-        /// Represents from value of Start time stamp range for querying the jobs.
+        /// Represents start time of jobs to querying, jobs with the start time later than this
+        /// will be returned.
         /// </summary>
-        private string startTimestampFrom;
-
-        /// <summary>
-        /// Represents End range of the startTimestamp for querying the jobs.
-        /// </summary>
-        private string startTimestampTo;
+        private DateTime? startTime;
 
         /// <summary>
         /// Represents State of the Job for querying.
@@ -82,24 +78,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets start time. Allows to filter the list of jobs started after the given 
         /// start time.
         /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "From range value of the StartTimestamp value of job. It should be in the format similar to DateTime.ToString()")]
+        [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "Represents start time of jobs to querying, jobs with the start time later than this will be returned")]
         [ValidateNotNullOrEmpty]
-        public string StartTimestampFrom
+        public DateTime? StartTime
         {
-            get { return this.startTimestampFrom; }
-            set { this.startTimestampFrom = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets end time. Allows to filter the list of jobs started after the given start 
-        /// time.
-        /// </summary>
-        [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "End range value of the StartTimestamp value. It should be in the format similar to DateTime.ToString()")]
-        [ValidateNotNullOrEmpty]
-        public string StartTimestampTo
-        {
-            get { return this.startTimestampTo; }
-            set { this.startTimestampTo = value; }
+            get { return this.startTime; }
+            set { this.startTime = value; }
         }
 
         /// <summary>
@@ -179,14 +163,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             JobQueryParameter jqp = new JobQueryParameter();
 
-            if (!string.IsNullOrEmpty(this.StartTimestampFrom))
+            if (this.StartTime.HasValue)
             {
-                jqp.DateTimeFrom = DateTime.Parse(this.StartTimestampFrom).ToUniversalTime().ToString();
-            }
-
-            if (!string.IsNullOrEmpty(this.StartTimestampTo))
-            {
-                jqp.DateTimeTo = DateTime.Parse(this.StartTimestampTo).ToUniversalTime().ToString();
+                jqp.StartTime =
+                    this.StartTime.Value.ToUniversalTime().ToBinary().ToString();
             }
 
             jqp.State = this.State;
