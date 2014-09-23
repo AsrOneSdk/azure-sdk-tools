@@ -103,5 +103,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// When group of IDs and Name are passed to the command.
         /// </summary>
         internal const string ByIDsWithName = "ByIDsWithName";
+
+        /// <summary>
+        /// When parameters are passed to the command.
+        /// </summary>
+        internal const string ByParam = "ByParam";
     }
 }

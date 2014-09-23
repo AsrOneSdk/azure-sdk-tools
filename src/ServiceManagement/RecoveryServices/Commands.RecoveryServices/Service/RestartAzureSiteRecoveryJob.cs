@@ -17,14 +17,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     #region Using directives
     using System;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.RecoveryServices.Models;
-    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
+    using Microsoft.WindowsAzure;
     #endregion
 
     /// <summary>
     /// Restarts Azure Site Recovery Job.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Restart, "AzureSiteRecoveryJob")]
+    [Cmdlet(VerbsLifecycle.Restart, "AzureSiteRecoveryJob", DefaultParameterSetName = ASRParameterSets.ByObject)]
+    [OutputType(typeof(ASRJob))]
     public class RestartAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
         #region Parameters
@@ -35,14 +36,30 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string id;
 
         /// <summary>
+        /// Job object.
+        /// </summary>
+        private ASRJob job;
+
+        /// <summary>
         /// Gets or sets Job ID.
         /// </summary>
-        [Parameter(Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
             get { return this.id; }
             set { this.id = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets Job Object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRJob Job
+        {
+            get { return this.job; }
+            set { this.job = value; }
         }
         #endregion Parameters
 
@@ -51,7 +68,41 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         public override void ExecuteCmdlet()
         {
-            RecoveryServicesClient.RestartAzureSiteRecoveryJob(this.id);
+            try
+            {
+                switch (this.ParameterSetName)
+                {
+                    case ASRParameterSets.ByObject:
+                        this.id = this.job.ID;
+                        this.GetById();
+                        break;
+
+                    case ASRParameterSets.ById:
+                        this.GetById();
+                        break;
+                }
+            }
+            catch (CloudException cloudException)
+            {
+                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
+            }
+        }
+
+        /// <summary>
+        /// Queries by ID.
+        /// </summary>
+        private void GetById()
+        {
+            this.WriteJob(RecoveryServicesClient.RestartAzureSiteRecoveryJob(this.id).Job);
+        }
+
+        /// <summary>
+        /// Writes Job.
+        /// </summary>
+        /// <param name="job">JOB object</param>
+        private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
+        {
+            this.WriteObject(new ASRJob(job));
         }
     }
 }

@@ -48,8 +48,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Stops Azure Site Recovery Job.
         /// </summary>
         /// <param name="jobId">Job ID</param>
-        public void StopAzureSiteRecoveryJob(
-            string jobId)
+        public void StopAzureSiteRecoveryJob(string jobId)
         {
             this.GetSiteRecoveryClient().Jobs.Cancel(jobId, this.GetRequestHeaders());
         }
@@ -59,8 +58,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         /// <param name="jobId">Job ID</param>
         /// <returns>Job response</returns>
-        public JobResponse RestartAzureSiteRecoveryJob(
-            string jobId)
+        public JobResponse RestartAzureSiteRecoveryJob(string jobId)
         {
             return this.GetSiteRecoveryClient().Jobs.Restart(jobId, this.GetRequestHeaders());
         }

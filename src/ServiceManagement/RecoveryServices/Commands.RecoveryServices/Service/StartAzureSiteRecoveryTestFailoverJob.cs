@@ -114,6 +114,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByRPObject, Mandatory = true)]
         [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEObject, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByPEId, Mandatory = true)]
         [ValidateSet(
           PSRecoveryServicesClient.PrimaryToRecovery,
           PSRecoveryServicesClient.RecoveryToPrimary)]

@@ -16,6 +16,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
     using System;
+    using System.Collections.Generic;
     using System.Management.Automation;
     using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.WindowsAzure;
@@ -25,19 +26,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Retrieves Azure site Recovery Job.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryJob")]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryJob", DefaultParameterSetName = ASRParameterSets.ByParam)]
+    [OutputType(typeof(IEnumerable<ASRJob>))]
     public class GetAzureSiteRecoveryJob : RecoveryServicesCmdletBase
     {
-        /// <summary>
-        /// When ID is passed to the command.
-        /// </summary>
-        protected const string ById = "ById";
-
-        /// <summary>
-        /// When parameters are passed to the command.
-        /// </summary>
-        protected const string ByParam = "ByParam";
-
         #region Parameters
         /// <summary>
         /// Job ID.
@@ -60,9 +52,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string state;
 
         /// <summary>
+        /// Job object.
+        /// </summary>
+        private ASRJob job;
+
+        /// <summary>
         /// Gets or sets Job ID.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -71,10 +68,21 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
+        /// Gets or sets Job Object.
+        /// </summary>
+        [Parameter(ParameterSetName = ASRParameterSets.ByObject, Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public ASRJob Job
+        {
+            get { return this.job; }
+            set { this.job = value; }
+        }
+
+        /// <summary>
         /// Gets or sets start time. Allows to filter the list of jobs started after the given 
         /// start time.
         /// </summary>
-        [Parameter(ParameterSetName = "ByParam", HelpMessage = "From range value of the StartTimestamp value of job. It should be in the format similar to DateTime.ToString()")]
+        [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "From range value of the StartTimestamp value of job. It should be in the format similar to DateTime.ToString()")]
         [ValidateNotNullOrEmpty]
         public string StartTimestampFrom
         {
@@ -86,7 +94,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Gets or sets end time. Allows to filter the list of jobs started after the given start 
         /// time.
         /// </summary>
-        [Parameter(ParameterSetName = "ByParam", HelpMessage = "End range value of the StartTimestamp value. It should be in the format similar to DateTime.ToString()")]
+        [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "End range value of the StartTimestamp value. It should be in the format similar to DateTime.ToString()")]
         [ValidateNotNullOrEmpty]
         public string StartTimestampTo
         {
@@ -99,7 +107,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// to get filtered view of Jobs
         /// </summary>
         /// Considered Valid states from WorkflowStatus enum in SRS (WorkflowData.cs)
-        [Parameter(ParameterSetName = "ByParam", HelpMessage = "State of job to return.")]
+        [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "State of job to return.")]
         [ValidateNotNullOrEmpty]
         [ValidateSet(
             "Aborted", 
@@ -135,11 +143,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ById:
+                    case ASRParameterSets.ByObject:
+                        this.id = this.job.ID;
                         this.GetById();
                         break;
 
-                    case ByParam:
+                    case ASRParameterSets.ById:
+                        this.GetById();
+                        break;
+
+                    case ASRParameterSets.ByParam:
                     default:
                         this.GetByParam();
                         break;
@@ -156,7 +169,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void GetById()
         {
-            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.id).Job);
+            this.WriteJob(RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.id).Job);
         }
 
         /// <summary>
@@ -177,7 +190,28 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             }
 
             jqp.State = this.State;
-            this.WriteObject(RecoveryServicesClient.GetAzureSiteRecoveryJob(jqp).Jobs);
+            this.WriteJobs(RecoveryServicesClient.GetAzureSiteRecoveryJob(jqp).Jobs);
+        }
+
+        /// <summary>
+        /// Writes Job.
+        /// </summary>
+        /// <param name="job">JOB object</param>
+        private void WriteJob(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job)
+        {
+            this.WriteObject(new ASRJob(job));
+        }
+
+        /// <summary>
+        /// Writes Jobs.
+        /// </summary>
+        /// <param name="jobs">Job objects</param>
+        private void WriteJobs(IList<Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job> jobs)
+        {
+            foreach (Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job job in jobs)
+            {
+                this.WriteJob(job);
+            }
         }
     }
 }

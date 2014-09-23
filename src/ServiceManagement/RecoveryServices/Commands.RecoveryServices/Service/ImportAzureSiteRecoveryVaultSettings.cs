@@ -39,7 +39,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Azure Site Recovery Vault settings file.
         /// </summary>
-        private string azureSiteRecoveryVaultSettingsFile;
+        private string path;
 
         /// <summary>
         /// Gets or sets path to the Azure site Recovery Vault Settings file. This file can be 
@@ -51,10 +51,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             HelpMessage = "AzureSiteRecovery vault settings file path", 
             ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
-        public string AzureSiteRecoveryVaultSettingsFile
+        public string Path
         {
-            get { return this.azureSiteRecoveryVaultSettingsFile; }
-            set { this.azureSiteRecoveryVaultSettingsFile = value; }
+            get { return this.path; }
+            set { this.path = value; }
         }
         #endregion Parameters
 
@@ -63,16 +63,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         public override void ExecuteCmdlet()
         {
-            this.WriteVerbose("Vault Settings File path: " + this.azureSiteRecoveryVaultSettingsFile);
+            this.WriteVerbose("Vault Settings File path: " + this.path);
 
             ASRVaultCreds asrVaultCreds = null;
-            if (File.Exists(this.azureSiteRecoveryVaultSettingsFile))
+            if (File.Exists(this.path))
             {
                 try
                 {
                     var serializer1 = new DataContractSerializer(typeof(ASRVaultCreds));
                     using (var s = new FileStream(
-                        this.azureSiteRecoveryVaultSettingsFile,
+                        this.path,
                         FileMode.Open,
                         FileAccess.Read,
                         FileShare.Read))
@@ -95,7 +95,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 throw new FileNotFoundException(
                     Properties.Resources.VaultSettingFileNotFound,
-                    this.azureSiteRecoveryVaultSettingsFile);
+                    this.path);
             }
 
             // Validate required parameters taken from the Vault settings file.
