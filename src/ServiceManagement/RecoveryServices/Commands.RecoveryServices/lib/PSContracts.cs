@@ -68,7 +68,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="se">Service Error</param>
         public Error(ServiceError se)
         {
-            this.ActivityId = se.ActivityId;
+            this.ClientRequestId = se.ActivityId;
             this.Code = se.Code;
             this.Message = se.Message;
             this.PossibleCauses = se.PossibleCauses;
@@ -94,7 +94,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             this.Message = message;
             this.PossibleCauses = possibleCauses;
             this.RecommendedAction = recommendedAction;
-            this.ActivityId = activityId;
+            this.ClientRequestId = activityId;
         }
 
         /// <summary>
@@ -122,10 +122,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         public string RecommendedAction { get; set; }
 
         /// <summary>
-        /// Gets or sets activity Id.
+        /// Gets or sets client request Id.
         /// </summary>
-        [DataMember]
-        public string ActivityId { get; set; }
+        [DataMember(Name = "ActivityId")]
+        public string ClientRequestId { get; set; }
     }
 
     /// <summary>

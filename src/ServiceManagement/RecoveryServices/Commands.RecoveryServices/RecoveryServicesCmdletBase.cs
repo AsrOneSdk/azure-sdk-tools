@@ -15,6 +15,11 @@
 namespace Microsoft.Azure.Commands.RecoveryServices
 {
     #region Using directives
+    using System;
+    using System.IO;
+    using System.Runtime.Serialization;
+    using System.Xml;
+    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
     #endregion
 
@@ -41,6 +46,75 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 }
 
                 return this.recoveryServicesClient;
+            }
+        }
+
+        /// <summary>
+        /// Exception handler.
+        /// </summary>
+        /// <param name="ex">Exception to handle.</param>
+        public void HandleException(Exception ex)
+        {
+            string clientRequestIdMsg = "ClientRequestId: " + this.recoveryServicesClient.ClientRequestId + "\n";
+            CloudException cloudException = ex as CloudException;
+            if (cloudException != null)
+            {
+                Error error = null;
+                try
+                {
+                    using (Stream stream = new MemoryStream())
+                    {
+                        if (cloudException.ErrorMessage != null)
+                        {
+                            byte[] data = System.Text.Encoding.UTF8.GetBytes(cloudException.ErrorMessage);
+                            stream.Write(data, 0, data.Length);
+                            stream.Position = 0;
+
+                            var deserializer = new DataContractSerializer(typeof(Error));
+                            error = (Error)deserializer.ReadObject(stream);
+
+                            throw new InvalidOperationException(
+                                string.Format(
+                                Properties.Resources.CloudExceptionDetails,
+                                error.Message,
+                                error.PossibleCauses,
+                                error.RecommendedAction,
+                                error.ClientRequestId));
+                        }
+                        else
+                        {
+                            throw new Exception(
+                                string.Format(
+                                Properties.Resources.InvalidCloudExceptionErrorMessage,
+                                clientRequestIdMsg + ex.Message),
+                                ex);
+                        }
+                    }
+                }
+                catch (XmlException)
+                {
+                    throw new XmlException(
+                        string.Format(
+                        Properties.Resources.InvalidCloudExceptionErrorMessage,
+                        cloudException.ErrorMessage),
+                        cloudException);
+                }
+                catch (SerializationException)
+                {
+                    throw new SerializationException(
+                        string.Format(
+                        Properties.Resources.InvalidCloudExceptionErrorMessage,
+                        clientRequestIdMsg + cloudException.ErrorMessage),
+                        cloudException);
+                }
+            }
+            else if (ex.Message != null)
+            {
+                throw new Exception(
+                    string.Format(
+                    Properties.Resources.InvalidCloudExceptionErrorMessage,
+                    clientRequestIdMsg + ex.Message),
+                    ex);
             }
         }
     }

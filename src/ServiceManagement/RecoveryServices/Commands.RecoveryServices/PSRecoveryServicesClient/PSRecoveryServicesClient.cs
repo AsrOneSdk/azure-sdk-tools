@@ -45,6 +45,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     public partial class PSRecoveryServicesClient
     {
         /// <summary>
+        /// client request id.
+        /// </summary>
+        public string ClientRequestId { get; set; }
+
+        /// <summary>
         /// Amount of time to sleep before fetching job details again.
         /// </summary>
         public const int TimeToSleepBeforeFetchingJobDetailsAgain = 30000;
@@ -157,49 +162,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
-        /// Throws meaningful exception details extracted from Cloud exception.
-        /// </summary>
-        /// <param name="cloudException">Cloud exception thrown by service</param>
-        public void ThrowCloudExceptionDetails(CloudException cloudException)
-        {
-            Error error = null;
-            try
-            {
-                using (Stream stream = new MemoryStream())
-                {
-                    byte[] data = System.Text.Encoding.UTF8.GetBytes(cloudException.ErrorMessage);
-                    stream.Write(data, 0, data.Length);
-                    stream.Position = 0;
-
-                    var deserializer = new DataContractSerializer(typeof(Error));
-                    error = (Error)deserializer.ReadObject(stream);
-                }
-            }
-            catch (XmlException)
-            {
-                throw new XmlException(
-                    string.Format(
-                    Properties.Resources.InvalidCloudExceptionErrorMessage,
-                    cloudException.ErrorMessage));
-            }
-            catch (SerializationException)
-            {
-                throw new SerializationException(
-                    string.Format(
-                    Properties.Resources.InvalidCloudExceptionErrorMessage,
-                    cloudException.ErrorMessage));
-            }
-
-            throw new InvalidOperationException(
-                string.Format(
-                Properties.Resources.CloudExceptionDetails, 
-                error.Message, 
-                error.PossibleCauses, 
-                error.RecommendedAction,
-                error.ActivityId));
-        }
-
-        /// <summary>
         /// Site Recovery requests that go to on-premise components (like the Provider installed
         /// in VMM) require an authentication token that is signed with the vault key to indicate
         /// that the request indeed originated from the end-user client.
@@ -235,14 +197,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <returns>Custom request headers</returns>
         public CustomRequestHeaders GetRequestHeaders()
         {
-            string clientRequestId = Guid.NewGuid().ToString() + "-" + DateTime.Now.ToString("yyyy-mm-dd HH:mm:ssZ") + "-P";
+            this.ClientRequestId = Guid.NewGuid().ToString() + "-" + DateTime.Now.ToString("yyyy-mm-dd HH:mm:ssZ") + "-P";
 
             return new CustomRequestHeaders()
             {
                 // ClientRequestId is a unique ID for every request to Azure Site Recovery.
                 // It is useful when diagnosing failures in API calls.
-                ClientRequestId = clientRequestId,
-                AgentAuthenticationHeader = this.GenerateAgentAuthenticationHeader(clientRequestId)
+                ClientRequestId = this.ClientRequestId,
+                AgentAuthenticationHeader = this.GenerateAgentAuthenticationHeader(this.ClientRequestId)
             };
         }
 

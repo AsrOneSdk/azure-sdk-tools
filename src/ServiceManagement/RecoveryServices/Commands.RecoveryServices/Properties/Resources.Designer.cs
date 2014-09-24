@@ -65,7 +65,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         ///Message: {0}
         ///Possible Causes: {1}
         ///Recommended Action: {2}
-        ///ActivityId: {3}.
+        ///ClientRequestId: {3}.
         /// </summary>
         internal static string CloudExceptionDetails {
             get {
@@ -83,7 +83,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error Message sent from service is not in the correct format, dumping service error message: {0}.
+        ///   Looks up a localized string similar to Operation failed.
+        ///    {0}
+        ///  .
         /// </summary>
         internal static string InvalidCloudExceptionErrorMessage {
             get {

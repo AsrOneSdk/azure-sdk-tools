@@ -48,6 +48,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private string protectionContainerId;
 
         /// <summary>
+        /// Protection direction.
+        /// </summary>
+        private string protectionDirection;
+
+        /// <summary>
         /// Recovery Plan object.
         /// </summary>
         private ASRRecoveryPlan recoveryPlan;
@@ -128,6 +133,19 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
         /// <summary>
+        /// Gets or sets Failover direction for the recovery plan.
+        /// </summary>
+        [Parameter(Mandatory = true)]
+        [ValidateSet(
+            PSRecoveryServicesClient.PrimaryToRecovery,
+            PSRecoveryServicesClient.RecoveryToPrimary)]
+        public string Direction
+        {
+            get { return this.protectionDirection; }
+            set { this.protectionDirection = value; }
+        }
+
+        /// <summary>
         /// Gets or sets switch parameter. This is required to wait for job completion.
         /// </summary>
         [Parameter]
@@ -165,9 +183,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         break;
                 }
             }
-            catch (CloudException cloudException)
+            catch (Exception exception)
             {
-                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
+                this.HandleException(exception);
             }
         }
 
@@ -210,6 +228,24 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         private void SetPEReprotect()
         {
+            if (this.ProtectionEntity == null)
+            {
+                ProtectionEntityResponse protectionEntityResponse =
+                    RecoveryServicesClient.GetAzureSiteRecoveryProtectionEntity(
+                    this.protectionContainerId,
+                    this.protectionEntityId);
+                this.ProtectionEntity = new ASRProtectionEntity(protectionEntityResponse.ProtectionEntity);
+            }
+
+            // Until RR is done active location remains same from where FO was initiated.
+            if ((this.Direction == PSRecoveryServicesClient.PrimaryToRecovery &&
+                    this.ProtectionEntity.ActiveLocation != PSRecoveryServicesClient.RecoveryLocation) ||
+                (this.Direction == PSRecoveryServicesClient.RecoveryToPrimary &&
+                    this.ProtectionEntity.ActiveLocation != PSRecoveryServicesClient.PrimaryLocation))
+            {
+                throw new ArgumentException("Parameter value is not correct.", "Direction");
+            }
+
             this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryReprotection(
                 this.protectionContainerId,
                 this.ProtectionEntityId);

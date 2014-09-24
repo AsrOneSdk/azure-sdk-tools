@@ -228,7 +228,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="testFailoverStateDescription">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
         /// <param name="replicationProvider">Replication provider</param>
-        /// <param name="replicationProviderSettings">Replication provider Settings</param>
         public ASRVirtualMachine(
             string id,
             string serverId,
@@ -244,8 +243,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             string protectionStateDescription,
             string testFailoverStateDescription,
             string replicationHealth,
-            string replicationProvider,
-            string replicationProviderSettings)
+            string replicationProvider)
             : base(
                 id,
                 serverId,
@@ -263,13 +261,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 replicationHealth,
                 replicationProvider)
         {
-            this.ReplicationProviderSettings = replicationProviderSettings;
         }
-
-        /// <summary>
-        /// Gets or sets Replication provider settings.
-        /// </summary>
-        public string ReplicationProviderSettings { get; set; }
     }
 
     /// <summary>
@@ -307,7 +299,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <param name="testFailoverState">Test fail over state</param>
         /// <param name="replicationHealth">Replication health</param>
         /// <param name="replicationProvider">Replication provider</param>
-        /// <param name="replicationProviderSettings">Replication provider Settings</param>
         /// <param name="virtualMachineList">List of Virtual Machines</param>
         public ASRVirtualMachineGroup(
             string id,
@@ -325,7 +316,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             string testFailoverState,
             string replicationHealth,
             string replicationProvider,
-            string replicationProviderSettings,
             IList<VirtualMachine> virtualMachineList)
             : base(
                 id,
@@ -344,7 +334,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 replicationHealth,
                 replicationProvider)
         {
-            this.ReplicationProviderSettings = replicationProviderSettings;
             this.VirtualMachineList = new List<ASRVirtualMachine>();
             foreach (var vm in virtualMachineList)
             {
@@ -364,15 +353,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                     vm.ProtectionStateDescription,
                     vm.TestFailoverStateDescription,
                     vm.ReplicationHealth,
-                    vm.ReplicationProvider,
-                    vm.ReplicationProviderSettings));
+                    vm.ReplicationProvider));
             }
         }
-
-        /// <summary>
-        /// Gets or sets Replication provider settings.
-        /// </summary>
-        public string ReplicationProviderSettings { get; set; }
 
         /// <summary>
         /// Gets or sets Virtual Machine list.
@@ -394,6 +377,32 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// </summary>
         public ASRProtectionEntity()
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRProtectionEntity" /> class.
+        /// </summary>
+        /// <param name="pe">Protection entity object to read values from.</param>
+        public ASRProtectionEntity(ProtectionEntity pe)
+        {
+            this.ID = pe.ID;
+            this.ServerId = pe.ServerId;
+            this.ProtectionContainerId = pe.ProtectionContainerId;
+            this.Name = pe.Name;
+            this.Type = pe.Type;
+            this.FabricObjectId =
+                (0 == string.Compare(this.Type, "VirtualMachine", StringComparison.OrdinalIgnoreCase)) ?
+                pe.FabricObjectId.ToUpper() :
+                pe.FabricObjectId;
+            this.Protected = pe.Protected;
+            this.ProtectionState = pe.ProtectionStateDescription;
+            this.CanCommit = pe.CanCommit;
+            this.CanFailover = pe.CanFailover;
+            this.CanReverseReplicate = pe.CanReverseReplicate;
+            this.ReplicationProvider = pe.ReplicationProvider;
+            this.ActiveLocation = pe.ActiveLocation;
+            this.ReplicationHealth = pe.ReplicationHealth;
+            this.TestFailoverState = pe.TestFailoverStateDescription;
         }
 
         /// <summary>
@@ -551,13 +560,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public ASRJob(Job job)
         {
             this.ID = job.ID;
-            this.ActivityId = job.ActivityId;
+            this.ClientRequestId = job.ActivityId;
             this.State = job.State;
-            this.EndTimestamp = job.EndTimestamp;
-            this.StartTimestamp = job.StartTimestamp;
+            this.EndTime = job.EndTimestamp;
+            this.StartTime = job.StartTimestamp;
             this.Completed = job.Completed;
             this.AllowedActions = job.AllowedActions as List<string>;
-            this.JobDisplayName = job.JobDisplayName;
+            this.Name = job.JobDisplayName;
             this.Jobs = job.Jobs as List<Job>;
             this.Tasks = job.Tasks as List<AsrTask>;
             this.Errors = job.Errors as List<ErrorDetails>;
@@ -572,7 +581,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets Activity ID.
         /// </summary>
-        public string ActivityId { get; set; }
+        public string ClientRequestId { get; set; }
 
         /// <summary>
         /// Gets or sets State of the Job.
@@ -582,12 +591,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets Start timestamp.
         /// </summary>
-        public string StartTimestamp { get; set; }
+        public string StartTime { get; set; }
 
         /// <summary>
         /// Gets or sets End timestamp.
         /// </summary>
-        public string EndTimestamp { get; set; }
+        public string EndTime { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether Job is completed or not.
@@ -602,7 +611,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets Job display name.
         /// </summary>
-        public string JobDisplayName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets list of Jobs.
