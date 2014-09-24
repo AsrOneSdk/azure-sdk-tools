@@ -84,8 +84,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Operation failed.
-        ///    {0}
-        ///  .
+        ///{0}.
         /// </summary>
         internal static string InvalidCloudExceptionErrorMessage {
             get {

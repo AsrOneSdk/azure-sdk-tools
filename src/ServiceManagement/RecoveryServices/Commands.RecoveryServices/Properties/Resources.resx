@@ -129,8 +129,7 @@ ClientRequestId: {3}</value>
   </data>
   <data name="InvalidCloudExceptionErrorMessage" xml:space="preserve">
     <value>Operation failed.
-    {0}
-  </value>
+{0}</value>
   </data>
   <data name="InvalidCloudService" xml:space="preserve">
     <value>Cloud Service is not associated with the selected Subscription</value>
