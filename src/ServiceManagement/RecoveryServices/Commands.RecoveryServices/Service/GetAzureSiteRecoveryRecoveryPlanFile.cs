@@ -43,17 +43,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Recovery Plan XML file path.
         /// </summary>
-        private string file;
+        private string path;
 
         /// <summary>
         /// Gets or sets XML file path of the Recovery Plan.
         /// </summary>
         [Parameter(Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string File
+        public string Path
         {
-            get { return this.file; }
-            set { this.file = value; }
+            get { return this.path; }
+            set { this.path = value; }
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             RecoveryPlanXmlOuput recoveryPlanXmlOuput = 
                 RecoveryServicesClient.GetAzureSiteRecoveryRecoveryPlanFile(this.recoveryPlanId);
-            System.IO.File.WriteAllText(this.File, recoveryPlanXmlOuput.RecoveryPlanXml);
+            System.IO.File.WriteAllText(this.Path, recoveryPlanXmlOuput.RecoveryPlanXml);
         }
     }
 }
