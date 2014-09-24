@@ -77,20 +77,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="azureSubscription">Azure Subscription</param>
         public PSRecoveryServicesClient(AzureSubscription azureSubscription)
         {
-            ServicePointManager.ServerCertificateValidationCallback =
-                IgnoreCertificateErrorHandler;
-
             this.recoveryServicesClient =
                 AzureSession.ClientFactory.CreateClient<RecoveryServicesManagementClient>(azureSubscription, AzureEnvironment.Endpoint.ServiceManagement);
-        }
-
-        private static bool IgnoreCertificateErrorHandler
-           (object sender,
-           System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-           System.Security.Cryptography.X509Certificates.X509Chain chain,
-           System.Net.Security.SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
         }
 
         /// <summary>
