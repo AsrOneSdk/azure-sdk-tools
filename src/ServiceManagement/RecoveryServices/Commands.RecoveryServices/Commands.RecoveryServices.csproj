@@ -138,7 +138,7 @@
     <Compile Include="Service\GetAzureSiteRecoveryServer.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryVaultSettings.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryVM.cs" />
-    <Compile Include="Service\ImportAzureSiteRecoveryVaultSettings.cs" />
+    <Compile Include="Service\ImportAzureSiteRecoveryVaultSettingsFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

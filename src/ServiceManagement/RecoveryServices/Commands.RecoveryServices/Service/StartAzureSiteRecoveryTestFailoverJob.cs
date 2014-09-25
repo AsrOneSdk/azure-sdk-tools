@@ -45,7 +45,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Failover direction for the recovery plan.
         /// </summary>
-        private string failoverDirection;
+        private string direction;
 
         /// <summary>
         /// ID of the PE object to start failover on.
@@ -119,10 +119,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [ValidateSet(
           PSRecoveryServicesClient.PrimaryToRecovery,
           PSRecoveryServicesClient.RecoveryToPrimary)]
-        public string FailoverDirection
+        public string Direction
         {
-            get { return this.failoverDirection; }
-            set { this.failoverDirection = value; }
+            get { return this.direction; }
+            set { this.direction = value; }
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartRpTestFailover()
         {
             RpTestFailoverRequest recoveryPlanTestFailoverRequest = new RpTestFailoverRequest();
-            recoveryPlanTestFailoverRequest.FailoverDirection = this.FailoverDirection;
+            recoveryPlanTestFailoverRequest.FailoverDirection = this.Direction;
             this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryTestFailover(
                 this.RpId, 
                 recoveryPlanTestFailoverRequest);
