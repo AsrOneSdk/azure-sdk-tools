@@ -121,7 +121,6 @@
     <Compile Include="Service\CreateAzureSiteRecoveryRecoveryPlan.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryRecoveryPlanFile.cs" />
     <Compile Include="Service\RemoveAzureSiteRecoveryRecoveryPlan.cs" />
-    <Compile Include="Service\GetAzureSiteRecoveryVMGroup.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectionEntity.cs" />
     <Compile Include="Service\RestartAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\ResumeAzureSiteRecoveryJob.cs" />

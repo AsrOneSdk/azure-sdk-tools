@@ -142,9 +142,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                         break;
                 }
             }
-            catch (CloudException cloudException)
+            catch (Exception exception)
             {
-                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
+                this.HandleException(exception);
             }
         }
 

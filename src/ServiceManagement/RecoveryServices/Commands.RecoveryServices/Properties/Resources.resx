@@ -122,13 +122,14 @@
 Message: {0}
 Possible Causes: {1}
 Recommended Action: {2}
-ActivityId: {3}</value>
+ClientRequestId: {3}</value>
   </data>
   <data name="CloudServiceNameNullOrEmpty" xml:space="preserve">
     <value>Cloud Service name mentioned is either null or empty</value>
   </data>
   <data name="InvalidCloudExceptionErrorMessage" xml:space="preserve">
-    <value>Error Message sent from service is not in the correct format, dumping service error message: {0}</value>
+    <value>Operation failed.
+{0}</value>
   </data>
   <data name="InvalidCloudService" xml:space="preserve">
     <value>Cloud Service is not associated with the selected Subscription</value>

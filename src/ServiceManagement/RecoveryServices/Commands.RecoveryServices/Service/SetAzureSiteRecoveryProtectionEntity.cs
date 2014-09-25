@@ -164,9 +164,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     this.WriteObject("JobState: " + this.jobResponse.Job.State);
                 }
             }
-            catch (CloudException cloudException)
+            catch (Exception exception)
             {
-                RecoveryServicesClient.ThrowCloudExceptionDetails(cloudException);
+                this.HandleException(exception);
             }
         }
 
