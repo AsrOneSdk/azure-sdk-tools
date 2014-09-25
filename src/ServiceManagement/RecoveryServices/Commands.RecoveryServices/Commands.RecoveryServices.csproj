@@ -132,14 +132,12 @@
     <Compile Include="Service\StopAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\UpdateAzureSiteRecoveryProtectionDirection.cs" />
     <Compile Include="Service\UpdateAzureSiteRecoveryRecoveryPlan.cs" />
-    <Compile Include="Service\WriteAzureSiteRecoveryVaultSettingsFile.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryJob.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryProtectionContainer.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryRecoveryPlan.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryServer.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryVaultSettings.cs" />
     <Compile Include="Service\GetAzureSiteRecoveryVM.cs" />
-    <Compile Include="Service\GetAzureCloudServices.cs" />
     <Compile Include="Service\ImportAzureSiteRecoveryVaultSettings.cs" />
   </ItemGroup>
   <ItemGroup>
