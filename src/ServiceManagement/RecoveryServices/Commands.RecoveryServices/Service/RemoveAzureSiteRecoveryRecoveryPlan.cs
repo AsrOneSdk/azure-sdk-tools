@@ -62,7 +62,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
-        public string RpId
+        public string Id
         {
             get { return this.recoveryPlanId; }
             set { this.recoveryPlanId = value; }

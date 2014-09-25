@@ -18,6 +18,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System;
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.Azure.Commands.RecoveryServices.SiteRecovery;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
@@ -25,25 +26,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Retrieves Azure Site Recovery Recovery Plan.
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = Default)]
+    [Cmdlet(VerbsCommon.Get, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = ASRParameterSets.Default)]
     [OutputType(typeof(IEnumerable<ASRRecoveryPlan>))]
     public class GetAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
-        /// <summary>
-        /// When nothing is passed to the command.
-        /// </summary>
-        protected const string Default = "Default";
-
-        /// <summary>
-        /// When only Name is passed to the command.
-        /// </summary>
-        protected const string ByName = "ByName";
-
-        /// <summary>
-        /// When only ID is passed to the command.
-        /// </summary>
-        protected const string ById = "ById";
-
         #region Parameters
         /// <summary>
         /// Recovery Plan ID.
@@ -58,7 +44,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets Recovery Plan ID.
         /// </summary>
-        [Parameter(ParameterSetName = ById, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ById, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Id
         {
@@ -69,7 +55,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Gets or sets name of the Recovery Plan.
         /// </summary>
-        [Parameter(ParameterSetName = ByName, Mandatory = true)]
+        [Parameter(ParameterSetName = ASRParameterSets.ByName, Mandatory = true)]
         [ValidateNotNullOrEmpty]
         public string Name
         {
@@ -87,13 +73,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 switch (this.ParameterSetName)
                 {
-                    case ByName:
+                    case ASRParameterSets.ByName:
                         this.GetByName();
                         break;
-                    case ById:
+                    case ASRParameterSets.ById:
                         this.GetById();
                         break;
-                    case Default:
+                    case ASRParameterSets.Default:
                         this.GetByDefault();
                         break;
                 }
