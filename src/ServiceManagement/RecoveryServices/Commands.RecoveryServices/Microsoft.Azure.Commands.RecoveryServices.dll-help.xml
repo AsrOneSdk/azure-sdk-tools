@@ -796,7 +796,7 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
           <maml:name>State</maml:name>
           <maml:description>
-            <maml:para>Take string input for possible States of ASR Job. Use this parameter to get filtered view of Jobs</maml:para>
+            <maml:para>Take string input for possible states of ASR Job. Use this parameter to get filtered view of Jobs. Possible states include: Aborted, Cancelled, Cancelling, Completed, Failed, InProgress, PartiallySucceeded, CompletedWithInformation, RolledBack, Skipped, Waiting, WaitingForFinalizeProtection, WaitingForManualAction, WaitingForStopTestFailover, WaitingForUserInputAfterDataSync, NotStarted, Unknown.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
         </command:parameter>
@@ -846,7 +846,7 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
         <maml:name>State</maml:name>
         <maml:description>
-          <maml:para>Take string input for possible States of ASR Job. Use this parameter to get filtered view of Jobs</maml:para>
+          <maml:para>Take string input for possible states of ASR Job. Use this parameter to get filtered view of Jobs. Possible states include: Aborted, Cancelled, Cancelling, Completed, Failed, InProgress, PartiallySucceeded, CompletedWithInformation, RolledBack, Skipped, Waiting, WaitingForFinalizeProtection, WaitingForManualAction, WaitingForStopTestFailover, WaitingForUserInputAfterDataSync, NotStarted, Unknown.</maml:para>
 
         </maml:description>
         <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
@@ -855,59 +855,6 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
           <maml:uri/>
         </dev:type>
         <dev:defaultValue></dev:defaultValue>
-        <dev:possiblevalues>
-          <dev:possiblevalue>
-            <dev:value>Aborted</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Cancelled</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Cancelling</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Completed</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Failed</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>InProgress</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>PartiallySucceeded</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>CompletedWithInformation</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>RolledBack</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Skipped</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Waiting</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>WaitingForFinalizeProtection</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>WaitingForManualAction</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>WaitingForStopTestFailover</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>WaitingForUserInputAfterDataSync</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>NotStarted</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Unknown</dev:value>
-          </dev:possiblevalue>
-        </dev:possiblevalues>
       </command:parameter>
     </command:parameters>
     <!-- Input - Output section-->
@@ -2131,9 +2078,15 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
           <maml:name>Protection</maml:name>
           <maml:description>
-            <maml:para>set 'enable' to enable protection and 'disable' to disable protection</maml:para>
+            <maml:para>set 'Enable' to enable protection and 'Disable' to disable protection</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
         </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
@@ -2141,7 +2094,7 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
           <maml:name>Protection</maml:name>
           <maml:description>
-            <maml:para>set 'enable' to enable protection and 'disable' to disable protection</maml:para>
+            <maml:para>set 'Enable' to enable protection and 'Disable' to disable protection</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
         </command:parameter>
@@ -2151,6 +2104,12 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
             <maml:para>Protection Entity object</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -2185,7 +2144,7 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
       <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
         <maml:name>Protection</maml:name>
         <maml:description>
-          <maml:para>set 'enable' to enable protection and 'disable' to disable protection</maml:para>
+          <maml:para>set 'Enable' to enable protection and 'Disable' to disable protection</maml:para>
 
         </maml:description>
         <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
@@ -2194,14 +2153,6 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
           <maml:uri/>
         </dev:type>
         <dev:defaultValue></dev:defaultValue>
-        <dev:possiblevalues>
-          <dev:possiblevalue>
-            <dev:value>Enable</dev:value>
-          </dev:possiblevalue>
-          <dev:possiblevalue>
-            <dev:value>Disable</dev:value>
-          </dev:possiblevalue>
-        </dev:possiblevalues>
       </command:parameter>
       <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
         <maml:name>ProtectionEntity</maml:name>
@@ -2212,6 +2163,19 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
         <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
         <dev:type>
           <maml:name>ASRProtectionEntity</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>WaitForCompletion</maml:name>
+        <maml:description>
+          <maml:para>Waits till the operation completes</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
           <maml:uri/>
         </dev:type>
         <dev:defaultValue></dev:defaultValue>
@@ -2403,5 +2367,1622 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
     </maml:relatedLinks>
   </command:command>
 
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>
+        Update-AzureSiteRecoveryProtectionDirection
+      </command:name>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+      <maml:copyright>
+        <maml:para></maml:para>
+      </maml:copyright>
+      <command:verb>Update</command:verb>
+      <command:noun>AzureSiteRecoveryProtectionDirection</command:noun>
+      <dev:version></dev:version>
+    </command:details>
+    <maml:description>
+      <maml:para></maml:para>
+    </maml:description>
+    <!-- Cmdlet syntax section-->
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-AzureSiteRecoveryProtectionDirection</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>RecoveryPlan</maml:name>
+          <maml:description>
+            <maml:para>Recovery Plan object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Update-AzureSiteRecoveryProtectionDirection</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>RpId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Recovery Plan</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Update-AzureSiteRecoveryProtectionDirection</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Update-AzureSiteRecoveryProtectionDirection</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <!-- Cmdlet parameter section  -->
+    <command:parameters>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>Direction</maml:name>
+        <maml:description>
+          <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionContainerId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Container</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>ProtectionEntity</maml:name>
+        <maml:description>
+          <maml:para>Protection Entity object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRProtectionEntity</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionEntityId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Entity</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>RecoveryPlan</maml:name>
+        <maml:description>
+          <maml:para>Recovery Plan object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRRecoveryPlan</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RpId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Recovery Plan</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>WaitForCompletion</maml:name>
+        <maml:description>
+          <maml:para>Waits till the operation completes</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <!-- Input - Output section-->
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri/>
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri />
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <!-- Error section-->
+    <command:terminatingErrors />
+    <command:nonTerminatingErrors />
+    <!-- Notes section  -->
+    <maml:alertSet>
+      <maml:title></maml:title>
+      <maml:alert>
+        <maml:para>
+
+        </maml:para>
+      </maml:alert>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <!-- Example section  -->
+    <command:examples>
+    </command:examples>
+    <!-- Link section  -->
+    <maml:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText></maml:linkText>
+        <maml:uri/>
+      </maml:navigationLink>
+    </maml:relatedLinks>
+  </command:command>
+
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>
+        Start-AzureSiteRecoveryTestFailoverJob
+      </command:name>
+      <maml:description>
+        <maml:para>Start the Test Failover operation for a Virtual Machine or Recovery Plan under Azure Site Recovery</maml:para>
+      </maml:description>
+      <maml:copyright>
+        <maml:para></maml:para>
+      </maml:copyright>
+      <command:verb>Start</command:verb>
+      <command:noun>AzureSiteRecoveryTestFailoverJob</command:noun>
+      <dev:version></dev:version>
+    </command:details>
+    <maml:description>
+      <maml:para></maml:para>
+    </maml:description>
+    <!-- Cmdlet syntax section-->
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>RecoveryPlan</maml:name>
+          <maml:description>
+            <maml:para>Recovery Plan object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>RpId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Recovery Plan</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>LogicalNetworkId</maml:name>
+          <maml:description>
+            <maml:para>Logical Network Id</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>VmNetworkId</maml:name>
+          <maml:description>
+            <maml:para>Id of the VM Network</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>LogicalNetworkId</maml:name>
+          <maml:description>
+            <maml:para>Logical Network Id</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryTestFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>VmNetworkId</maml:name>
+          <maml:description>
+            <maml:para>Id of the VM Network</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <!-- Cmdlet parameter section  -->
+    <command:parameters>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>Direction</maml:name>
+        <maml:description>
+          <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>LogicalNetworkId</maml:name>
+        <maml:description>
+          <maml:para>Logical Network Id</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionContainerId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Container</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>ProtectionEntity</maml:name>
+        <maml:description>
+          <maml:para>Protection Entity object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRProtectionEntity</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionEntityId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Entity</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>RecoveryPlan</maml:name>
+        <maml:description>
+          <maml:para>Recovery Plan object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRRecoveryPlan</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RpId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Recovery Plan</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>VmNetworkId</maml:name>
+        <maml:description>
+          <maml:para>Id of the VM Network</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>WaitForCompletion</maml:name>
+        <maml:description>
+          <maml:para>Waits till the operation completes</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <!-- Input - Output section-->
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri/>
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri />
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <!-- Error section-->
+    <command:terminatingErrors />
+    <command:nonTerminatingErrors />
+    <!-- Notes section  -->
+    <maml:alertSet>
+      <maml:title></maml:title>
+      <maml:alert>
+        <maml:para>
+
+        </maml:para>
+      </maml:alert>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <!-- Example section  -->
+    <command:examples>
+    </command:examples>
+    <!-- Link section  -->
+    <maml:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText></maml:linkText>
+        <maml:uri/>
+      </maml:navigationLink>
+    </maml:relatedLinks>
+  </command:command>
+
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>
+        Start-AzureSiteRecoveryUnplannedFailoverJob
+      </command:name>
+      <maml:description>
+        <maml:para></maml:para>
+      </maml:description>
+      <maml:copyright>
+        <maml:para></maml:para>
+      </maml:copyright>
+      <command:verb>Start</command:verb>
+      <command:noun>AzureSiteRecoveryUnplannedFailoverJob</command:noun>
+      <dev:version></dev:version>
+    </command:details>
+    <maml:description>
+      <maml:para></maml:para>
+    </maml:description>
+    <!-- Cmdlet syntax section-->
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryUnplannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>RecoveryPlan</maml:name>
+          <maml:description>
+            <maml:para>Recovery Plan object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>PrimaryAction</maml:name>
+          <maml:description>
+            <maml:para>Indicates whether primary site actions are required or not</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryUnplannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>RpId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Recovery Plan</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>PrimaryAction</maml:name>
+          <maml:description>
+            <maml:para>Indicates whether primary site actions are required or not</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryUnplannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>PerformSourceSiteOperations</maml:name>
+          <maml:description>
+            <maml:para>Indicates whether source site operations can be done or not</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryUnplannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>PerformSourceSiteOperations</maml:name>
+          <maml:description>
+            <maml:para>Indicates whether source site operations can be done or not</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <!-- Cmdlet parameter section  -->
+    <command:parameters>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>Direction</maml:name>
+        <maml:description>
+          <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>PerformSourceSiteOperations</maml:name>
+        <maml:description>
+          <maml:para>Indicates whether source site operations can be done or not</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+        <dev:type>
+          <maml:name>bool</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>PrimaryAction</maml:name>
+        <maml:description>
+          <maml:para>Indicates whether primary site actions are required or not</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+        <dev:type>
+          <maml:name>bool</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionContainerId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Container</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>ProtectionEntity</maml:name>
+        <maml:description>
+          <maml:para>Protection Entity object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRProtectionEntity</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionEntityId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Entity</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>RecoveryPlan</maml:name>
+        <maml:description>
+          <maml:para>Recovery Plan object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRRecoveryPlan</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RpId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Recovery Plan</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>WaitForCompletion</maml:name>
+        <maml:description>
+          <maml:para>Waits till the operation completes</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <!-- Input - Output section-->
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri/>
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri />
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <!-- Error section-->
+    <command:terminatingErrors />
+    <command:nonTerminatingErrors />
+    <!-- Notes section  -->
+    <maml:alertSet>
+      <maml:title></maml:title>
+      <maml:alert>
+        <maml:para>
+
+        </maml:para>
+      </maml:alert>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <!-- Example section  -->
+    <command:examples>
+    </command:examples>
+    <!-- Link section  -->
+    <maml:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText></maml:linkText>
+        <maml:uri/>
+      </maml:navigationLink>
+    </maml:relatedLinks>
+  </command:command>
+
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>
+        Start-AzureSiteRecoveryCommitFailoverJob
+      </command:name>
+      <maml:description>
+        <maml:para>Start the commit failover of the Azure Site Recovery object after failover</maml:para>
+      </maml:description>
+      <maml:copyright>
+        <maml:para></maml:para>
+      </maml:copyright>
+      <command:verb>Start</command:verb>
+      <command:noun>AzureSiteRecoveryCommitFailoverJob</command:noun>
+      <dev:version></dev:version>
+    </command:details>
+    <maml:description>
+      <maml:para></maml:para>
+    </maml:description>
+    <!-- Cmdlet syntax section-->
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryCommitFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>RecoveryPlan</maml:name>
+          <maml:description>
+            <maml:para>Recovery Plan object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits for </maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryCommitFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>RpId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Recovery Plan</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits for </maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryCommitFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits for </maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryCommitFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits for </maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <!-- Cmdlet parameter section  -->
+    <command:parameters>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionContainerId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Container</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>ProtectionEntity</maml:name>
+        <maml:description>
+          <maml:para>Protection Entity object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRProtectionEntity</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionEntityId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Entity</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>RecoveryPlan</maml:name>
+        <maml:description>
+          <maml:para>Recovery Plan object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRRecoveryPlan</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RpId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Recovery Plan</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>WaitForCompletion</maml:name>
+        <maml:description>
+          <maml:para>Waits for </maml:para>
+
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <!-- Input - Output section-->
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri/>
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri />
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <!-- Error section-->
+    <command:terminatingErrors />
+    <command:nonTerminatingErrors />
+    <!-- Notes section  -->
+    <maml:alertSet>
+      <maml:title></maml:title>
+      <maml:alert>
+        <maml:para>
+
+        </maml:para>
+      </maml:alert>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <!-- Example section  -->
+    <command:examples>
+    </command:examples>
+    <!-- Link section  -->
+    <maml:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText></maml:linkText>
+        <maml:uri/>
+      </maml:navigationLink>
+    </maml:relatedLinks>
+  </command:command>
+
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>
+        Start-AzureSiteRecoveryPlannedFailoverJob
+      </command:name>
+      <maml:description>
+        <maml:para>Start the Planned Failover operation for a Virtual Machine or Recovery Plan under Azure  Site Recovery</maml:para>
+      </maml:description>
+      <maml:copyright>
+        <maml:para></maml:para>
+      </maml:copyright>
+      <command:verb>Start</command:verb>
+      <command:noun>AzureSiteRecoveryPlannedFailoverJob</command:noun>
+      <dev:version></dev:version>
+    </command:details>
+    <maml:description>
+      <maml:para></maml:para>
+    </maml:description>
+    <!-- Cmdlet syntax section-->
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryPlannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>RecoveryPlan</maml:name>
+          <maml:description>
+            <maml:para>Recovery Plan object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryPlannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>RpId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Recovery Plan</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryPlannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+          <maml:name>ProtectionEntity</maml:name>
+          <maml:description>
+            <maml:para>Protection Entity object</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Start-AzureSiteRecoveryPlannedFailoverJob</maml:name>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionContainerId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Container</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>ProtectionEntityId</maml:name>
+          <maml:description>
+            <maml:para>Id of the Protection Entity</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Direction</maml:name>
+          <maml:description>
+            <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>WaitForCompletion</maml:name>
+          <maml:description>
+            <maml:para>Waits till the operation completes</maml:para>
+          </maml:description>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <!-- Cmdlet parameter section  -->
+    <command:parameters>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>Direction</maml:name>
+        <maml:description>
+          <maml:para>Direction of the failover, either PrimaryToRecovery or RecoveryToPrimary</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionContainerId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Container</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>ProtectionEntity</maml:name>
+        <maml:description>
+          <maml:para>Protection Entity object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRProtectionEntity</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>ProtectionEntityId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Protection Entity</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
+        <maml:name>RecoveryPlan</maml:name>
+        <maml:description>
+          <maml:para>Recovery Plan object</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">ASRRecoveryPlan</command:parameterValue>
+        <dev:type>
+          <maml:name>ASRRecoveryPlan</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>RpId</maml:name>
+        <maml:description>
+          <maml:para>Id of the Recovery Plan</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
+        <dev:type>
+          <maml:name>string</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
+        <maml:name>WaitForCompletion</maml:name>
+        <maml:description>
+          <maml:para>Waits till the operation completes</maml:para>
+
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri/>
+        </dev:type>
+        <dev:defaultValue></dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <!-- Input - Output section-->
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri/>
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri />
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <!-- Error section-->
+    <command:terminatingErrors />
+    <command:nonTerminatingErrors />
+    <!-- Notes section  -->
+    <maml:alertSet>
+      <maml:title></maml:title>
+      <maml:alert>
+        <maml:para>
+
+        </maml:para>
+      </maml:alert>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <!-- Example section  -->
+    <command:examples>
+    </command:examples>
+    <!-- Link section  -->
+    <maml:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText></maml:linkText>
+        <maml:uri/>
+      </maml:navigationLink>
+    </maml:relatedLinks>
+  </command:command>
+
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>
+        Get-AzureSiteRecoveryVaultSettings
+      </command:name>
+      <maml:description>
+        <maml:para>Gets Azure Site Recovery Vault settings information</maml:para>
+      </maml:description>
+      <maml:copyright>
+        <maml:para></maml:para>
+      </maml:copyright>
+      <command:verb>Get</command:verb>
+      <command:noun>AzureSiteRecoveryVaultSettings</command:noun>
+      <dev:version></dev:version>
+    </command:details>
+    <maml:description>
+      <maml:para></maml:para>
+    </maml:description>
+    <!-- Cmdlet syntax section-->
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-AzureSiteRecoveryVaultSettings</maml:name>
+      </command:syntaxItem>
+    </command:syntax>
+    <!-- Cmdlet parameter section  -->
+    <command:parameters>
+    </command:parameters>
+    <!-- Input - Output section-->
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri/>
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name></maml:name>
+          <maml:uri />
+          <maml:description />
+        </dev:type>
+        <maml:description>
+          <maml:para>
+            <!-- description  -->
+
+          </maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <!-- Error section-->
+    <command:terminatingErrors />
+    <command:nonTerminatingErrors />
+    <!-- Notes section  -->
+    <maml:alertSet>
+      <maml:title></maml:title>
+      <maml:alert>
+        <maml:para>
+
+        </maml:para>
+      </maml:alert>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <!-- Example section  -->
+    <command:examples>
+    </command:examples>
+    <!-- Link section  -->
+    <maml:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText></maml:linkText>
+        <maml:uri/>
+      </maml:navigationLink>
+    </maml:relatedLinks>
+  </command:command>
 
 </helpItems>

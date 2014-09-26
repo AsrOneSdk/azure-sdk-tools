@@ -61,7 +61,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Failover direction for the recovery plan.
         /// </summary>
-        private string failoverDirection;
+        private string direction;
 
         /// <summary>
         /// This is required to wait for job completion.
@@ -138,10 +138,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [ValidateSet(
             PSRecoveryServicesClient.PrimaryToRecovery,
             PSRecoveryServicesClient.RecoveryToPrimary)]
-        public string FailoverDirection
+        public string Direction
         {
-            get { return this.failoverDirection; }
-            set { this.failoverDirection = value; }
+            get { return this.direction; }
+            set { this.direction = value; }
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartPEPlannedFailover()
         {
             var pfoReqeust = new PlannedFailoverRequest();
-            pfoReqeust.FailoverDirection = this.FailoverDirection;
+            pfoReqeust.FailoverDirection = this.Direction;
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryPlannedFailover(
                 this.protectionContainerId,
@@ -223,7 +223,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartRpPlannedFailover()
         {
             RpPlannedFailoverRequest recoveryPlanPlannedFailoverRequest = new RpPlannedFailoverRequest();
-            recoveryPlanPlannedFailoverRequest.FailoverDirection = this.FailoverDirection;
+            recoveryPlanPlannedFailoverRequest.FailoverDirection = this.Direction;
             this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryPlannedFailover(
                 this.RPId, 
                 recoveryPlanPlannedFailoverRequest);

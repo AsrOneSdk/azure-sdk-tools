@@ -60,7 +60,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <summary>
         /// Failover direction for the recovery plan.
         /// </summary>
-        private string failoverDirection;
+        private string direction;
 
         /// <summary>
         /// Indicates whether primary site actions are required or not.
@@ -147,10 +147,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [ValidateSet(
             PSRecoveryServicesClient.PrimaryToRecovery,
             PSRecoveryServicesClient.RecoveryToPrimary)]
-        public string FailoverDirection
+        public string Direction
         {
-            get { return this.failoverDirection; }
-            set { this.failoverDirection = value; }
+            get { return this.direction; }
+            set { this.direction = value; }
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartPEUnplannedFailover()
         {
             var ufoReqeust = new UnplannedFailoverRequest();
-            ufoReqeust.FailoverDirection = this.FailoverDirection;
+            ufoReqeust.FailoverDirection = this.Direction;
             ufoReqeust.SourceSiteOperations = this.PerformSourceSiteOperations;
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryUnplannedFailover(
@@ -255,7 +255,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartRpUnPlannedFailover()
         {
             RpUnplannedFailoverRequest recoveryPlanUnPlannedFailoverRequest = new RpUnplannedFailoverRequest();
-            recoveryPlanUnPlannedFailoverRequest.FailoverDirection = this.FailoverDirection;
+            recoveryPlanUnPlannedFailoverRequest.FailoverDirection = this.Direction;
             recoveryPlanUnPlannedFailoverRequest.PrimaryAction = this.PrimaryAction;
             this.jobResponse = RecoveryServicesClient.StartAzureSiteRecoveryUnplannedFailover(
                 this.recoveryPlanId, 
