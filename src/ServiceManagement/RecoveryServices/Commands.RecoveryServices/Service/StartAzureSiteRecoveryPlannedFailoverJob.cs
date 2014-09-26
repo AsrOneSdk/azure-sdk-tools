@@ -74,11 +74,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private JobResponse jobResponse = null;
 
         /// <summary>
-        /// Stop processing, enables on pressing Ctrl-C.
-        /// </summary>
-        private bool stopProcessing = false;
-
-        /// <summary>
         /// Gets or sets ID of the Recovery Plan.
         /// </summary>
         [Parameter(ParameterSetName = ASRParameterSets.ByRPId, Mandatory = true)]
@@ -199,7 +194,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             // Ctrl + C and etc
             base.StopProcessing();
-            this.stopProcessing = true;
+            this.StopProcessingFlag = true;
         }
 
         /// <summary>
@@ -216,17 +211,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 pfoReqeust);
             this.WriteJob(this.jobResponse.Job);
 
-            string jobId = this.jobResponse.Job.ID;
-            while (this.waitForCompletion)
+            if (this.waitForCompletion)
             {
-                if (this.jobResponse.Job.Completed || this.stopProcessing)
-                {
-                    break;
-                }
-
-                Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
-                this.WriteObject("JobState: " + this.jobResponse.Job.State);
+                this.WaitForCompletion(this.jobResponse.Job.ID);
             }
         }
 
@@ -243,17 +230,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             this.WriteJob(this.jobResponse.Job);
 
-            string jobId = this.jobResponse.Job.ID;
-            while (this.waitForCompletion)
+            if (this.waitForCompletion)
             {
-                if (this.jobResponse.Job.Completed || this.stopProcessing)
-                {
-                    break;
-                }
-
-                Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
-                this.WriteObject("JobState: " + this.jobResponse.Job.State);
+                this.WaitForCompletion(this.jobResponse.Job.ID);
             }
         }
 
