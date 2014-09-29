@@ -94,23 +94,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         [Parameter(ParameterSetName = ASRParameterSets.ByParam, HelpMessage = "State of job to return.")]
         [ValidateNotNullOrEmpty]
         [ValidateSet(
-            "Aborted", 
-            "Cancelled", 
-            "Cancelling", 
-            "Completed", 
-            "Failed", 
-            "InProgress", 
-            "PartiallySucceeded", 
-            "CompletedWithInformation", 
-            "RolledBack", 
-            "Skipped", 
-            "Waiting", 
-            "WaitingForFinalizeProtection", 
-            "WaitingForManualAction", 
-            "WaitingForStopTestFailover", 
-            "WaitingForUserInputAfterDataSync", 
-            "NotStarted", 
-            "Unknown")]
+            "NotStarted",
+            "InProgress",
+            "Succeeded",
+            "Other",
+            "Failed",
+            "Cancelled",
+            "Suspended")]
         public string State
         {
             get { return this.state; }

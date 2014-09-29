@@ -681,11 +681,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public string EndTime { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether Job is completed or not.
-        /// </summary>
-        public bool Completed { get; set; }
-
-        /// <summary>
         /// Gets or sets list of allowed actions.
         /// </summary>
         public List<string> AllowedActions { get; set; }
