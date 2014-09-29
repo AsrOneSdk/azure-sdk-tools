@@ -171,6 +171,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             string shaInput = new JavaScriptSerializer().Serialize(cikTokenDetails);
 
+            if (null == asrVaultCreds.ChannelIntegrityKey)
+            {
+                throw new ArgumentException(Properties.Resources.MissingChannelIntergrityKey);
+            }
             HMACSHA256 sha = new HMACSHA256(Encoding.UTF8.GetBytes(asrVaultCreds.ChannelIntegrityKey));
             cikTokenDetails.Hmac =
                 Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(shaInput)));

@@ -2091,19 +2091,19 @@ ReplicationProvider         : HyperVReplicaAzure                        </dev:co
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Set-AzureSiteRecoveryProtectionEntity</maml:name>
-        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
-          <maml:name>Protection</maml:name>
-          <maml:description>
-            <maml:para>set 'Enable' to enable protection and 'Disable' to disable protection</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
-        </command:parameter>
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="true (ByValue)" position="named">
           <maml:name>ProtectionEntity</maml:name>
           <maml:description>
             <maml:para>Protection Entity object</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">ASRProtectionEntity</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="named">
+          <maml:name>Protection</maml:name>
+          <maml:description>
+            <maml:para>set 'Enable' to enable protection and 'Disable' to disable protection</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">string</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named">
           <maml:name>WaitForCompletion</maml:name>
