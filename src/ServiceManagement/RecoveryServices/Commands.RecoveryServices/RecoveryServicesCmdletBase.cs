@@ -141,13 +141,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
                 jobResponse = this.RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobId);
-                this.WriteObject("JobState: " + jobResponse.Job.State);
+                this.WriteProgress(
+                    new System.Management.Automation.ProgressRecord(
+                        0,
+                        Properties.Resources.WaitingForCompletion,
+                        jobResponse.Job.State));
             }
-            while (jobResponse.Job.State == JobStatus.Cancelled ||
+            while (!(jobResponse.Job.State == JobStatus.Cancelled ||
                             jobResponse.Job.State == JobStatus.Failed ||
                             jobResponse.Job.State == JobStatus.Suspended ||
                             jobResponse.Job.State == JobStatus.Succeeded ||
-                        this.StopProcessingFlag);
+                        this.StopProcessingFlag));
         }
     }
 }
