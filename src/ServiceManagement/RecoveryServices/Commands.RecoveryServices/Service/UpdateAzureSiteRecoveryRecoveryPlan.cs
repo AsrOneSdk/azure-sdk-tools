@@ -48,11 +48,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private JobResponse jobResponse = null;
 
         /// <summary>
-        /// Stop processing, enables on pressing Ctrl-C.
-        /// </summary>
-        private bool stopProcessing = false;
-
-        /// <summary>
         /// Gets or sets XML file path of the Recovery Plan.
         /// </summary>
         [Parameter(Mandatory = true)]
@@ -87,17 +82,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     recoveryPlanXml);
                 this.WriteJob(this.jobResponse.Job);
 
-                string jobId = this.jobResponse.Job.ID;
-                while (this.waitForCompletion)
+                if (this.waitForCompletion)
                 {
-                    if (this.jobResponse.Job.Completed || this.stopProcessing)
-                    {
-                        break;
-                    }
-
-                    Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
-                    this.jobResponse = RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(this.jobResponse.Job.ID);
-                    this.WriteObject("JobState: " + this.jobResponse.Job.State);
+                    this.WaitForCompletion(this.jobResponse.Job.ID);
                 }
             }
             catch (Exception exception)
@@ -113,7 +100,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             // Ctrl + C and etc
             base.StopProcessing();
-            this.stopProcessing = true;
+            this.StopProcessingFlag = true;
         }
 
         /// <summary>

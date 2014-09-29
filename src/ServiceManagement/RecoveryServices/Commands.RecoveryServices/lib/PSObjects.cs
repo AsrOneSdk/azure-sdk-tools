@@ -18,6 +18,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Runtime.Serialization;
     using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
@@ -183,7 +184,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets a role of the protection container.
         /// </summary>
-        [DataMember]
         public string Role { get; set; }
 
         /// <summary>
@@ -395,14 +395,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 pe.FabricObjectId.ToUpper() :
                 pe.FabricObjectId;
             this.Protected = pe.Protected;
-            this.ProtectionState = pe.ProtectionStateDescription;
+            this.ProtectionStateDescription = pe.ProtectionStateDescription;
             this.CanCommit = pe.CanCommit;
             this.CanFailover = pe.CanFailover;
             this.CanReverseReplicate = pe.CanReverseReplicate;
             this.ReplicationProvider = pe.ReplicationProvider;
             this.ActiveLocation = pe.ActiveLocation;
             this.ReplicationHealth = pe.ReplicationHealth;
-            this.TestFailoverState = pe.TestFailoverStateDescription;
+            this.TestFailoverStateDescription = pe.TestFailoverStateDescription;
         }
 
         /// <summary>
@@ -451,14 +451,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
                 fabricObjectId.ToUpper() :
                 fabricObjectId;
             this.Protected = protectedOrNot;
-            this.ProtectionState = protectionStateDescription;
+            this.ProtectionStateDescription = protectionStateDescription;
             this.CanCommit = canCommit;
             this.CanFailover = canFailover;
             this.CanReverseReplicate = canReverseReplicate;
             this.ReplicationProvider = replicationProvider;
             this.ActiveLocation = activeLocation;
             this.ReplicationHealth = replicationHealth;
-            this.TestFailoverState = testFailoverStateDescription;
+            this.TestFailoverStateDescription = testFailoverStateDescription;
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets protection state.
         /// </summary>
-        public string ProtectionState { get; set; }
+        public string ProtectionStateDescription { get; set; }
 
         /// <summary>
         /// Gets or sets Replication health.
@@ -529,7 +529,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         /// Gets or sets test failover state.
         /// </summary>
-        public string TestFailoverState { get; set; }
+        public string TestFailoverStateDescription { get; set; }
 
         /// <summary>
         /// Gets or sets Replication provider.
@@ -537,6 +537,70 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public string ReplicationProvider { get; set; }
     }
 
+    /// <summary>
+    /// Task of the Job.
+    /// </summary>
+    public class ASRTask
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRTask" /> class.
+        /// </summary>
+        public ASRTask()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRTask" /> class.
+        /// </summary>
+        /// <param name="task">Task details to load values from.</param>
+        public ASRTask(AsrTask task)
+        {
+            this.ID = task.ID;
+            this.EndTime = task.EndTime;
+            this.Name = task.Name;
+            this.StartTime = task.StartTime;
+            this.State = task.State;
+            this.StateDescription = task.StateDescription;
+            this.TaskType = task.TaskType;
+        }
+
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the start time.
+        /// </summary>
+        public DateTime StartTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end time.
+        /// </summary>
+        public DateTime EndTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the task name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the task type, which specifies what type of info is present
+        /// in extended details.
+        /// </summary>
+        public string TaskType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Status.
+        /// </summary>
+        public string State { get; set; }
+
+        /// <summary>
+        /// Gets or sets the State description, which tells the exact internal state.
+        /// </summary>
+        public string StateDescription { get; set; }
+    }
+    
     /// <summary>
     /// Azure Site Recovery Job.
     /// </summary>
@@ -562,14 +626,27 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
             this.ID = job.ID;
             this.ClientRequestId = job.ActivityId;
             this.State = job.State;
+            this.StateDescription = job.StateDescription;
             this.EndTime = job.EndTimestamp;
             this.StartTime = job.StartTimestamp;
-            this.Completed = job.Completed;
             this.AllowedActions = job.AllowedActions as List<string>;
-            this.Name = job.JobDisplayName;
-            this.Jobs = job.Jobs as List<Job>;
-            this.Tasks = job.Tasks as List<AsrTask>;
-            this.Errors = job.Errors as List<ErrorDetails>;
+            this.Name = job.Name;
+            this.Tasks = new List<ASRTask>();
+            foreach (var task in job.Tasks)
+            {
+                this.Tasks.Add(new ASRTask(task));
+            }
+
+            this.Errors = new List<ASRErrorDetails>();
+
+            foreach (var error in job.Errors)
+            {
+                ASRErrorDetails errorDetails = new ASRErrorDetails();
+                errorDetails.TaskId = error.TaskId;
+                errorDetails.ServiceErrorDetails = new ASRServiceError(error.ServiceErrorDetails);
+                errorDetails.ProviderErrorDetails = new ASRProviderError(error.ProviderErrorDetails);
+                this.Errors.Add(errorDetails);
+            }
         }
 
         #region Properties
@@ -578,7 +655,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// </summary>
         public string ID { get; set; }
 
-        /// <summary>
+       /// <summary>
         /// Gets or sets Activity ID.
         /// </summary>
         public string ClientRequestId { get; set; }
@@ -587,6 +664,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// Gets or sets State of the Job.
         /// </summary>
         public string State { get; set; }
+
+        /// <summary>
+        /// Gets or sets StateDescription of the Job.
+        /// </summary>
+        public string StateDescription { get; set; }
 
         /// <summary>
         /// Gets or sets Start timestamp.
@@ -614,19 +696,120 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets list of Jobs.
-        /// </summary>
-        public List<Job> Jobs { get; set; }
-
-        /// <summary>
         /// Gets or sets list of tasks.
         /// </summary>
-        public List<AsrTask> Tasks { get; set; }
+        public List<ASRTask> Tasks { get; set; }
 
         /// <summary>
         /// Gets or sets list of Errors.
         /// </summary>
-        public List<ErrorDetails> Errors { get; set; }
+        public List<ASRErrorDetails> Errors { get; set; }
         #endregion
+    }
+
+    /// <summary>
+    /// This class contains the error details per object.
+    /// </summary>
+    public class ASRErrorDetails
+    {
+        /// <summary>
+        /// Gets or sets the Service error details.
+        /// </summary>
+        public ASRServiceError ServiceErrorDetails { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Provider error details.
+        /// </summary>
+        public ASRProviderError ProviderErrorDetails { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Id of the task.
+        /// </summary>
+        public string TaskId { get; set; }
+    }
+
+    /// <summary>
+    /// This class contains the ASR error details per object.
+    /// </summary>
+    public class ASRServiceError : Error
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRServiceError" /> class with required parameters.
+        /// </summary>
+        public ASRServiceError()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRServiceError" /> class with required parameters.
+        /// </summary>
+        /// <param name="serviceError">ServiceError object</param>
+        public ASRServiceError(ServiceError serviceError)
+            : base(serviceError)
+        {
+        }
+    }
+
+    /// <summary>
+    /// This class contains the provider error details per object.
+    /// </summary>
+    public class ASRProviderError
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRProviderError" /> class with required parameters.
+        /// </summary>
+        public ASRProviderError()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ASRProviderError" /> class with required parameters.
+        /// </summary>
+        /// <param name="error">ProviderError object</param>
+        public ASRProviderError(ProviderError error)
+        {
+            this.AffectedObjects = error.AffectedObjects;
+            this.CreationTimeUtc = error.CreationTimeUtc;
+            this.ErrorCode = error.ErrorCode;
+            this.ErrorId = error.ErrorId;
+            this.ErrorLevel = error.ErrorLevel;
+            this.ErrorMessage = error.ErrorMessage;
+            this.WorkflowId = error.WorkflowId;
+        }
+
+        /// <summary>
+        /// Gets or sets the Error code.
+        /// </summary>
+        public int ErrorCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Error message
+        /// </summary>
+        public string ErrorMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Provider error Id
+        /// </summary>
+        public string ErrorId { get; set; }
+
+        /// <summary>
+        /// Gets or sets Workflow Id.
+        /// </summary>
+        public string WorkflowId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the AffectedObjects.
+        /// </summary>
+        public IDictionary<string, string> AffectedObjects { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Time of the error creation.
+        /// </summary>
+        public DateTime CreationTimeUtc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Error level.
+        /// </summary>
+        public string ErrorLevel { get; set; }
     }
 }

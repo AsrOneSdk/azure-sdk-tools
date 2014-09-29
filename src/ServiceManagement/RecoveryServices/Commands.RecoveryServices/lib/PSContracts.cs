@@ -197,6 +197,54 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             return sb.ToString();
         }
     }
+
+    /// <summary>
+    /// Possible states of the Job.
+    /// </summary>
+    public class JobStatus : TaskStatus
+    {
+    }
+
+    /// <summary>
+    /// Possible states of the Task.
+    /// </summary>
+    public class TaskStatus
+    {
+        /// <summary>
+        /// TaskStatus NotStarted value.
+        /// </summary>
+        public static readonly string NotStarted = "NotStarted";
+
+        /// <summary>
+        /// Status InProgress value. 
+        /// </summary>
+        public static readonly string InProgress = "InProgress";
+
+        /// <summary>
+        /// Status Succeeded value.
+        /// </summary>
+        public static readonly string Succeeded = "Succeeded";
+
+        /// <summary>
+        /// Status Other value.
+        /// </summary>
+        public static readonly string Other = "Other";
+
+        /// <summary>
+        /// Status Failed value.
+        /// </summary>
+        public static readonly string Failed = "Failed";
+
+        /// <summary>
+        /// Status Cancelled value.
+        /// </summary>
+        public static readonly string Cancelled = "Cancelled";
+
+        /// <summary>
+        /// Status Suspended value.
+        /// </summary>
+        public static readonly string Suspended = "Suspended";
+    }
 }
 
 namespace Microsoft.Azure.Portal.RecoveryServices.Models.Common

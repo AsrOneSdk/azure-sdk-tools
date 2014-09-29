@@ -18,9 +18,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     using System;
     using System.IO;
     using System.Runtime.Serialization;
+    using System.Threading;
     using System.Xml;
     using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Commands.Utilities.Common;
+    using Microsoft.WindowsAzure.Management.SiteRecovery.Models;
     #endregion
 
     /// <summary>
@@ -32,6 +34,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Recovery Services client.
         /// </summary>
         private PSRecoveryServicesClient recoveryServicesClient;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether stop processing has been triggered.
+        /// </summary>
+        internal bool StopProcessingFlag { get; set; }
 
         /// <summary>
         /// Gets Recovery Services client.
@@ -55,7 +62,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// <param name="ex">Exception to handle.</param>
         public void HandleException(Exception ex)
         {
-            string clientRequestIdMsg = "ClientRequestId: " + this.recoveryServicesClient.ClientRequestId + "\n";
+            string clientRequestIdMsg = string.Empty;
+            if (this.recoveryServicesClient != null)
+            {
+                clientRequestIdMsg = "ClientRequestId: " + this.recoveryServicesClient.ClientRequestId + "\n";
+            }
+
             CloudException cloudException = ex as CloudException;
             if (cloudException != null)
             {
@@ -116,6 +128,26 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                     clientRequestIdMsg + ex.Message),
                     ex);
             }
+        }
+
+        /// <summary>
+        /// Waits for the job to complete.
+        /// </summary>
+        /// <param name="jobId">Id of the job to wait for.</param>
+        public void WaitForCompletion(string jobId)
+        {
+            JobResponse jobResponse = null;
+            do
+            {
+                Thread.Sleep(PSRecoveryServicesClient.TimeToSleepBeforeFetchingJobDetailsAgain);
+                jobResponse = this.RecoveryServicesClient.GetAzureSiteRecoveryJobDetails(jobId);
+                this.WriteObject("JobState: " + jobResponse.Job.State);
+            }
+            while (jobResponse.Job.State == JobStatus.Cancelled ||
+                            jobResponse.Job.State == JobStatus.Failed ||
+                            jobResponse.Job.State == JobStatus.Suspended ||
+                            jobResponse.Job.State == JobStatus.Succeeded ||
+                        this.StopProcessingFlag);
         }
     }
 }
