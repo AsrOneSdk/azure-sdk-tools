@@ -120,6 +120,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vault Key value is missing. Please import Vault Settings and verify the same.
+        /// </summary>
+        internal static string MissingChannelIntergrityKey {
+            get {
+                return ResourceManager.GetString("MissingChannelIntergrityKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vault Settings are missing. Please import Vault Settings and verify the same.
         /// </summary>
         internal static string MissingVaultSettings {
@@ -215,6 +224,15 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         internal static string VirtualMachineNotFound {
             get {
                 return ResourceManager.GetString("VirtualMachineNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for completion.
+        /// </summary>
+        internal static string WaitingForCompletion {
+            get {
+                return ResourceManager.GetString("WaitingForCompletion", resourceCulture);
             }
         }
     }

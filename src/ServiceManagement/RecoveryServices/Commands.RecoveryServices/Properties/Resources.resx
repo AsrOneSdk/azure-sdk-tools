@@ -173,4 +173,10 @@ ClientRequestId: {3}</value>
   <data name="ProtectionEntityNotProtected" xml:space="preserve">
     <value>Protection Entity {0} is not protected.</value>
   </data>
+  <data name="MissingChannelIntergrityKey" xml:space="preserve">
+    <value>Vault Key value is missing. Please import Vault Settings and verify the same</value>
+  </data>
+  <data name="WaitingForCompletion" xml:space="preserve">
+    <value>Waiting for completion</value>
+  </data>
 </root>
