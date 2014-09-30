@@ -134,7 +134,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Waits for the job to complete.
         /// </summary>
         /// <param name="jobId">Id of the job to wait for.</param>
-        public void WaitForCompletion(string jobId)
+        public void WaitForJobCompletion(string jobId)
         {
             JobResponse jobResponse = null;
             do

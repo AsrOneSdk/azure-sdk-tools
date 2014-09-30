@@ -206,7 +206,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             if (this.waitForCompletion)
             {
-                this.WaitForCompletion(this.jobResponse.Job.ID);
+                this.WaitForJobCompletion(this.jobResponse.Job.ID);
             }
         }
 
@@ -241,7 +241,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
 
             if (this.waitForCompletion)
             {
-                this.WaitForCompletion(this.jobResponse.Job.ID);
+                this.WaitForJobCompletion(this.jobResponse.Job.ID);
             }
         }
 
