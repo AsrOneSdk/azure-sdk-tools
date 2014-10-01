@@ -20,4 +20,5 @@ Recovery Services End to End
 #>
 function Test-RecoveryServicesEndToEnd
 {
+	$allWebsites = Get-AzureWebSite
 }

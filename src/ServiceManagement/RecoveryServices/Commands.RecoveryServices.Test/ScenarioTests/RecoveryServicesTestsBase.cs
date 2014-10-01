@@ -32,9 +32,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
         protected void SetupManagementClients()
         {
             var recoveryServicesManagementClient = GetRecoveryServicesManagementClient();
-            var siteRecoveryManagementClient = GetSiteRecoveryManagementClient();
+            // var siteRecoveryManagementClient = GetSiteRecoveryManagementClient();
 
-            helper.SetupManagementClients(recoveryServicesManagementClient, siteRecoveryManagementClient);
+            // helper.SetupManagementClients(recoveryServicesManagementClient, siteRecoveryManagementClient);
+            helper.SetupManagementClients(recoveryServicesManagementClient);
         }
 
         protected void RunPowerShellTest(params string[] scripts)
@@ -58,9 +59,10 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
             return TestBase.GetServiceClient<RecoveryServicesManagementClient>(new RDFETestEnvironmentFactory());
         }
 
-        protected SiteRecoveryManagementClient GetSiteRecoveryManagementClient()
+        /* protected SiteRecoveryManagementClient GetSiteRecoveryManagementClient()
         {
             return TestBase.GetServiceClient<SiteRecoveryManagementClient>(new RDFETestEnvironmentFactory());
         }
+        */
     }
 }

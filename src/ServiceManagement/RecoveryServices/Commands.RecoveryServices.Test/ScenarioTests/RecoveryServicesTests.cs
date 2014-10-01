@@ -17,7 +17,7 @@ using Xunit;
 
 namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
 {
-    public class ManagedCacheTests : RecoveryServicesTestsBase
+    public class RecoveryServicesTests : RecoveryServicesTestsBase
     {
         [Fact]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
