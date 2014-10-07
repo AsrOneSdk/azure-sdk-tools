@@ -20,5 +20,18 @@ Recovery Services End to End
 #>
 function Test-RecoveryServicesEndToEnd
 {
-	$allWebsites = Get-AzureWebSite
+	Import-AzureSiteRecoveryVaultSettingsFile 'c:\Users\sriramvu\Desktop\rijethma-vault_Thursday, September 4, 2014.vaultcredentials'
+	# $vaultSettings = Get-AzureSiteRecoveryVaultSettings
+	# $servers = Get-AzureSiteRecoveryServer
+	$protectionContainers = Get-AzureSiteRecoveryProtectionContainer
+	Assert-True { $protectionContainers.Count -gt 0 }
+	Assert-NotNull($protectionContainers)
+	foreach($protectionContainer in $protectionContainers)
+	{
+		Assert-NotNull($protectionContainer.Name)
+	}
+	# Assert.True($protectionContainers.All(protectedContainer => !string.IsNullOrEmpty(protectedContainer.Name)), "Protection Container name can't be null or empty");
+	# Assert.True($protectionContainers.All(protectedContainer => !string.IsNullOrEmpty(protectedContainer.ID)), "Protection Container Id can't be null or empty");
+	# Assert-AreEqual 'sriramvuVault1' $vaultSettings1.ResourceName
+	# Assert-AreEqual "" $vaultSettings.ResourceName
 }

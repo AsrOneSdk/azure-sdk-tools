@@ -155,8 +155,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\Microsoft.Azure.Management.RecoveryServices.0.1.0-preview.nupkg" />
-    <None Include="lib\Microsoft.Azure.Management.RecoveryServices.0.1.0-preview.symbols.nupkg" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
