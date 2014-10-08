@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// Used to initiate a recovery protection operation.
     /// </summary>
     [Cmdlet(VerbsData.Update, "AzureSiteRecoveryProtectionDirection", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
-    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(ASRJob))]
     public class UpdateAzureSiteRecoveryProtection : RecoveryServicesCmdletBase
     {
         #region Parameters

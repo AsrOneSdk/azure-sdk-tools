@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// Used to initiate a recovery plan update operation.
     /// </summary>
     [Cmdlet(VerbsData.Update, "AzureSiteRecoveryRecoveryPlan")]
-    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(ASRJob))]
     public class UpdateAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
         #region Parameters

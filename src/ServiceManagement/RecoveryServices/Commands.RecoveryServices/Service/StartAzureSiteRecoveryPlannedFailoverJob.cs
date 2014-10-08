@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// Used to initiate a commit operation.
     /// </summary>
     [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryPlannedFailoverJob", DefaultParameterSetName = ASRParameterSets.ByRPId)]
-    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(ASRJob))]
     public class StartAzureSiteRecoveryPlannedFailoverJob : RecoveryServicesCmdletBase
     {
         #region Parameters
@@ -203,7 +203,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         private void StartPEPlannedFailover()
         {
             var pfoReqeust = new PlannedFailoverRequest();
-            pfoReqeust.FailoverDirection = this.Direction;
+            pfoReqeust.FailoverDirection = this.direction;
             this.jobResponse =
                 RecoveryServicesClient.StartAzureSiteRecoveryPlannedFailover(
                 this.protectionContainerId,

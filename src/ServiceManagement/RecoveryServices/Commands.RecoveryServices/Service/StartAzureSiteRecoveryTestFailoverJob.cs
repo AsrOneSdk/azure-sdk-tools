@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// Used to initiate a commit operation.
     /// </summary>
     [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryTestFailoverJob", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
-    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(ASRJob))]
     public class StartAzureSiteRecoveryTestFailoverJob : RecoveryServicesCmdletBase
     {
         #region Parameters
@@ -276,6 +276,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         {
             var tfoReqeust = new TestFailoverRequest();
             tfoReqeust.NetworkID = this.networkId;
+            tfoReqeust.FailoverDirection = this.direction;
             tfoReqeust.NetworkType = this.networkType;
             tfoReqeust.ReplicationProvider = string.Empty;
             tfoReqeust.ReplicationProviderSettings = string.Empty;

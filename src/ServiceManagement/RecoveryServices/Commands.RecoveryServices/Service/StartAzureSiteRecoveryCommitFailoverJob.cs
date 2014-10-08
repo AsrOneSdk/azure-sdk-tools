@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// Used to initiate a commit operation.
     /// </summary>
     [Cmdlet(VerbsLifecycle.Start, "AzureSiteRecoveryCommitFailoverJob", DefaultParameterSetName = ASRParameterSets.ByRPId)]
-    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
+    [OutputType(typeof(ASRJob))]
     public class StartAzureSiteRecoveryCommitFailoverJob : RecoveryServicesCmdletBase
     {
         #region Parameters
