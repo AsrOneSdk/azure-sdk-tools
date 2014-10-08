@@ -179,4 +179,16 @@ ClientRequestId: {3}</value>
   <data name="WaitingForCompletion" xml:space="preserve">
     <value>Waiting for completion</value>
   </data>
+  <data name="DisableProtectionWarning" xml:space="preserve">
+    <value>Are you sure want to disable protection on {0}</value>
+  </data>
+  <data name="DisableProtectionWhatIfMessage" xml:space="preserve">
+    <value>{0}s protection</value>
+  </data>
+  <data name="RemoveRPWarning" xml:space="preserve">
+    <value>Are you sure want to remove Recovery Plan {0}</value>
+  </data>
+  <data name="RemoveRPWhatIfMessage" xml:space="preserve">
+    <value>Removing Recovery Plan</value>
+  </data>
 </root>

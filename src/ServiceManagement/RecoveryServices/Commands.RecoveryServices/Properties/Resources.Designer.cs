@@ -83,6 +83,24 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure want to disable protection on {0}.
+        /// </summary>
+        internal static string DisableProtectionWarning {
+            get {
+                return ResourceManager.GetString("DisableProtectionWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}s protection.
+        /// </summary>
+        internal static string DisableProtectionWhatIfMessage {
+            get {
+                return ResourceManager.GetString("DisableProtectionWhatIfMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation failed.
         ///{0}.
         /// </summary>
@@ -179,6 +197,24 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Properties {
         internal static string RecoveryPlanNotFound {
             get {
                 return ResourceManager.GetString("RecoveryPlanNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure want to remove Recovery Plan {0}.
+        /// </summary>
+        internal static string RemoveRPWarning {
+            get {
+                return ResourceManager.GetString("RemoveRPWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing Recovery Plan.
+        /// </summary>
+        internal static string RemoveRPWhatIfMessage {
+            get {
+                return ResourceManager.GetString("RemoveRPWhatIfMessage", resourceCulture);
             }
         }
         

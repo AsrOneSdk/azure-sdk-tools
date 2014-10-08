@@ -27,7 +27,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Set Protection Entity protection state.
     /// </summary>
-    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByPEObject)]
+    [Cmdlet(VerbsCommon.Set, "AzureSiteRecoveryProtectionEntity", DefaultParameterSetName = ASRParameterSets.ByPEObject, SupportsShouldProcess = true)]
     [OutputType(typeof(ASRJob))]
     public class SetAzureSiteRecoveryProtectionEntity : RecoveryServicesCmdletBase
     {
@@ -62,6 +62,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Job response.
         /// </summary>
         private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Holds either Name (if object is passed) or ID (if IDs are passed) of the PE.
+        /// </summary>
+        private string targetNameOrId = string.Empty;
 
         /// <summary>
         /// Gets or sets ID of the Virtual Machine.
@@ -119,6 +124,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
+
+        /// <summary>
+        /// Gets or sets switch parameter. On passing, command does not ask for confirmation.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public SwitchParameter Force { get; set; }
         #endregion Parameters
 
         /// <summary>
@@ -126,35 +137,45 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         public override void ExecuteCmdlet()
         {
-            try
+            switch (this.ParameterSetName)
             {
-                switch (this.ParameterSetName)
-                {
-                    case ASRParameterSets.ByPEObject:
-                        this.id = this.protectionEntity.ID;
-                        this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
-                        break;
-                    case ASRParameterSets.ByIDs:
-                        break;
-                }
-
-                this.jobResponse =
-                    RecoveryServicesClient.SetProtectionOnProtectionEntity(
-                    this.protectionContainerId,
-                    this.id,
-                    this.protection);
-
-                this.WriteJob(this.jobResponse.Job);
-
-                if (this.waitForCompletion)
-                {
-                    this.WaitForJobCompletion(this.jobResponse.Job.ID);
-                }
+                case ASRParameterSets.ByPEObject:
+                    this.id = this.protectionEntity.ID;
+                    this.protectionContainerId = this.protectionEntity.ProtectionContainerId;
+                    this.targetNameOrId = this.protectionEntity.Name;
+                    break;
+                case ASRParameterSets.ByIDs:
+                    this.targetNameOrId = this.id;
+                    break;
             }
-            catch (Exception exception)
-            {
-                this.HandleException(exception);
-            }
+
+            ConfirmAction(
+                Force.IsPresent || 0 != string.CompareOrdinal(protection, PSRecoveryServicesClient.DisableProtection),
+                string.Format(Properties.Resources.DisableProtectionWarning, this.targetNameOrId),
+                string.Format(Properties.Resources.DisableProtectionWhatIfMessage, this.protection),
+                this.targetNameOrId,
+                () =>
+                    {
+                        try
+                        {
+                            this.jobResponse =
+                                RecoveryServicesClient.SetProtectionOnProtectionEntity(
+                                this.protectionContainerId,
+                                this.id,
+                                this.protection);
+
+                            this.WriteJob(this.jobResponse.Job);
+
+                            if (this.waitForCompletion)
+                            {
+                                this.WaitForJobCompletion(this.jobResponse.Job.ID);
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            this.HandleException(exception);
+                        }
+                    });
         }
 
         /// <summary>

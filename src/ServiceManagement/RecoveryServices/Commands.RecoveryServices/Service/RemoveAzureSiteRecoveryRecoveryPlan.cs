@@ -27,8 +27,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices
     /// <summary>
     /// Remove a Recovery Plan from the current Azure Site Recovery Vault.
     /// </summary>
-    [Cmdlet(VerbsCommon.Remove, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = ASRParameterSets.ByRPObject)]
-    [OutputType(typeof(Microsoft.WindowsAzure.Management.SiteRecovery.Models.Job))]
+    [Cmdlet(VerbsCommon.Remove, "AzureSiteRecoveryRecoveryPlan", DefaultParameterSetName = ASRParameterSets.ByRPObject, SupportsShouldProcess = true)]
+    [OutputType(typeof(ASRJob))]
     public class RemoveAzureSiteRecoveryRecoveryPlan : RecoveryServicesCmdletBase
     {
         #region Parameters
@@ -51,6 +51,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// Job response.
         /// </summary>
         private JobResponse jobResponse = null;
+
+        /// <summary>
+        /// Holds either Name (if object is passed) or ID (if IDs are passed) of the PE.
+        /// </summary>
+        private string targetNameOrId = string.Empty;
 
         /// <summary>
         /// Gets or sets ID of the Recovery Plan.
@@ -83,6 +88,12 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             get { return this.waitForCompletion; }
             set { this.waitForCompletion = value; }
         }
+
+        /// <summary>
+        /// Gets or sets switch parameter. On passing, command does not ask for confirmation.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public SwitchParameter Force { get; set; }
         #endregion Parameters
 
         /// <summary>
@@ -90,31 +101,41 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         /// </summary>
         public override void ExecuteCmdlet()
         {
-            try
+            switch (this.ParameterSetName)
             {
-                switch (this.ParameterSetName)
-                {
-                    case ASRParameterSets.ByRPObject:
-                        this.recoveryPlanId = this.recoveryPlan.ID;
-                        break;
-                    case ASRParameterSets.ById:
-                        break;
-                }
-
-                this.jobResponse = RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(
-                   this.recoveryPlanId);
-                this.WriteJob(this.jobResponse.Job);
-
-                string jobId = this.jobResponse.Job.ID;
-                if (this.waitForCompletion)
-                {
-                    this.WaitForJobCompletion(this.jobResponse.Job.ID);
-                }
+                case ASRParameterSets.ByRPObject:
+                    this.recoveryPlanId = this.recoveryPlan.ID;
+                    this.targetNameOrId = this.recoveryPlan.Name;
+                    break;
+                case ASRParameterSets.ById:
+                    this.targetNameOrId = this.recoveryPlanId;
+                    break;
             }
-            catch (Exception exception)
-            {
-                this.HandleException(exception);
-            }
+
+            ConfirmAction(
+                Force.IsPresent,
+                string.Format(Properties.Resources.RemoveRPWarning, this.targetNameOrId),
+                Properties.Resources.RemoveRPWhatIfMessage,
+                this.targetNameOrId,
+                () =>
+                {
+                    try
+                    {
+                        this.jobResponse = RecoveryServicesClient.RemoveAzureSiteRecoveryRecoveryPlan(
+                           this.recoveryPlanId);
+                        this.WriteJob(this.jobResponse.Job);
+
+                        string jobId = this.jobResponse.Job.ID;
+                        if (this.waitForCompletion)
+                        {
+                            this.WaitForJobCompletion(this.jobResponse.Job.ID);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        this.HandleException(exception);
+                    }
+                });
         }
 
         /// <summary>
