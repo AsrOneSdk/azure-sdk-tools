@@ -12,26 +12,91 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------------
 
-########################## Recovery Services End to End Scenario Tests #############################
+########################## Recovery Services Tests #############################
 
 <#
 .SYNOPSIS
-Recovery Services End to End
+Recovery Services Enumeration Tests
 #>
-function Test-RecoveryServicesEndToEnd
+function Test-RecoveryServicesEnumerationTests
 {
-	Import-AzureSiteRecoveryVaultSettingsFile 'c:\Users\sriramvu\Desktop\rijethma-vault_Thursday, September 4, 2014.vaultcredentials'
-	# $vaultSettings = Get-AzureSiteRecoveryVaultSettings
-	# $servers = Get-AzureSiteRecoveryServer
+	param([string] $vaultSettingsFilePath)
+
+	# Import Azure Site Recovery Vault Settings
+	Import-AzureSiteRecoveryVaultSettingsFile $vaultSettingsFilePath
+
+	# Enumerate Servers
+	$servers = Get-AzureSiteRecoveryServer
+	Assert-True { $servers.Count -gt 0 }
+	Assert-NotNull($servers)
+	foreach($server in $servers)
+	{
+		Assert-NotNull($server.Name)
+		Assert-NotNull($server.ID)
+	}
+
+	# Enumerate Protection Containers
 	$protectionContainers = Get-AzureSiteRecoveryProtectionContainer
 	Assert-True { $protectionContainers.Count -gt 0 }
 	Assert-NotNull($protectionContainers)
 	foreach($protectionContainer in $protectionContainers)
 	{
 		Assert-NotNull($protectionContainer.Name)
+		Assert-NotNull($protectionContainer.ID)
+
+		# Enumerate Protection Entities under each configured Protection Containers
+		if ($protectionContainer.ConfigurationStatus -eq "Configured")
+		{
+			$protectionEntities = Get-AzureSiteRecoveryProtectionEntity -ProtectionContainer $protectionContainer
+			Assert-NotNull($protectionEntities)
+			foreach($protectionEntity in $protectionEntities)
+			{
+				Assert-NotNull($protectionEntity.Name)
+				Assert-NotNull($protectionEntity.ID)
+			}
+		}
 	}
-	# Assert.True($protectionContainers.All(protectedContainer => !string.IsNullOrEmpty(protectedContainer.Name)), "Protection Container name can't be null or empty");
-	# Assert.True($protectionContainers.All(protectedContainer => !string.IsNullOrEmpty(protectedContainer.ID)), "Protection Container Id can't be null or empty");
-	# Assert-AreEqual 'sriramvuVault1' $vaultSettings1.ResourceName
-	# Assert-AreEqual "" $vaultSettings.ResourceName
+}
+
+<#
+.SYNOPSIS
+Recovery Services Protection Tests
+#>
+function Test-RecoveryServicesProtectionTests
+{
+	param([string] $vaultSettingsFilePath)
+
+	# Import Azure Site Recovery Vault Settings
+	Import-AzureSiteRecoveryVaultSettingsFile $vaultSettingsFilePath
+
+	# Enable protection for an un protected Protection Entity and 
+	# Disable protection for a protected Protection Entity
+	$protectionContainers = Get-AzureSiteRecoveryProtectionContainer
+	Assert-True { $protectionContainers.Count -gt 0 }
+	Assert-NotNull($protectionContainers)
+	foreach($protectionContainer in $protectionContainers)
+	{
+		Assert-NotNull($protectionContainer.Name)
+		Assert-NotNull($protectionContainer.ID)
+
+		# Enumerate Protection Entities under each configured Protection Containers
+		if ($protectionContainer.ConfigurationStatus -eq "Configured")
+		{
+			$protectionEntities = Get-AzureSiteRecoveryProtectionEntity -ProtectionContainer $protectionContainer
+			Assert-NotNull($protectionEntities)
+			foreach($protectionEntity in $protectionEntities)
+			{
+				Assert-NotNull($protectionEntity.Name)
+				Assert-NotNull($protectionEntity.ID)
+				if ($protectionEntity.Protected)
+				{
+					Set-AzureSiteRecoveryProtectionEntity -ProtectionEntity $protectionEntity -Protection "Enable" -Force
+				}
+				else
+				{
+					Set-AzureSiteRecoveryProtectionEntity -ProtectionEntity $protectionEntity -Protection "Disable" -Force
+				}
+			}
+		}
+	}
 }

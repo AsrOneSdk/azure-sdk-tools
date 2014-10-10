@@ -13,10 +13,14 @@
 // ----------------------------------------------------------------------------------
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Security;
-using Microsoft.WindowsAzure;
+using System.Runtime.Serialization;
+using System.Xml;
 using Microsoft.Azure.Utilities.HttpRecorder;
+using Microsoft.Azure.Portal.RecoveryServices.Models.Common;
+using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Commands.ScenarioTest;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
 using Microsoft.WindowsAzure.Management.RecoveryServices;
@@ -29,31 +33,49 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
     {
         private RDFETestEnvironmentFactory rdfeTestFactory;
         private EnvironmentSetupHelper helper;
-        private string resourceName;
-        private string cloudService;
-        private string vaultKey;
+        protected string vaultSettingsFilePath;
+        private ASRVaultCreds asrVaultCreds = null;
 
         public SiteRecoveryManagementClient SiteRecoveryMgmtClient { get; private set; }
         public RecoveryServicesManagementClient RecoveryServicesMgmtClient { get; private set; }
 
         protected RecoveryServicesTestsBase()
         {
-            resourceName = Environment.GetEnvironmentVariable("RESOURCE_NAME");
-            if (string.IsNullOrEmpty(resourceName))
+            this.vaultSettingsFilePath = Environment.GetEnvironmentVariable("VAULT_SETTINGS_FILE_PATH");
+            if (string.IsNullOrEmpty(vaultSettingsFilePath))
             {
-                throw new Exception("Please set RESOURCE_NAME environment variable before running the tests");
+                throw new Exception("Please set VAULT_SETTINGS_FILE_PATH environment variable before running the tests");
             }
 
-            cloudService = Environment.GetEnvironmentVariable("CLOUD_SERVICE_NAME");
-            if (string.IsNullOrEmpty(cloudService))
+            if (File.Exists(this.vaultSettingsFilePath))
             {
-                throw new Exception("Please set CLOUD_SERVICE_NAME environment variable before running the tests");
+                try
+                {
+                    var serializer1 = new DataContractSerializer(typeof(ASRVaultCreds));
+                    using (var s = new FileStream(
+                        this.vaultSettingsFilePath,
+                        FileMode.Open,
+                        FileAccess.Read,
+                        FileShare.Read))
+                    {
+                        asrVaultCreds = (ASRVaultCreds)serializer1.ReadObject(s);
+                    }
+                }
+                catch (XmlException xmlException)
+                {
+                    throw new XmlException(
+                        "XML is malformed or file is empty", xmlException);
+                }
+                catch (SerializationException serializationException)
+                {
+                    throw new SerializationException(
+                        "XML is malformed or file is empty", serializationException);
+                }
             }
-
-            vaultKey = Environment.GetEnvironmentVariable("CHANNEL_INTEGRITY_KEY");
-            if (string.IsNullOrEmpty(vaultKey))
+            else
             {
-                throw new Exception("Please set CHANNEL_INTEGRITY_KEY environment variable before running the tests");
+                throw new FileNotFoundException(
+                    "Vault settings file not found, please pass the file downloaded from portal");
             }
 
             helper = new EnvironmentSetupHelper();
@@ -65,7 +87,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
             SiteRecoveryMgmtClient = GetSiteRecoveryManagementClient();
 
             helper.SetupManagementClients(RecoveryServicesMgmtClient, SiteRecoveryMgmtClient);
-            // helper.SetupManagementClients(recoveryServicesManagementClient);
         }
 
         protected void RunPowerShellTest(params string[] scripts)
@@ -93,7 +114,6 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
 
         private SiteRecoveryManagementClient GetSiteRecoveryManagementClient()
         {
-            // return TestBase.GetServiceClient<SiteRecoveryManagementClient>(new RDFETestEnvironmentFactory());
             TestEnvironment environment = this.rdfeTestFactory.GetTestEnvironment();
 
             if (ServicePointManager.ServerCertificateValidationCallback == null)
@@ -103,8 +123,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
             }
 
             return new SiteRecoveryManagementClient(
-                cloudService,
-                resourceName,
+                asrVaultCreds.CloudServiceName,
+                asrVaultCreds.ResourceName,
                 (SubscriptionCloudCredentials)environment.Credentials,
                 environment.BaseUri).WithHandler(HttpMockServer.CreateInstance());
         }

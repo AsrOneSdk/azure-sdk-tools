@@ -21,9 +21,16 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Test.ScenarioTests
     {
         [Fact]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
-        public void RecoveryServicesEndToEndTest()
+        public void RecoveryServicesEnumerationTests()
         {
-            this.RunPowerShellTest("Test-RecoveryServicesEndToEnd");
+            this.RunPowerShellTest("Test-RecoveryServicesEnumerationTests -vaultSettingsFilePath \"" + vaultSettingsFilePath + "\"");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void RecoveryServicesProtectionTests()
+        {
+            this.RunPowerShellTest("Test-RecoveryServicesProtectionTests -vaultSettingsFilePath \"" + vaultSettingsFilePath + "\"");
         }
     }
 }

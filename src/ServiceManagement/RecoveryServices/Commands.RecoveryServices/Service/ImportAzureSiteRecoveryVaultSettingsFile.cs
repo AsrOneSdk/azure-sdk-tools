@@ -70,14 +70,14 @@ namespace Microsoft.Azure.Commands.RecoveryServices
             {
                 try
                 {
-                    var serializer1 = new DataContractSerializer(typeof(ASRVaultCreds));
+                    var serializer = new DataContractSerializer(typeof(ASRVaultCreds));
                     using (var s = new FileStream(
                         this.path,
                         FileMode.Open,
                         FileAccess.Read,
                         FileShare.Read))
                     {
-                        asrVaultCreds = (ASRVaultCreds)serializer1.ReadObject(s);
+                        asrVaultCreds = (ASRVaultCreds)serializer.ReadObject(s);
                     }
                 }
                 catch (XmlException xmlException)
