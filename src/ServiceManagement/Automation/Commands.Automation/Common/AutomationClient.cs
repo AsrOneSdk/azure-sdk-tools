@@ -12,42 +12,42 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Microsoft.Azure.Commands.Automation.Model;
+using Microsoft.Azure.Commands.Automation.Properties;
+using Microsoft.Azure.Management.Automation;
+using Microsoft.WindowsAzure.Commands.Common;
+using Microsoft.WindowsAzure.Commands.Common.Models;
+using Newtonsoft.Json;
+
 namespace Microsoft.Azure.Commands.Automation.Common
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-
-    using Microsoft.Azure.Commands.Automation.Model;
-    using Microsoft.Azure.Commands.Automation.Properties;
-    using Microsoft.Azure.Management.Automation;
-    using Microsoft.WindowsAzure.Commands.Utilities.Common;
-
-    using AutomationManagement = Microsoft.Azure.Management.Automation;
+    using AutomationManagement = Management.Automation;
 
     public class AutomationClient : IAutomationClient
     {
-        private readonly IAutomationManagementClient automationManagementClient;
+        private readonly AutomationManagement.IAutomationManagementClient automationManagementClient;
 
         // Injection point for unit tests
         public AutomationClient()
         {
         }
 
-        public AutomationClient(WindowsAzureSubscription subscription)
-            : this(
-                subscription,
-                subscription.CreateClient<AutomationManagementClient>())
+        public AutomationClient(AzureSubscription subscription)
+            : this(subscription, 
+            AzureSession.ClientFactory.CreateClient<AutomationManagement.AutomationManagementClient>(subscription, AzureEnvironment.Endpoint.ServiceManagement))
         {
         }
 
         public AutomationClient(
-            WindowsAzureSubscription subscription,
-            IAutomationManagementClient automationManagementClient)
+            AzureSubscription subscription,
+            AutomationManagement.IAutomationManagementClient automationManagementClient)
         {
             Requires.Argument("automationManagementClient", automationManagementClient).NotNull();
 
@@ -55,7 +55,7 @@ namespace Microsoft.Azure.Commands.Automation.Common
             this.automationManagementClient = automationManagementClient;
         }
 
-        public WindowsAzureSubscription Subscription { get; private set; }
+        public AzureSubscription Subscription { get; private set; }
 
         #region Account Operations
 
@@ -472,7 +472,7 @@ namespace Microsoft.Azure.Commands.Automation.Common
                         new AutomationManagement.Models.JobStreamListStreamItemsParameters
                         {
                             JobId = jobModel.Id,
-                            StartTime = createdSince.ToUniversalTime(),
+                            StartTime = this.FormatDateTime(createdSince),
                             StreamType = streamTypeName,
                             SkipToken = skipToken
                         });
@@ -528,6 +528,34 @@ namespace Microsoft.Azure.Commands.Automation.Common
                 ScheduleType =
                     AutomationManagement.Models.ScheduleType
                                         .DailySchedule
+            };
+
+            var scheduleCreateParameters = new AutomationManagement.Models.ScheduleCreateParameters
+            {
+                Schedule = scheduleModel
+            };
+
+            var scheduleCreateResponse = this.automationManagementClient.Schedules.Create(
+                automationAccountName,
+                scheduleCreateParameters);
+
+            return this.GetSchedule(automationAccountName, new Guid(scheduleCreateResponse.Schedule.Id));
+        }
+
+        public Schedule CreateSchedule(string automationAccountName, HourlySchedule schedule)
+        {
+            this.ValidateScheduleName(automationAccountName, schedule.Name);
+
+            var scheduleModel = new AutomationManagement.Models.Schedule
+            {
+                Name = schedule.Name,
+                StartTime = schedule.StartTime.ToUniversalTime(),
+                ExpiryTime = schedule.ExpiryTime.ToUniversalTime(),
+                Description = schedule.Description,
+                HourInterval = schedule.HourInterval,
+                ScheduleType =
+                    AutomationManagement.Models.ScheduleType
+                                        .HourlySchedule
             };
 
             var scheduleCreateParameters = new AutomationManagement.Models.ScheduleCreateParameters
@@ -631,6 +659,10 @@ namespace Microsoft.Azure.Commands.Automation.Common
             if (schedule.ScheduleType == AutomationManagement.Models.ScheduleType.DailySchedule)
             {
                 return new DailySchedule(schedule);
+            }
+            else if (schedule.ScheduleType == AutomationManagement.Models.ScheduleType.HourlySchedule)
+            {
+                return new HourlySchedule(schedule);
             }
             else
             {
@@ -886,12 +918,21 @@ namespace Microsoft.Azure.Commands.Automation.Common
                 if (parameters.Contains(runbookParameter.Name))
                 {
                     object paramValue = parameters[runbookParameter.Name];
-                    filteredParameters.Add(
-                        new AutomationManagement.Models.NameValuePair
-                        {
-                            Name = runbookParameter.Name,
-                            Value = paramValue.ToString()
-                        });
+                    try
+                    {
+                        filteredParameters.Add(
+                            new AutomationManagement.Models.NameValuePair
+                            {
+                                Name = runbookParameter.Name,
+                                Value = JsonConvert.SerializeObject(paramValue, new JsonSerializerSettings() { DateFormatHandling = DateFormatHandling.MicrosoftDateFormat })
+                            });
+                    }
+                    catch (JsonSerializationException)
+                    {
+                        throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.CurrentCulture, Resources.RunbookParameterCannotBeSerializedToJson, runbookParameter.Name));
+                    }
                 }
                 else if (runbookParameter.IsMandatory)
                 {

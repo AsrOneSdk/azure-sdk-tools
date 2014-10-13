@@ -12,25 +12,25 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Net;
+using System.Security.Permissions;
+using System.ServiceModel;
+using System.Text.RegularExpressions;
+using Microsoft.WindowsAzure.Commands.Utilities.Common;
+using Microsoft.WindowsAzure.Commands.Utilities.Properties;
+using Microsoft.WindowsAzure.Commands.Utilities.Websites.Common;
+using Microsoft.WindowsAzure.Commands.Utilities.Websites.Services;
+using Microsoft.WindowsAzure.Commands.Utilities.Websites.Services.Github;
+using Microsoft.WindowsAzure.Commands.Utilities.Websites.Services.WebEntities;
+using Microsoft.WindowsAzure.Management.WebSites.Models;
+
 namespace Microsoft.WindowsAzure.Commands.Websites
 {
-    using Microsoft.WindowsAzure.Commands.Utilities.Common;
-    using Microsoft.WindowsAzure.Commands.Utilities.Websites;
-    using Microsoft.WindowsAzure.Management.WebSites.Models;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Management.Automation;
-    using System.Net;
-    using System.Security.Permissions;
-    using System.ServiceModel;
-    using System.Text.RegularExpressions;
-    using Utilities.Properties;
-    using Utilities.Websites.Common;
-    using Utilities.Websites.Services;
-    using Utilities.Websites.Services.Github;
-    using Utilities.Websites.Services.WebEntities;
     using GitClass = Utilities.Websites.Services.Git;
 
     /// <summary>
@@ -39,6 +39,9 @@ namespace Microsoft.WindowsAzure.Commands.Websites
     [Cmdlet(VerbsCommon.New, "AzureWebsite"), OutputType(typeof(SiteWithConfig))]
     public class NewAzureWebsiteCommand : WebsiteContextBaseCmdlet, IGithubCmdlet
     {
+        private string hostName;
+        private string publishingUsername;
+
         [Parameter(Position = 1, Mandatory = false, ValueFromPipelineByPropertyName = true, HelpMessage = "The geographic region to create the website.")]
         [ValidateNotNullOrEmpty]
         public string Location
@@ -51,16 +54,30 @@ namespace Microsoft.WindowsAzure.Commands.Websites
         [ValidateNotNullOrEmpty]
         public string Hostname
         {
-            get;
-            set;
+            get
+            {
+                return hostName;
+            }
+            set
+            {
+                // Convert to Unicode if necessary.
+                hostName = IdnHelper.GetUnicode(value);
+            }
         }
 
         [Parameter(Position = 3, Mandatory = false, ValueFromPipelineByPropertyName = true, HelpMessage = "The publishing user name.")]
         [ValidateNotNullOrEmpty]
         public string PublishingUsername
         {
-            get;
-            set;
+            get
+            {
+                return publishingUsername;
+            }
+            set
+            {
+                // Convert to Unicode if necessary.
+                publishingUsername = IdnHelper.GetUnicodeForUserName(value);
+            }
         }
 
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true, HelpMessage = "Configure git on the web site and local folder.")]
@@ -304,7 +321,7 @@ namespace Microsoft.WindowsAzure.Commands.Websites
             {
                 // Create webspace with VirtualPlan failed, try with subscription id
                 // This supports Windows Azure Pack
-                webspace.Plan = CurrentSubscription.SubscriptionId;
+                webspace.Plan = CurrentContext.Subscription.Id.ToString();
                 result = CreateSite(webspace, website);
             }
             return result;
@@ -350,7 +367,7 @@ namespace Microsoft.WindowsAzure.Commands.Websites
             {
                 Name = Regex.Replace(location.ToLower(), " ", "") + "webspace",
                 GeoRegion = location,
-                Subscription = CurrentSubscription.SubscriptionId,
+                Subscription = CurrentContext.Subscription.Id.ToString(),
                 Plan = "VirtualDedicatedPlan"
             };
         }
@@ -382,7 +399,7 @@ namespace Microsoft.WindowsAzure.Commands.Websites
 
                 createdWebsite = WebsitesClient.GetWebsite(website.Name);
 
-                Cache.AddSite(CurrentSubscription.SubscriptionId, createdWebsite);
+                Cache.AddSite(CurrentContext.Subscription.Id.ToString(), createdWebsite);
                 SiteConfig websiteConfiguration = WebsitesClient.GetWebsiteConfiguration(createdWebsite.Name, Slot);
                 WriteObject(new SiteWithConfig(createdWebsite, websiteConfiguration));
             }

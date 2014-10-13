@@ -12,18 +12,17 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.Azure.Commands.Automation.Model;
+using Microsoft.WindowsAzure.Commands.Common.Models;
+
 namespace Microsoft.Azure.Commands.Automation.Common
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-
-    using Microsoft.Azure.Commands.Automation.Model;
-    using Microsoft.WindowsAzure.Commands.Utilities.Common;
-
     public interface IAutomationClient
     {
-        WindowsAzureSubscription Subscription { get; }
+        AzureSubscription Subscription { get; }
 
         IEnumerable<AutomationAccount> ListAutomationAccounts(string automationAccountName, string location);
 
@@ -72,6 +71,8 @@ namespace Microsoft.Azure.Commands.Automation.Common
         Schedule CreateSchedule(string automationAccountName, OneTimeSchedule schedule);
 
         Schedule CreateSchedule(string automationAccountName, DailySchedule schedule);
+
+        Schedule CreateSchedule(string automationAccountName, HourlySchedule schedule);
 
         Runbook PublishRunbook(string automationAccountName, Guid runbookId);
 

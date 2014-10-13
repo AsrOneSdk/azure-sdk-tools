@@ -12,14 +12,14 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Microsoft.WindowsAzure.Management.ServiceBus.Models;
+
 namespace Microsoft.WindowsAzure.Commands.Utilities.ServiceBus
 {
-    using Microsoft.WindowsAzure.Management.ServiceBus.Models;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-
     public class ExtendedServiceBusNamespace
     {
         public ExtendedServiceBusNamespace()
@@ -38,6 +38,8 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.ServiceBus
             Status = serviceBusNamespace.Status;
 
             CreatedAt = serviceBusNamespace.CreatedAt;
+
+            NamespaceType = serviceBusNamespace.NamespaceType;
 
             AcsManagementEndpoint = serviceBusNamespace.AcsManagementEndpoint != null ? serviceBusNamespace.AcsManagementEndpoint.ToString() : string.Empty;
 
@@ -73,6 +75,8 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.ServiceBus
 
         public string ConnectionString { get; set; }
 
+        public NamespaceType NamespaceType { get; set; }
+
         public override bool Equals(object obj)
         {
             ExtendedServiceBusNamespace lhs = obj as ExtendedServiceBusNamespace;
@@ -82,7 +86,7 @@ namespace Microsoft.WindowsAzure.Commands.Utilities.ServiceBus
                 return false;
             }
 
-            return this.Name.Equals(lhs.Name) && this.Region.Equals(lhs.Region);
+            return this.Name.Equals(lhs.Name) && this.Region.Equals(lhs.Region) && this.NamespaceType.Equals(lhs.NamespaceType);
         }
 
         public override int GetHashCode()

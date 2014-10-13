@@ -12,14 +12,13 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Microsoft.Azure.Commands.Automation.Properties;
+
 namespace Microsoft.Azure.Commands.Automation.Common
 {
-    using System;
-    using System.Globalization;
-    using System.Text.RegularExpressions;
-
-    using Microsoft.Azure.Commands.Automation.Properties;
-
     internal static class RequiresExtensions
     {
         #region Constants

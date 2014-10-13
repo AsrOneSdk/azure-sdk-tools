@@ -12,15 +12,14 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Management.Automation;
+using System.Security.Permissions;
+using Microsoft.Azure.Commands.Automation.Model;
+
 namespace Microsoft.Azure.Commands.Automation.Cmdlet
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Management.Automation;
-    using System.Security.Permissions;
-
-    using Microsoft.Azure.Commands.Automation.Model;
-
     /// <summary>
     /// Gets azure automation schedules for a given account.
     /// </summary>
@@ -93,7 +92,7 @@ namespace Microsoft.Azure.Commands.Automation.Cmdlet
         }
 
         /// <summary>
-        /// Writes a OneTimeSchedule or DailySchedule to the pipeline.
+        /// Writes a OneTimeSchedule, DailySchedule or HourlySchedule to the pipeline.
         /// </summary>
         /// <param name="schedules">
         /// The schedules.
@@ -106,6 +105,13 @@ namespace Microsoft.Azure.Commands.Automation.Cmdlet
                 if (dailySchedule != null)
                 {
                     this.WriteObject(dailySchedule);
+                    continue;
+                }
+
+                var hourlySchedule = schedule as HourlySchedule;
+                if (hourlySchedule != null)
+                {
+                    this.WriteObject(hourlySchedule);
                     continue;
                 }
 

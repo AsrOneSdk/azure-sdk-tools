@@ -12,13 +12,12 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System.Management.Automation;
+using System.Security.Permissions;
+using Microsoft.Azure.Commands.Automation.Model;
+
 namespace Microsoft.Azure.Commands.Automation.Cmdlet
 {
-    using System.Management.Automation;
-    using System.Security.Permissions;
-
-    using Microsoft.Azure.Commands.Automation.Model;
-
     /// <summary>
     /// Registers an azure automation scheduled runbook.
     /// </summary>

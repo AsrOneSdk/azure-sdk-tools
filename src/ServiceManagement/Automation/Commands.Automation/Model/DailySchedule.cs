@@ -12,14 +12,13 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System;
+using System.Globalization;
+using Microsoft.Azure.Commands.Automation.Common;
+using Microsoft.Azure.Commands.Automation.Properties;
+
 namespace Microsoft.Azure.Commands.Automation.Model
 {
-    using System;
-    using System.Globalization;
-
-    using Microsoft.Azure.Commands.Automation.Common;
-    using Microsoft.Azure.Commands.Automation.Properties;
-
     /// <summary>
     /// The daily schedule.
     /// </summary>
